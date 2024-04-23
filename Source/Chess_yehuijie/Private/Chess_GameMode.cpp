@@ -67,7 +67,42 @@ void AChess_GameMode::ShowMoves(const FVector2D& Position, EPiece Piece)
 {
 	if (Piece == EPiece::Pawn)
 	{
-		int32 x = Position[0] + 1;
+		//while x < 6 && empty
+		Position[0] ++;
+		SpawnMovTile(Position)
+		if (Position[1] == 1)
+		{
+			Position[0] ++;
+		        SpawnMovTile(Position)
+		}
+	}
+	if (Piece == EPiece::Rook)
+	{
+		//while empty
+		for (int32 x = Position[0]; x < GField->Size; x++)
+		{
+			SpawnMovTile(FVector2D(x, Position[1]);
+		}
+		for (int32 x = Position[0]; x > 0; x--)
+		{
+			SpawnMovTile(FVector2D(x, Position[1]);
+		}
+		for (int32 y = Position[1]; y < GField->Size; y++)
+		{
+			SpawnMovTile(FVector2D(Position[0], y);
+		}
+		for (int32 y = Position[1]; y > 0; y--)
+		{
+			SpawnMovTile(FVector2D(Position[0], y);
+		}
+	}
+}
+
+void AChess_GameMode::SpawnMovTile(const FVector2D& Position/*, EPiece Piece*/)
+{
+	//if (Piece == EPiece::Pawn)
+	//{
+		int32 x = Position[0];// + 1;
 		int32 y = Position[1];
 		//FVector2D XYPos = Position;
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("x=%f,y=%f"), XYPos[0], XYPos[1]));
@@ -77,7 +112,7 @@ void AChess_GameMode::ShowMoves(const FVector2D& Position, EPiece Piece)
 		MoveTileArray.Add(Obj);
 		MoveTileMap.Add(FVector2D(x, y), Obj);
 		Obj->SetTileStatus(0 , ETileStatus::MOVEABLE);
-	}
+	//}
 }
 
 void AChess_GameMode::DestroyMoveTiles()
@@ -88,7 +123,8 @@ void AChess_GameMode::DestroyMoveTiles()
 	}
 }
 
-void AChess_GameMode::DestroyClickedPiece()
+//ChangeActorLocation !!!!!
+/*void AChess_GameMode::DestroyClickedPiece()
 {
 	for (AWhitePiece* Obj : GField->WPawnArray)
 	{
@@ -100,9 +136,10 @@ void AChess_GameMode::DestroyClickedPiece()
 			break;
 		}
 	}
-}
+}*/
 
-void AChess_GameMode::SpawnPiece(const FVector2D& Position)
+//ChangeActorLocation !!!!!
+/*void AChess_GameMode::SpawnPiece(const FVector2D& Position)
 {
 	int32 x = Position[0];
 	int32 y = Position[1];
@@ -115,7 +152,7 @@ void AChess_GameMode::SpawnPiece(const FVector2D& Position)
 	Obj->SetBoardPosition(x, y);
 	GField->WPawnArray.Add(Obj);
 	GField->WPawnMap.Add(FVector2D(x, y), Obj);
-}
+}*/
 
 /*void AChess_GameMode::MovePiece(const FVector2D& Position, EPiece Piece)
 {
