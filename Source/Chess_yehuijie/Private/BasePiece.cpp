@@ -54,6 +54,16 @@ EPieceStatus ABasePiece::GetPieceStatus()
 	return PieceStatus;
 }
 
+void ABasePiece::SetPieceColor(const EColor Color)
+{
+	PieceColor = Color;
+}
+
+EPieceColor ABasePiece::GetPieceColor()
+{
+	return PieceColor;
+}
+
 // Called when the game starts or when spawned
 void ABasePiece::BeginPlay()
 {
