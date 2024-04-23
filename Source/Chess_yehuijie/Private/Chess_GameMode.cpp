@@ -69,6 +69,7 @@ void AChess_GameMode::ShowMoves(const FVector2D& Position, EPiece Piece)
 	{
 		//while x < 6 && empty
 		Position[0] ++;
+		// if white spawn, if black add to array for randmove
 		SpawnMovTile(Position)
 		if (Position[1] == 1)
 		{
@@ -96,6 +97,19 @@ void AChess_GameMode::ShowMoves(const FVector2D& Position, EPiece Piece)
 			SpawnMovTile(FVector2D(Position[0], y);
 		}
 	}
+	if (Piece == EPiece::King)
+	{
+		//empty --> no while perche si puo muovere intorno, attenzione agli scacchi!!
+		SpawnMovTile(FVector2D(Position[0] +1, Position[1]);
+		SpawnMovTile(FVector2D(Position[0] +1, Position[1] +1);
+		SpawnMovTile(FVector2D(Position[0], Position[1] +1);
+		SpawnMovTile(FVector2D(Position[0] -1, Position[1] +1);
+		SpawnMovTile(FVector2D(Position[0] -1, Position[1]);
+		SpawnMovTile(FVector2D(Position[0] -1, Position[1] -1);
+		SpawnMovTile(FVector2D(Position[0], Position[1] -1);
+		SpawnMovTile(FVector2D(Position[0] +1, Position[1] -1);
+	}
+	
 }
 
 void AChess_GameMode::SpawnMovTile(const FVector2D& Position/*, EPiece Piece*/)
