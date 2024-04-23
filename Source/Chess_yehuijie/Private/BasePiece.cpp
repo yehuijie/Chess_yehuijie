@@ -54,7 +54,7 @@ EPieceStatus ABasePiece::GetPieceStatus()
 	return PieceStatus;
 }
 
-void ABasePiece::SetPieceColor(const EColor Color)
+void ABasePiece::SetPieceColor(const EPieceColor Color)
 {
 	PieceColor = Color;
 }
