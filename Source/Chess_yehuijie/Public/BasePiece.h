@@ -25,6 +25,13 @@ enum class EPieceStatus : uint8
 	NotClicked,
 };
 
+UENUM()
+enum class EColor : uinit8
+{
+        White,
+        Black,
+};
+
 UCLASS()
 class CHESS_YEHUIJIE_API ABasePiece : public AActor
 {
@@ -47,6 +54,10 @@ public:
 	void SetPieceStatus(const EPieceStatus Status);
 
 	EPieceStatus GetPieceStatus();
+
+        void SetPieceColor(const EColor Color);
+
+        EColor GetPieceColor();
 
 protected:
 	// Called when the game starts or when spawned
