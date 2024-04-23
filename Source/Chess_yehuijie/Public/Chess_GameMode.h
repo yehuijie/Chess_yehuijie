@@ -97,7 +97,9 @@ public:
 	// called at the start of the game
 	void ChoosePlayerAndStartGame();
 
-	void ShowMoves(const FVector2D& Position, EPiece Piece);
+        void ShowMoves();
+
+	void SpawnMovTile(const FVector2D& Position, EPiece Piece);
 
 	void DestroyMoveTiles();
 
