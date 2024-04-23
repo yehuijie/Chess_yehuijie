@@ -28,7 +28,10 @@ public:
 	ABasePiece();
 
 	// set the (x, y) position
-	void SetGridPosition(const double InX, const double InY);
+	void SetBoardPosition(const double InX, const double InY);
+
+	// get the (x, y) position
+	FVector2D GetBoardPosition();
 
 	void SetPiece(const EPiece PieceType);
 
@@ -46,7 +49,7 @@ protected:
 
 	// (x, y) position of the tile
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	FVector2D PieceGridPosition;
+	FVector2D BoardPosition;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EPiece Piece;

@@ -164,7 +164,11 @@ public:
 	// Called when an instance of this class is placed (in editor) or spawned
 	virtual void OnConstruction(const FTransform& Transform) override;
 
+	// return a relative position given (x,y) position (moved from protected to public)
+	FVector GetRelativeLocationByXYPosition(const int32 InX, const int32 InY) const;
 	
+	// return (x,y) position given a relative position
+	FVector2D GetXYPositionByRelativeLocation(const FVector& Location) const;
 
 	
 protected:
@@ -210,14 +214,9 @@ protected:
 	// return the array of tile pointers
 	TArray<ATile*>& GetTileArray();
 
-	// return a relative position given (x,y) position (moved from protected to public)
-	FVector GetRelativeLocationByXYPosition(const int32 InX, const int32 InY) const;
+	
 
-	//FVector GetRelativePawnLocationByXYPosition(const int32 InX, const int32 InY) const;
-
-	// return (x,y) position given a relative position
-	FVector2D GetXYPositionByRelativeLocation(const FVector& Location) const;
-
+	
 	// check if a position is a win position
 	//bool IsWinPosition(const FVector2D Position) const;
 

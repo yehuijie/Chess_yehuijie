@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Chess_GameInstance.h"
+#include "Chess_GameMode.h"
 #include "Chess_PlayerInterface.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"

@@ -19,14 +19,19 @@ ABasePiece::ABasePiece()
 	SetRootComponent(Scene);
 	StaticMeshComponent->SetupAttachment(Scene);
 
-	PieceGridPosition = FVector2D(0, 0);
+	BoardPosition = FVector2D(0, 0);
 	Piece = EPiece::None;
 
 }
 
-void ABasePiece::SetGridPosition(const double InX, const double InY)
+void ABasePiece::SetBoardPosition(const double InX, const double InY)
 {
-	PieceGridPosition.Set(InX, InY);
+	BoardPosition.Set(InX, InY);
+}
+
+FVector2D ABasePiece::GetBoardPosition()
+{
+	return BoardPosition;
 }
 
 void ABasePiece::SetPiece(const EPiece PieceType)

@@ -63,6 +63,22 @@ void AChess_GameMode::ChoosePlayerAndStartGame()
 	Players[CurrentPlayer]->OnTurn();
 }
 
+void AChess_GameMode::ShowMoves(const FVector2D& Position, EPiece Piece)
+{
+	if (Piece == EPiece::Pawn)
+	{
+		int32 x = Position[0] + 1;
+		int32 y = Position[1];
+		//FVector2D XYPos = Position;
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("x=%f,y=%f"), XYPos[0], XYPos[1]));
+		
+		FVector Location = GField->GetRelativeLocationByXYPosition(x, y) + FVector(0, 0, -5);
+		ATile* Obj = GetWorld()->SpawnActor<ATile>(TileClassYellow, Location, FRotator::ZeroRotator);
+		MoveTileArray.Add(Obj);
+		MoveTileMap.Add(FVector2D(x, y), Obj);
+	}
+}
+
 /*void AChess_GameMode::SetCellSign(const int32 PlayerNumber, const FVector& SpawnPosition)
 {
 	if (IsGameOver || PlayerNumber != CurrentPlayer)

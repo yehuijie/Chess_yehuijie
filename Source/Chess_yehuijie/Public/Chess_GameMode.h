@@ -5,8 +5,8 @@
 #include "CoreMinimal.h"
 #include "Chess_PlayerInterface.h"
 #include "GameField.h"
-#include "GameFramework/GameModeBase.h"// quale dei due?
-//#include "GameFramework/GameMode.h"
+#include "BasePiece.h"
+#include "GameFramework/GameModeBase.h"
 #include "Chess_GameMode.generated.h"
 
 class AActor;
@@ -40,6 +40,18 @@ public:
 	// reference to a GameField object
 	UPROPERTY(VisibleAnywhere)
 	AGameField* GField;
+
+	// keeps track of tiles
+	UPROPERTY(Transient)
+	TArray<ATile*> MoveTileArray;
+
+	//given a position returns a tile
+	UPROPERTY(Transient)
+	TMap<FVector2D, ATile*> MoveTileMap;
+
+	// TSubclassOf template class that provides UClass type safety
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ATile> TileClassYellow;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AActor> WPawnActor;
@@ -85,6 +97,7 @@ public:
 	// called at the start of the game
 	void ChoosePlayerAndStartGame();
 
+	void ShowMoves(const FVector2D& Position, EPiece Piece);
 	// set the cell sign and the position --> move the piece?
 	//void SetCellSign(const int32 PlayerNumber, const FVector& SpawnPosition);
 

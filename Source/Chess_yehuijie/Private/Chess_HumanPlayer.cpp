@@ -79,10 +79,13 @@ void AChess_HumanPlayer::OnClick()
 	{
 		if (ABasePiece* CurrPiece = Cast<ABasePiece>(Hit.GetActor()))
 		{
-			if (CurrPiece->GetPiece() == EPiece::Pawn)
+			EPiece CurrPieceType = CurrPiece->GetPiece();
+			FVector2D CurrPiecePosition = CurrPiece->GetBoardPosition();
+			if (CurrPiece->IsA(AWhitePiece::StaticClass()) && CurrPieceType == EPiece::Pawn)
 			{
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("pawn"));
-
+				AChess_GameMode* GameMode = Cast<AChess_GameMode>(GetWorld()->GetAuthGameMode());
+				GameMode->ShowMoves(CurrPiecePosition, CurrPieceType);
 			}
 
 				

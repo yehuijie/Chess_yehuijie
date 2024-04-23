@@ -122,7 +122,7 @@ void AGameField::GenerateWPawns()
 		const float PawnScale = TileSize / 110;
 		Obj->SetActorScale3D(FVector(PawnScale, PawnScale, 0.2));
 		Obj->SetPiece(EPiece::Pawn);
-		//Obj->SetGridPosition(x, y);
+		Obj->SetBoardPosition(x, y);
 		WPawnArray.Add(Obj);
 		WPawnMap.Add(FVector2D(x, y), Obj);
 	}
@@ -138,7 +138,7 @@ void AGameField::GenerateWKing()
 	const float KingScale = TileSize / 110;
 	Obj->SetActorScale3D(FVector(KingScale, KingScale, 0.2));
 	Obj->SetPiece(EPiece::King);
-	//Obj->SetGridPosition(x, y);
+	Obj->SetBoardPosition(x, y);
 	WKingArray.Add(Obj);
 	WKingMap.Add(FVector2D(x, y), Obj);
 }
@@ -153,7 +153,7 @@ void AGameField::GenerateWQueen()
 	const float QueenScale = TileSize / 110;
 	Obj->SetActorScale3D(FVector(QueenScale, QueenScale, 0.2));
 	Obj->SetPiece(EPiece::Queen);
-	//Obj->SetGridPosition(x, y);
+	Obj->SetBoardPosition(x, y);
 	WQueenArray.Add(Obj);
 	WQueenMap.Add(FVector2D(x, y), Obj);
 }
@@ -169,7 +169,7 @@ void AGameField::GenerateWBishops()
 	const float BishopScale = TileSize / 110;	
 	Obj->SetActorScale3D(FVector(BishopScale, BishopScale, 0.2));
 	Obj->SetPiece(EPiece::Bishop);
-	//Obj->SetGridPosition(x, y);	
+	Obj->SetBoardPosition(x, leftY);
 	WBishopArray.Add(Obj);
 	WBishopMap.Add(FVector2D(x, leftY), Obj);
 
@@ -177,7 +177,7 @@ void AGameField::GenerateWBishops()
 	AWhitePiece* Obj1 = GetWorld()->SpawnActor<AWhitePiece>(WBishopActor, Location1, FRotator(0, 90, 0));
 	Obj1->SetActorScale3D(FVector(BishopScale, BishopScale, 0.2));
 	Obj1->SetPiece(EPiece::Bishop);
-	//Obj->SetGridPosition(x, y);
+	Obj->SetBoardPosition(x, rightY);
 	WBishopArray.Add(Obj1);
 	WBishopMap.Add(FVector2D(x, rightY), Obj1);
 }
@@ -193,7 +193,7 @@ void AGameField::GenerateWKnights()
 	const float KnightScale = TileSize / 110;
 	Obj->SetActorScale3D(FVector(KnightScale, KnightScale, 0.2));
 	Obj->SetPiece(EPiece::Knight);
-	//Obj->SetGridPosition(x, y);
+	Obj->SetBoardPosition(x, leftY);
 	WKnightArray.Add(Obj);
 	WKnightMap.Add(FVector2D(x, leftY), Obj);
 
@@ -201,7 +201,7 @@ void AGameField::GenerateWKnights()
 	AWhitePiece* Obj1 = GetWorld()->SpawnActor<AWhitePiece>(WKnightActor, Location1, FRotator(0, 90, 0));
 	Obj1->SetActorScale3D(FVector(KnightScale, KnightScale, 0.2));
 	Obj1->SetPiece(EPiece::Knight);
-	//Obj->SetGridPosition(x, y);
+	Obj->SetBoardPosition(x, rightY);
 	WKnightArray.Add(Obj1);
 	WKnightMap.Add(FVector2D(x, rightY), Obj1);
 
@@ -218,7 +218,7 @@ void AGameField::GenerateWRooks()
 	const float RookScale = TileSize / 110;
 	Obj->SetActorScale3D(FVector(RookScale, RookScale, 0.2));
 	Obj->SetPiece(EPiece::Rook);
-	//Obj->SetGridPosition(x, y);
+	Obj->SetBoardPosition(x, leftY);
 	WRookArray.Add(Obj);
 	WRookMap.Add(FVector2D(x, leftY), Obj);
 
@@ -226,7 +226,7 @@ void AGameField::GenerateWRooks()
     AWhitePiece* Obj1 = GetWorld()->SpawnActor<AWhitePiece>(WRookActor, Location1, FRotator(0, 90, 0));
 	Obj1->SetActorScale3D(FVector(RookScale, RookScale, 0.2));
 	Obj1->SetPiece(EPiece::Rook);
-	//Obj->SetGridPosition(x, y);
+	Obj->SetBoardPosition(x, rightY);
 	WRookArray.Add(Obj1);
 	WRookMap.Add(FVector2D(x, rightY), Obj1);
 }
@@ -241,7 +241,7 @@ void AGameField::GenerateBPawns()
 		const float PawnScale = TileSize / 110;
 		Obj->SetActorScale3D(FVector(PawnScale, PawnScale, 0.2));
 		Obj->SetPiece(EPiece::Pawn);
-		//Obj->SetGridPosition(x, y);
+		Obj->SetBoardPosition(x, y);
 		BPawnArray.Add(Obj);
 		BPawnMap.Add(FVector2D(x, y), Obj);
 	}
@@ -257,7 +257,7 @@ void AGameField::GenerateBKing()
 	const float KingScale = TileSize / 110;
 	Obj->SetActorScale3D(FVector(KingScale, KingScale, 0.2));
 	Obj->SetPiece(EPiece::King);
-	//Obj->SetGridPosition(x, y);
+	Obj->SetBoardPosition(x, y);
 	BKingArray.Add(Obj);
 	BKingMap.Add(FVector2D(x, y), Obj);
 
@@ -273,7 +273,7 @@ void AGameField::GenerateBQueen()
 	const float QueenScale = TileSize / 110;
     Obj->SetActorScale3D(FVector(QueenScale, QueenScale, 0.2));
 	Obj->SetPiece(EPiece::Queen);
-	//Obj->SetGridPosition(x, y);	
+	Obj->SetBoardPosition(x, y);
 	BQueenArray.Add(Obj);
 	BQueenMap.Add(FVector2D(x, y), Obj);
 
@@ -289,7 +289,7 @@ void AGameField::GenerateBBishops()
 	ABlackPiece* Obj = GetWorld()->SpawnActor<ABlackPiece>(BBishopActor, Location, FRotator(0, -90, 0));
 	const float BishopScale = TileSize / 110;
 	Obj->SetPiece(EPiece::Bishop);
-	//Obj->SetGridPosition(x, y);
+	Obj->SetBoardPosition(x, leftY);
 	BBishopArray.Add(Obj);
 	BBishopMap.Add(FVector2D(x, leftY), Obj);
 
@@ -297,7 +297,7 @@ void AGameField::GenerateBBishops()
 	ABlackPiece* Obj1 = GetWorld()->SpawnActor<ABlackPiece>(BBishopActor, Location1, FRotator(0, -90, 0));
 	Obj1->SetActorScale3D(FVector(BishopScale, BishopScale, 0.2));
 	Obj1->SetPiece(EPiece::Bishop);
-	//Obj->SetGridPosition(x, y);
+	Obj->SetBoardPosition(x, rightY);
 	BBishopArray.Add(Obj1);
 	BBishopMap.Add(FVector2D(x, rightY), Obj1);
 }
@@ -313,7 +313,7 @@ void AGameField::GenerateBKnights()
 	const float KnightScale = TileSize / 110;
 	Obj->SetActorScale3D(FVector(KnightScale, KnightScale, 0.2));
 	Obj->SetPiece(EPiece::Knight);
-	//Obj->SetGridPosition(x, y);
+	Obj->SetBoardPosition(x, leftY);
 	BKnightArray.Add(Obj);
 	BKnightMap.Add(FVector2D(x, leftY), Obj);
 
@@ -321,7 +321,7 @@ void AGameField::GenerateBKnights()
 	ABlackPiece* Obj1 = GetWorld()->SpawnActor<ABlackPiece>(BKnightActor, Location1, FRotator(0, -90, 0));
 	Obj1->SetActorScale3D(FVector(KnightScale, KnightScale, 0.2));
 	Obj1->SetPiece(EPiece::Knight);
-	//Obj->SetGridPosition(x, y);
+	Obj->SetBoardPosition(x, rightY);
 	BKnightArray.Add(Obj1);
 	BKnightMap.Add(FVector2D(x, rightY), Obj1);
 
@@ -338,7 +338,7 @@ void AGameField::GenerateBRooks()
 	const float RookScale = TileSize / 110;
 	Obj->SetActorScale3D(FVector(RookScale, RookScale, 0.2));
 	Obj->SetPiece(EPiece::Rook);
-	//Obj->SetGridPosition(x, y);
+	Obj->SetBoardPosition(x, leftY);
 	BRookArray.Add(Obj);
 	BRookMap.Add(FVector2D(x, leftY), Obj);
 
@@ -346,7 +346,7 @@ void AGameField::GenerateBRooks()
 	ABlackPiece* Obj1 = GetWorld()->SpawnActor<ABlackPiece>(BRookActor, Location1, FRotator(0, -90, 0));
 	Obj1->SetActorScale3D(FVector(RookScale, RookScale, 0.2));
 	Obj1->SetPiece(EPiece::Rook);
-	//Obj->SetGridPosition(x, y);
+	Obj->SetBoardPosition(x, rightY);
 	BRookArray.Add(Obj1);
 	BRookMap.Add(FVector2D(x, rightY), Obj1);
 
@@ -377,7 +377,7 @@ FVector2D AGameField::GetXYPositionByRelativeLocation(const FVector& Location) c
 {
 	const double x = Location[0] / (TileSize * NormalizedCellPadding);
 	const double y = Location[1] / (TileSize * NormalizedCellPadding);
-	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("x=%f,y=%f"), x, y));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("x=%f,y=%f"), x, y));
 	return FVector2D(x, y);
 }
 
