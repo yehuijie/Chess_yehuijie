@@ -18,6 +18,13 @@ enum class EPiece : uint8
 	None,
 };
 
+UENUM()
+enum class EPieceStatus : uint8
+{
+	Clicked,
+	NotClicked,
+};
+
 UCLASS()
 class CHESS_YEHUIJIE_API ABasePiece : public AActor
 {
@@ -37,6 +44,10 @@ public:
 
 	EPiece GetPiece();
 
+	void SetPieceStatus(const EPieceStatus Status);
+
+	EPieceStatus GetPieceStatus();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -53,6 +64,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EPiece Piece;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	EPieceStatus PieceStatus;
 
 public:
 	// Called every frame

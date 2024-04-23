@@ -122,6 +122,7 @@ void AGameField::GenerateWPawns()
 		const float PawnScale = TileSize / 110;
 		Obj->SetActorScale3D(FVector(PawnScale, PawnScale, 0.2));
 		Obj->SetPiece(EPiece::Pawn);
+		Obj->SetPieceStatus(EPieceStatus::NotClicked);
 		Obj->SetBoardPosition(x, y);
 		WPawnArray.Add(Obj);
 		WPawnMap.Add(FVector2D(x, y), Obj);

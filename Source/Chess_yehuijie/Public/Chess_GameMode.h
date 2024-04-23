@@ -98,6 +98,14 @@ public:
 	void ChoosePlayerAndStartGame();
 
 	void ShowMoves(const FVector2D& Position, EPiece Piece);
+
+	void DestroyMoveTiles();
+
+	void DestroyClickedPiece();
+
+	void SpawnPiece(const FVector2D& Position);
+
+	//void MovePiece(const FVector2D& Position, EPiece Piece);
 	// set the cell sign and the position --> move the piece?
 	//void SetCellSign(const int32 PlayerNumber, const FVector& SpawnPosition);
 

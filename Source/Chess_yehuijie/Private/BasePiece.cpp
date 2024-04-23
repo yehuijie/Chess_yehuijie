@@ -44,6 +44,16 @@ EPiece ABasePiece::GetPiece()
 	return Piece;
 }
 
+void ABasePiece::SetPieceStatus(const EPieceStatus Status)
+{
+	PieceStatus = Status;
+}
+
+EPieceStatus ABasePiece::GetPieceStatus()
+{
+	return PieceStatus;
+}
+
 // Called when the game starts or when spawned
 void ABasePiece::BeginPlay()
 {

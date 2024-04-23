@@ -76,8 +76,53 @@ void AChess_GameMode::ShowMoves(const FVector2D& Position, EPiece Piece)
 		ATile* Obj = GetWorld()->SpawnActor<ATile>(TileClassYellow, Location, FRotator::ZeroRotator);
 		MoveTileArray.Add(Obj);
 		MoveTileMap.Add(FVector2D(x, y), Obj);
+		Obj->SetTileStatus(0 , ETileStatus::MOVEABLE);
 	}
 }
+
+void AChess_GameMode::DestroyMoveTiles()
+{
+	for (ATile* Obj : MoveTileArray)
+	{
+		Obj->Destroy();
+	}
+}
+
+void AChess_GameMode::DestroyClickedPiece()
+{
+	for (AWhitePiece* Obj : GField->WPawnArray)
+	{
+		if (Obj->GetPieceStatus() == EPieceStatus::Clicked)
+		{
+			Obj->Destroy();
+			GField->WPawnArray.Remove(Obj);
+			GField->WPawnMap.Remove(Obj->GetBoardPosition());
+			break;
+		}
+	}
+}
+
+void AChess_GameMode::SpawnPiece(const FVector2D& Position)
+{
+	int32 x = Position[0];
+	int32 y = Position[1];
+	FVector Location = GField->GetRelativeLocationByXYPosition(x, y) + FVector(0, 0, 5);
+	AWhitePiece* Obj = GetWorld()->SpawnActor<AWhitePiece>(WPawnActor, Location, FRotator(0, 90, 0));
+	const float PawnScale = GField->TileSize / 110;
+	Obj->SetActorScale3D(FVector(PawnScale, PawnScale, 0.2));
+	Obj->SetPiece(EPiece::Pawn);
+	Obj->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj->SetBoardPosition(x, y);
+	GField->WPawnArray.Add(Obj);
+	GField->WPawnMap.Add(FVector2D(x, y), Obj);
+}
+
+/*void AChess_GameMode::MovePiece(const FVector2D& Position, EPiece Piece)
+{
+	DestroyMoveTiles();
+	DestroyClickedPiece();
+	SpawnPiece(Position, Piece);
+}*/
 
 /*void AChess_GameMode::SetCellSign(const int32 PlayerNumber, const FVector& SpawnPosition)
 {

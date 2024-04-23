@@ -32,6 +32,10 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	bool FirstClick = true;
+
+	bool SecondClick = false;
+
 	// keeps track of turn
 	bool IsMyTurn = false;
 

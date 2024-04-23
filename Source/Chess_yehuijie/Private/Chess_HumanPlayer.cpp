@@ -75,7 +75,9 @@ void AChess_HumanPlayer::OnClick()
 	FHitResult Hit = FHitResult(ForceInit);
 	// GetHitResultUnderCursor function sends a ray from the mouse position and gives the corresponding hit results
 	GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(ECollisionChannel::ECC_Pawn, true, Hit);
-	if (Hit.bBlockingHit /* && IsMyTurn*/)
+	AChess_GameMode* GameMode = Cast<AChess_GameMode>(GetWorld()->GetAuthGameMode());
+	 
+	if (Hit.bBlockingHit && FirstClick && !SecondClick)
 	{
 		if (ABasePiece* CurrPiece = Cast<ABasePiece>(Hit.GetActor()))
 		{
@@ -84,8 +86,10 @@ void AChess_HumanPlayer::OnClick()
 			if (CurrPiece->IsA(AWhitePiece::StaticClass()) && CurrPieceType == EPiece::Pawn)
 			{
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("pawn"));
-				AChess_GameMode* GameMode = Cast<AChess_GameMode>(GetWorld()->GetAuthGameMode());
+				CurrPiece->SetPieceStatus(EPieceStatus::Clicked);
 				GameMode->ShowMoves(CurrPiecePosition, CurrPieceType);
+				FirstClick = false;
+				SecondClick = true;
 			}
 
 				
@@ -103,6 +107,25 @@ void AChess_HumanPlayer::OnClick()
 				//IsMyTurn = false;
 			//}
 		}
+	}
+	
+
+	if (Hit.bBlockingHit && SecondClick && !FirstClick)
+	{
+		if (ATile* CurrTile = Cast<ATile>(Hit.GetActor()))
+		{
+			if (CurrTile->GetTileStatus() == ETileStatus::MOVEABLE)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("second"));
+				GameMode->DestroyMoveTiles();
+				GameMode->DestroyClickedPiece();
+				FVector2D NewPiecePosition = CurrTile->GetGridPosition();
+				GameMode->SpawnPiece(NewPiecePosition);
+				SecondClick = false;
+				FirstClick = true;
+			}
+		}
+		
 	}
 }
 
