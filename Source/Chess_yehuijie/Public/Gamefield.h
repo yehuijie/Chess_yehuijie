@@ -57,12 +57,12 @@ public:
 
 	// keeps track of pawns
 	UPROPERTY(Transient)
-	TArray<AWhitePiece*> WPawnArray;
+	TArray<AWhitePiece*> WPiecesArray;
 	UPROPERTY(Transient)
-	TMap<FVector2D, AWhitePiece*> WPawnMap;
+	TMap<FVector2D, AWhitePiece*> WPiecesMap;
 
 	// keeps track of pawns
-	UPROPERTY(Transient)
+	/*UPROPERTY(Transient)
 	TArray<AWhitePiece*> WKingArray;
 	UPROPERTY(Transient)
 	TMap<FVector2D, AWhitePiece*> WKingMap;
@@ -85,14 +85,14 @@ public:
 	UPROPERTY(Transient)
 	TArray<AWhitePiece*> WRookArray;
 	UPROPERTY(Transient)
-	TMap<FVector2D, AWhitePiece*> WRookMap;
+	TMap<FVector2D, AWhitePiece*> WRookMap;*/
 
 	UPROPERTY(Transient)
-	TArray<ABlackPiece*> BPawnArray;
+	TArray<ABlackPiece*> BPiecesArray;
 	UPROPERTY(Transient)
-	TMap<FVector2D, ABlackPiece*> BPawnMap;
+	TMap<FVector2D, ABlackPiece*> BPiecesMap;
 	
-	UPROPERTY(Transient)
+	/*UPROPERTY(Transient)
 	TArray<ABlackPiece*> BKingArray;
 	UPROPERTY(Transient)	
 	TMap<FVector2D, ABlackPiece*> BKingMap;
@@ -115,7 +115,7 @@ public:
 	UPROPERTY(Transient)
 	TArray<ABlackPiece*> BRookArray;
 	UPROPERTY(Transient)
-	TMap<FVector2D, ABlackPiece*> BRookMap;
+	TMap<FVector2D, ABlackPiece*> BRookMap;*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AWhitePiece> WPawnActor;
