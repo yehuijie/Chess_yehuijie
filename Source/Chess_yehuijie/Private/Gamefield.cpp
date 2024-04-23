@@ -118,11 +118,12 @@ void AGameField::GenerateWPawns()
 	for (int32 y = 0; y < Size; y++) 
 	{
 		FVector Location = AGameField::GetRelativeLocationByXYPosition(x, y) + FVector(0, 0, 10);
-		AWhitePiece* Obj = GetWorld()->SpawnActor<AWhitePiece>(WPawnActor, Location, FRotator(0, 90, 0));
+		ABasePiece* Obj = GetWorld()->SpawnActor<ABasePiece>(WPawnActor, Location, FRotator(0, 90, 0));
 		const float PawnScale = TileSize / 110;
 		Obj->SetActorScale3D(FVector(PawnScale, PawnScale, 0.2));
 		Obj->SetPiece(EPiece::Pawn);
 		Obj->SetPieceStatus(EPieceStatus::NotClicked);
+		Obj->SetPieceColor(EPieceColor::White);
 		Obj->SetBoardPosition(x, y);
 		WPawnArray.Add(Obj);
 		WPawnMap.Add(FVector2D(x, y), Obj);
@@ -135,10 +136,12 @@ void AGameField::GenerateWKing()
 	int32 y = 4;
 
 	FVector Location = AGameField::GetRelativeLocationByXYPosition(x, y) + FVector(0, 0, 10);
-	AWhitePiece* Obj = GetWorld()->SpawnActor<AWhitePiece>(WKingActor, Location, FRotator(0, 90, 0));
+	ABasePiece* Obj = GetWorld()->SpawnActor<ABasePiece>(WKingActor, Location, FRotator(0, 90, 0));
 	const float KingScale = TileSize / 110;
 	Obj->SetActorScale3D(FVector(KingScale, KingScale, 0.2));
 	Obj->SetPiece(EPiece::King);
+	Obj->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj->SetPieceColor(EPieceColor::White);
 	Obj->SetBoardPosition(x, y);
 	WKingArray.Add(Obj);
 	WKingMap.Add(FVector2D(x, y), Obj);
@@ -150,10 +153,12 @@ void AGameField::GenerateWQueen()
 	int32 y = 3;
 
 	FVector Location = AGameField::GetRelativeLocationByXYPosition(x, y) + FVector(0, 0, 10);
-	AWhitePiece* Obj = GetWorld()->SpawnActor<AWhitePiece>(WQueenActor, Location, FRotator(0, 90, 0));
+	ABasePiece* Obj = GetWorld()->SpawnActor<ABasePiece>(WQueenActor, Location, FRotator(0, 90, 0));
 	const float QueenScale = TileSize / 110;
 	Obj->SetActorScale3D(FVector(QueenScale, QueenScale, 0.2));
 	Obj->SetPiece(EPiece::Queen);
+	Obj->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj->SetPieceColor(EPieceColor::White);
 	Obj->SetBoardPosition(x, y);
 	WQueenArray.Add(Obj);
 	WQueenMap.Add(FVector2D(x, y), Obj);
@@ -166,18 +171,22 @@ void AGameField::GenerateWBishops()
 	int32 rightY = 5;
 
 	FVector Location = AGameField::GetRelativeLocationByXYPosition(x, leftY) + FVector(0, 0, 10);
-	AWhitePiece* Obj = GetWorld()->SpawnActor<AWhitePiece>(WBishopActor, Location, FRotator(0, 90, 0));
+	ABasePiece* Obj = GetWorld()->SpawnActor<ABasePiece>(WBishopActor, Location, FRotator(0, 90, 0));
 	const float BishopScale = TileSize / 110;	
 	Obj->SetActorScale3D(FVector(BishopScale, BishopScale, 0.2));
 	Obj->SetPiece(EPiece::Bishop);
+	Obj->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj->SetPieceColor(EPieceColor::White);
 	Obj->SetBoardPosition(x, leftY);
 	WBishopArray.Add(Obj);
 	WBishopMap.Add(FVector2D(x, leftY), Obj);
 
 	FVector Location1 = AGameField::GetRelativeLocationByXYPosition(x, rightY) + FVector(0, 0, 10);
-	AWhitePiece* Obj1 = GetWorld()->SpawnActor<AWhitePiece>(WBishopActor, Location1, FRotator(0, 90, 0));
+	ABasePiece* Obj1 = GetWorld()->SpawnActor<ABasePiece>(WBishopActor, Location1, FRotator(0, 90, 0));
 	Obj1->SetActorScale3D(FVector(BishopScale, BishopScale, 0.2));
 	Obj1->SetPiece(EPiece::Bishop);
+	Obj->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj->SetPieceColor(EPieceColor::White);
 	Obj->SetBoardPosition(x, rightY);
 	WBishopArray.Add(Obj1);
 	WBishopMap.Add(FVector2D(x, rightY), Obj1);
@@ -190,18 +199,22 @@ void AGameField::GenerateWKnights()
 	int32 rightY = 6;
 
 	FVector Location = AGameField::GetRelativeLocationByXYPosition(x, leftY) + FVector(0, 0, 10);
-	AWhitePiece* Obj = GetWorld()->SpawnActor<AWhitePiece>(WKnightActor, Location, FRotator(0, 90, 0));
+	ABasePiece* Obj = GetWorld()->SpawnActor<ABasePiece>(WKnightActor, Location, FRotator(0, 90, 0));
 	const float KnightScale = TileSize / 110;
 	Obj->SetActorScale3D(FVector(KnightScale, KnightScale, 0.2));
 	Obj->SetPiece(EPiece::Knight);
+	Obj->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj->SetPieceColor(EPieceColor::White);
 	Obj->SetBoardPosition(x, leftY);
 	WKnightArray.Add(Obj);
 	WKnightMap.Add(FVector2D(x, leftY), Obj);
 
 	FVector Location1 = AGameField::GetRelativeLocationByXYPosition(x, rightY) + FVector(0, 0, 10);
-	AWhitePiece* Obj1 = GetWorld()->SpawnActor<AWhitePiece>(WKnightActor, Location1, FRotator(0, 90, 0));
+	ABasePiece* Obj1 = GetWorld()->SpawnActor<ABasePiece>(WKnightActor, Location1, FRotator(0, 90, 0));
 	Obj1->SetActorScale3D(FVector(KnightScale, KnightScale, 0.2));
 	Obj1->SetPiece(EPiece::Knight);
+	Obj->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj->SetPieceColor(EPieceColor::White);
 	Obj->SetBoardPosition(x, rightY);
 	WKnightArray.Add(Obj1);
 	WKnightMap.Add(FVector2D(x, rightY), Obj1);
@@ -215,18 +228,22 @@ void AGameField::GenerateWRooks()
 	int32 rightY = 7;
 
 	FVector Location = AGameField::GetRelativeLocationByXYPosition(x, leftY) + FVector(0, 0, 10);
-    AWhitePiece* Obj = GetWorld()->SpawnActor<AWhitePiece>(WRookActor, Location, FRotator(0, 90, 0));
+    ABasePiece* Obj = GetWorld()->SpawnActor<ABasePiece>(WRookActor, Location, FRotator(0, 90, 0));
 	const float RookScale = TileSize / 110;
 	Obj->SetActorScale3D(FVector(RookScale, RookScale, 0.2));
 	Obj->SetPiece(EPiece::Rook);
+	Obj->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj->SetPieceColor(EPieceColor::White);
 	Obj->SetBoardPosition(x, leftY);
 	WRookArray.Add(Obj);
 	WRookMap.Add(FVector2D(x, leftY), Obj);
 
 	FVector Location1 = AGameField::GetRelativeLocationByXYPosition(x, rightY) + FVector(0, 0, 10);
-    AWhitePiece* Obj1 = GetWorld()->SpawnActor<AWhitePiece>(WRookActor, Location1, FRotator(0, 90, 0));
+        ABasePiece* Obj1 = GetWorld()->SpawnActor<ABasePiece>(WRookActor, Location1, FRotator(0, 90, 0));
 	Obj1->SetActorScale3D(FVector(RookScale, RookScale, 0.2));
 	Obj1->SetPiece(EPiece::Rook);
+	Obj->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj->SetPieceColor(EPieceColor::White);
 	Obj->SetBoardPosition(x, rightY);
 	WRookArray.Add(Obj1);
 	WRookMap.Add(FVector2D(x, rightY), Obj1);
@@ -238,10 +255,12 @@ void AGameField::GenerateBPawns()
 	for (int32 y = 0; y < Size; y++)
 	{
 		FVector Location = AGameField::GetRelativeLocationByXYPosition(x, y) + FVector(0, 0, 10);
-		ABlackPiece* Obj = GetWorld()->SpawnActor<ABlackPiece>(BPawnActor, Location, FRotator(0, -90, 0));
+		ABasePiece* Obj = GetWorld()->SpawnActor<ABasePiece>(BPawnActor, Location, FRotator(0, -90, 0));
 		const float PawnScale = TileSize / 110;
 		Obj->SetActorScale3D(FVector(PawnScale, PawnScale, 0.2));
 		Obj->SetPiece(EPiece::Pawn);
+		Obj->SetPieceStatus(EPieceStatus::NotClicked);
+	        Obj->SetPieceColor(EPieceColor::Black);
 		Obj->SetBoardPosition(x, y);
 		BPawnArray.Add(Obj);
 		BPawnMap.Add(FVector2D(x, y), Obj);
@@ -254,10 +273,12 @@ void AGameField::GenerateBKing()
 	int32 y = 4;
 
 	FVector Location = AGameField::GetRelativeLocationByXYPosition(x, y) + FVector(0, 0, 10);
-	ABlackPiece* Obj = GetWorld()->SpawnActor<ABlackPiece>(BKingActor, Location, FRotator(0, -90, 0));
+	ABasePiece* Obj = GetWorld()->SpawnActor<ABasePiece>(BKingActor, Location, FRotator(0, -90, 0));
 	const float KingScale = TileSize / 110;
 	Obj->SetActorScale3D(FVector(KingScale, KingScale, 0.2));
 	Obj->SetPiece(EPiece::King);
+	Obj->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj->SetPieceColor(EPieceColor::White);
 	Obj->SetBoardPosition(x, y);
 	BKingArray.Add(Obj);
 	BKingMap.Add(FVector2D(x, y), Obj);
@@ -270,10 +291,12 @@ void AGameField::GenerateBQueen()
 	int32 y = 3;
 
 	FVector Location = AGameField::GetRelativeLocationByXYPosition(x, y) + FVector(0, 0, 10);
-	ABlackPiece* Obj = GetWorld()->SpawnActor<ABlackPiece>(BQueenActor, Location, FRotator(0, -90, 0));
+	ABasePiece* Obj = GetWorld()->SpawnActor<ABasePiece>(BQueenActor, Location, FRotator(0, -90, 0));
 	const float QueenScale = TileSize / 110;
-    Obj->SetActorScale3D(FVector(QueenScale, QueenScale, 0.2));
+        Obj->SetActorScale3D(FVector(QueenScale, QueenScale, 0.2));
 	Obj->SetPiece(EPiece::Queen);
+	Obj->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj->SetPieceColor(EPieceColor::White);
 	Obj->SetBoardPosition(x, y);
 	BQueenArray.Add(Obj);
 	BQueenMap.Add(FVector2D(x, y), Obj);
@@ -287,17 +310,21 @@ void AGameField::GenerateBBishops()
 	int32 rightY = 5;
 
 	FVector Location = AGameField::GetRelativeLocationByXYPosition(x, leftY) + FVector(0, 0, 10);
-	ABlackPiece* Obj = GetWorld()->SpawnActor<ABlackPiece>(BBishopActor, Location, FRotator(0, -90, 0));
+	ABasePiece* Obj = GetWorld()->SpawnActor<ABasePiece>(BBishopActor, Location, FRotator(0, -90, 0));
 	const float BishopScale = TileSize / 110;
 	Obj->SetPiece(EPiece::Bishop);
+	Obj->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj->SetPieceColor(EPieceColor::White);
 	Obj->SetBoardPosition(x, leftY);
 	BBishopArray.Add(Obj);
 	BBishopMap.Add(FVector2D(x, leftY), Obj);
 
 	FVector Location1 = AGameField::GetRelativeLocationByXYPosition(x, rightY) + FVector(0, 0, 10);
-	ABlackPiece* Obj1 = GetWorld()->SpawnActor<ABlackPiece>(BBishopActor, Location1, FRotator(0, -90, 0));
+	ABasePiece* Obj1 = GetWorld()->SpawnActor<ABasePiece>(BBishopActor, Location1, FRotator(0, -90, 0));
 	Obj1->SetActorScale3D(FVector(BishopScale, BishopScale, 0.2));
 	Obj1->SetPiece(EPiece::Bishop);
+	Obj->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj->SetPieceColor(EPieceColor::White);
 	Obj->SetBoardPosition(x, rightY);
 	BBishopArray.Add(Obj1);
 	BBishopMap.Add(FVector2D(x, rightY), Obj1);
@@ -310,18 +337,22 @@ void AGameField::GenerateBKnights()
 	int32 rightY = 6;
 
 	FVector Location = AGameField::GetRelativeLocationByXYPosition(x, leftY) + FVector(0, 0, 10);
-	ABlackPiece* Obj = GetWorld()->SpawnActor<ABlackPiece>(BKnightActor, Location, FRotator(0, -90, 0));
+	ABasePiece* Obj = GetWorld()->SpawnActor<ABasePiece>(BKnightActor, Location, FRotator(0, -90, 0));
 	const float KnightScale = TileSize / 110;
 	Obj->SetActorScale3D(FVector(KnightScale, KnightScale, 0.2));
 	Obj->SetPiece(EPiece::Knight);
+	Obj->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj->SetPieceColor(EPieceColor::White);
 	Obj->SetBoardPosition(x, leftY);
 	BKnightArray.Add(Obj);
 	BKnightMap.Add(FVector2D(x, leftY), Obj);
 
 	FVector Location1 = AGameField::GetRelativeLocationByXYPosition(x, rightY) + FVector(0, 0, 10);
-	ABlackPiece* Obj1 = GetWorld()->SpawnActor<ABlackPiece>(BKnightActor, Location1, FRotator(0, -90, 0));
+	ABasePiece* Obj1 = GetWorld()->SpawnActor<ABasePiece>(BKnightActor, Location1, FRotator(0, -90, 0));
 	Obj1->SetActorScale3D(FVector(KnightScale, KnightScale, 0.2));
 	Obj1->SetPiece(EPiece::Knight);
+	Obj->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj->SetPieceColor(EPieceColor::White);
 	Obj->SetBoardPosition(x, rightY);
 	BKnightArray.Add(Obj1);
 	BKnightMap.Add(FVector2D(x, rightY), Obj1);
@@ -335,18 +366,22 @@ void AGameField::GenerateBRooks()
 	int32 rightY = 7;
 
 	FVector Location = AGameField::GetRelativeLocationByXYPosition(x, leftY) + FVector(0, 0, 10);
-	ABlackPiece* Obj = GetWorld()->SpawnActor<ABlackPiece>(BRookActor, Location, FRotator(0, -90, 0));
+	ABasePiece* Obj = GetWorld()->SpawnActor<ABasePiece>(BRookActor, Location, FRotator(0, -90, 0));
 	const float RookScale = TileSize / 110;
 	Obj->SetActorScale3D(FVector(RookScale, RookScale, 0.2));
 	Obj->SetPiece(EPiece::Rook);
+	Obj->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj->SetPieceColor(EPieceColor::White);
 	Obj->SetBoardPosition(x, leftY);
 	BRookArray.Add(Obj);
 	BRookMap.Add(FVector2D(x, leftY), Obj);
 
 	FVector Location1 = AGameField::GetRelativeLocationByXYPosition(x, rightY) + FVector(0, 0, 10);
-	ABlackPiece* Obj1 = GetWorld()->SpawnActor<ABlackPiece>(BRookActor, Location1, FRotator(0, -90, 0));
+	ABasePiece* Obj1 = GetWorld()->SpawnActor<ABasePiece>(BRookActor, Location1, FRotator(0, -90, 0));
 	Obj1->SetActorScale3D(FVector(RookScale, RookScale, 0.2));
 	Obj1->SetPiece(EPiece::Rook);
+	Obj->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj->SetPieceColor(EPieceColor::White);
 	Obj->SetBoardPosition(x, rightY);
 	BRookArray.Add(Obj1);
 	BRookMap.Add(FVector2D(x, rightY), Obj1);
