@@ -118,9 +118,9 @@ void AChess_HumanPlayer::OnClick()
 			{
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("second"));
 				GameMode->DestroyMoveTiles();
-				GameMode->DestroyClickedPiece();
+				//GameMode->DestroyClickedPiece();
 				FVector2D NewPiecePosition = CurrTile->GetGridPosition();
-				GameMode->SpawnPiece(NewPiecePosition);
+				//GameMode->SpawnPiece(NewPiecePosition);
 				SecondClick = false;
 				FirstClick = true;
 			}
