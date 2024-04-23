@@ -26,7 +26,7 @@ enum class EPieceStatus : uint8
 };
 
 UENUM()
-enum class EColor : uinit8
+enum class EPieceColor : uinit8
 {
         White,
         Black,
@@ -55,9 +55,9 @@ public:
 
 	EPieceStatus GetPieceStatus();
 
-        void SetPieceColor(const EColor Color);
+        void SetPieceColor(const EPieceColor Color);
 
-        EColor GetPieceColor();
+        EPieceColor GetPieceColor();
 
 protected:
 	// Called when the game starts or when spawned
