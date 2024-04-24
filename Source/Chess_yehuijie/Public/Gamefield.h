@@ -57,9 +57,9 @@ public:
 
 	// keeps track of pawns
 	UPROPERTY(Transient)
-	TArray<AWhitePiece*> WPiecesArray;
+	TArray<ABasePiece*> WPiecesArray;
 	UPROPERTY(Transient)
-	TMap<FVector2D, AWhitePiece*> WPiecesMap;
+	TMap<FVector2D, ABasePiece*> WPiecesMap;
 
 	// keeps track of pawns
 	/*UPROPERTY(Transient)
@@ -88,9 +88,9 @@ public:
 	TMap<FVector2D, AWhitePiece*> WRookMap;*/
 
 	UPROPERTY(Transient)
-	TArray<ABlackPiece*> BPiecesArray;
+	TArray<ABasePiece*> BPiecesArray;
 	UPROPERTY(Transient)
-	TMap<FVector2D, ABlackPiece*> BPiecesMap;
+	TMap<FVector2D, ABasePiece*> BPiecesMap;
 	
 	/*UPROPERTY(Transient)
 	TArray<ABlackPiece*> BKingArray;

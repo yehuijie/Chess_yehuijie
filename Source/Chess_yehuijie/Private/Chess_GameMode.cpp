@@ -68,13 +68,11 @@ void AChess_GameMode::ShowMoves(const FVector2D& Position, EPiece Piece)
 	if (Piece == EPiece::Pawn)
 	{
 		//while x < 6 && empty
-		Position[0] ++;
 		// if white spawn, if black add to array for randmove
-		SpawnMovTile(Position)
+		SpawnMovTile(FVector2D(Position[0] + 1, Position[1]));
 		if (Position[1] == 1)
 		{
-			Position[0] ++;
-		        SpawnMovTile(Position)
+			SpawnMovTile(FVector2D(Position[0] + 1, Position[1]));
 		}
 	}
 	if (Piece == EPiece::Rook)
@@ -82,32 +80,32 @@ void AChess_GameMode::ShowMoves(const FVector2D& Position, EPiece Piece)
 		//while empty
 		for (int32 x = Position[0]; x < GField->Size; x++)
 		{
-			SpawnMovTile(FVector2D(x, Position[1]);
+			SpawnMovTile(FVector2D(x, Position[1]));
 		}
 		for (int32 x = Position[0]; x > 0; x--)
 		{
-			SpawnMovTile(FVector2D(x, Position[1]);
+			SpawnMovTile(FVector2D(x, Position[1]));
 		}
 		for (int32 y = Position[1]; y < GField->Size; y++)
 		{
-			SpawnMovTile(FVector2D(Position[0], y);
+			SpawnMovTile(FVector2D(Position[0], y));
 		}
 		for (int32 y = Position[1]; y > 0; y--)
 		{
-			SpawnMovTile(FVector2D(Position[0], y);
+			SpawnMovTile(FVector2D(Position[0], y));
 		}
 	}
 	if (Piece == EPiece::King)
 	{
 		//empty --> no while perche si puo muovere intorno, attenzione agli scacchi!!
-		SpawnMovTile(FVector2D(Position[0] +1, Position[1]);
-		SpawnMovTile(FVector2D(Position[0] +1, Position[1] +1);
-		SpawnMovTile(FVector2D(Position[0], Position[1] +1);
-		SpawnMovTile(FVector2D(Position[0] -1, Position[1] +1);
-		SpawnMovTile(FVector2D(Position[0] -1, Position[1]);
-		SpawnMovTile(FVector2D(Position[0] -1, Position[1] -1);
-		SpawnMovTile(FVector2D(Position[0], Position[1] -1);
-		SpawnMovTile(FVector2D(Position[0] +1, Position[1] -1);
+		SpawnMovTile(FVector2D(Position[0] +1, Position[1]));
+		SpawnMovTile(FVector2D(Position[0] +1, Position[1] +1));
+		SpawnMovTile(FVector2D(Position[0], Position[1] +1));
+		SpawnMovTile(FVector2D(Position[0] -1, Position[1] +1));
+		SpawnMovTile(FVector2D(Position[0] -1, Position[1]));
+		SpawnMovTile(FVector2D(Position[0] -1, Position[1] -1));
+		SpawnMovTile(FVector2D(Position[0], Position[1] -1));
+		SpawnMovTile(FVector2D(Position[0] +1, Position[1] -1));
 	}
 	
 }
@@ -144,7 +142,7 @@ void AChess_GameMode::DestroyMoveTiles()
 	{
 		if (Obj->GetPieceStatus() == EPieceStatus::Clicked)
 		{
-			Obj->Destroy();
+			//Obj->Destroy();
 			GField->WPawnArray.Remove(Obj);
 			GField->WPawnMap.Remove(Obj->GetBoardPosition());
 			break;

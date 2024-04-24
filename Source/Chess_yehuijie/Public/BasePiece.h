@@ -26,7 +26,7 @@ enum class EPieceStatus : uint8
 };
 
 UENUM()
-enum class EPieceColor : uinit8
+enum class EPieceColor : uint8
 {
         White,
         Black,

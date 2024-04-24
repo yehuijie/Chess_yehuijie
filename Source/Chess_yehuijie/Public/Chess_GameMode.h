@@ -97,15 +97,15 @@ public:
 	// called at the start of the game
 	void ChoosePlayerAndStartGame();
 
-        void ShowMoves(const FVector2D& Position, EPiece Piece);
+    void ShowMoves(const FVector2D& Position, EPiece Piece);
 
 	void SpawnMovTile(const FVector2D& Position);
 
 	void DestroyMoveTiles();
 
-	void DestroyClickedPiece();
+	//void DestroyClickedPiece();
 
-	void SpawnPiece(const FVector2D& Position);
+	//void SpawnPiece(const FVector2D& Position);
 
 	//void MovePiece(const FVector2D& Position, EPiece Piece);
 	// set the cell sign and the position --> move the piece?
