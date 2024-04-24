@@ -55,9 +55,9 @@ public:
 
 	EPieceStatus GetPieceStatus();
 
-        void SetPieceColor(const EPieceColor Color);
+    void SetPieceColor(const EPieceColor Color);
 
-        EPieceColor GetPieceColor();
+    EPieceColor GetPieceColor();
 
 protected:
 	// Called when the game starts or when spawned
@@ -78,6 +78,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EPieceStatus PieceStatus;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	EPieceColor PieceColor;
 
 public:
 	// Called every frame

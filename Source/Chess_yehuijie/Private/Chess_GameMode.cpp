@@ -63,66 +63,66 @@ void AChess_GameMode::ChoosePlayerAndStartGame()
 	Players[CurrentPlayer]->OnTurn();
 }
 
-void AChess_GameMode::ShowMoves(const FVector2D& Position, EPiece Piece)
+void AChess_GameMode::ShowMoves(const FVector2D& PiecePosition, EPiece Piece)
 {
+
 	if (Piece == EPiece::Pawn)
 	{
 		//while x < 6 && empty
 		// if white spawn, if black add to array for randmove
-		SpawnMovTile(FVector2D(Position[0] + 1, Position[1]));
-		if (Position[1] == 1)
+		SpawnMovTile(FVector2D(PiecePosition[0] + 1, PiecePosition[1]));
+		if (PiecePosition[0] == 1)
 		{
-			SpawnMovTile(FVector2D(Position[0] + 1, Position[1]));
+			SpawnMovTile(FVector2D(PiecePosition[0] + 2, PiecePosition[1]));
 		}
 	}
 	if (Piece == EPiece::Rook)
 	{
 		//while empty
-		for (int32 x = Position[0]; x < GField->Size; x++)
+		for (int32 x = PiecePosition[0] + 1; x < GField->Size; x++)
 		{
-			SpawnMovTile(FVector2D(x, Position[1]));
+			SpawnMovTile(FVector2D(x, PiecePosition[1]));
 		}
-		for (int32 x = Position[0]; x > 0; x--)
+		for (int32 x = PiecePosition[0] - 1; x > 0; x--)
 		{
-			SpawnMovTile(FVector2D(x, Position[1]));
+			SpawnMovTile(FVector2D(x, PiecePosition[1]));
 		}
-		for (int32 y = Position[1]; y < GField->Size; y++)
+		for (int32 y = PiecePosition[1] + 1; y < GField->Size; y++)
 		{
-			SpawnMovTile(FVector2D(Position[0], y));
+			SpawnMovTile(FVector2D(PiecePosition[0], y));
 		}
-		for (int32 y = Position[1]; y > 0; y--)
+		for (int32 y = PiecePosition[1] - 1; y > 0; y--)
 		{
-			SpawnMovTile(FVector2D(Position[0], y));
+			SpawnMovTile(FVector2D(PiecePosition[0], y));
 		}
 	}
 	if (Piece == EPiece::King)
 	{
 		//empty --> no while perche si puo muovere intorno, attenzione agli scacchi!!
-		SpawnMovTile(FVector2D(Position[0] +1, Position[1]));
-		SpawnMovTile(FVector2D(Position[0] +1, Position[1] +1));
-		SpawnMovTile(FVector2D(Position[0], Position[1] +1));
-		SpawnMovTile(FVector2D(Position[0] -1, Position[1] +1));
-		SpawnMovTile(FVector2D(Position[0] -1, Position[1]));
-		SpawnMovTile(FVector2D(Position[0] -1, Position[1] -1));
-		SpawnMovTile(FVector2D(Position[0], Position[1] -1));
-		SpawnMovTile(FVector2D(Position[0] +1, Position[1] -1));
+		SpawnMovTile(FVector2D(PiecePosition[0] +1, PiecePosition[1]));
+		SpawnMovTile(FVector2D(PiecePosition[0] +1, PiecePosition[1] +1));
+		SpawnMovTile(FVector2D(PiecePosition[0], PiecePosition[1] +1));
+		SpawnMovTile(FVector2D(PiecePosition[0] -1, PiecePosition[1] +1));
+		SpawnMovTile(FVector2D(PiecePosition[0] -1, PiecePosition[1]));
+		SpawnMovTile(FVector2D(PiecePosition[0] -1, PiecePosition[1] -1));
+		SpawnMovTile(FVector2D(PiecePosition[0], PiecePosition[1] -1));
+		SpawnMovTile(FVector2D(PiecePosition[0] +1, PiecePosition[1] -1));
 	}
 	
 }
 
-void AChess_GameMode::SpawnMovTile(const FVector2D& Position/*, EPiece Piece*/)
+void AChess_GameMode::SpawnMovTile(const FVector2D& TilePosition/*, EPiece Piece*/)
 {
 	//if (Piece == EPiece::Pawn)
 	//{
-		int32 x = Position[0];// + 1;
-		int32 y = Position[1];
-		//FVector2D XYPos = Position;
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("x=%f,y=%f"), XYPos[0], XYPos[1]));
 		
-		FVector Location = GField->GetRelativeLocationByXYPosition(x, y) + FVector(0, 0, -5);
+		//FVector2D XYPos = Position;
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("x=%d,y=%d"), x, y));
+		
+		FVector Location = GField->GetRelativeLocationByXYPosition(TilePosition[0], TilePosition[1]) + FVector(0, 0, -5);
 		ATile* Obj = GetWorld()->SpawnActor<ATile>(TileClassYellow, Location, FRotator::ZeroRotator);
 		MoveTileArray.Add(Obj);
-		MoveTileMap.Add(FVector2D(x, y), Obj);
+		MoveTileMap.Add(FVector2D(TilePosition[0], TilePosition[1]), Obj);
 		Obj->SetTileStatus(0 , ETileStatus::MOVEABLE);
 	//}
 }

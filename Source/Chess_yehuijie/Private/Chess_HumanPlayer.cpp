@@ -83,9 +83,9 @@ void AChess_HumanPlayer::OnClick()
 		{
 			EPiece CurrPieceType = CurrPiece->GetPiece();
 			FVector2D CurrPiecePosition = CurrPiece->GetBoardPosition();
-			if (CurrPiece->IsA(AWhitePiece::StaticClass()) && CurrPieceType == EPiece::Pawn)
+			if (CurrPiece->IsA(AWhitePiece::StaticClass()) /* && CurrPieceType == EPiece::Pawn*/)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("pawn"));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("pawn"));
 				CurrPiece->SetPieceStatus(EPieceStatus::Clicked);
 				GameMode->ShowMoves(CurrPiecePosition, CurrPieceType);
 				FirstClick = false;
