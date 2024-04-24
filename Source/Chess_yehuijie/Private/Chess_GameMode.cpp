@@ -68,50 +68,71 @@ void AChess_GameMode::ShowMoves(const FVector2D& PiecePosition, EPiece Piece)
 
 	if (Piece == EPiece::Pawn)
 	{
+		FVector2D NextPosition = FVector2D(PiecePosition[0] + 1, PiecePosition[1]);
+		FVector2D EatingMove1 = FVector2D(PiecePosition[0] + 1, PiecePosition[1] + 1);
+		FVector2D EatingMove2 = FVector2D(PiecePosition[0] + 1, PiecePosition[1] - 1);
+		if (PiecePosition[0] < GField->Size - 1 && GField->TileIsEmpty(NextPosition[0], NextPosition[1]))
+		{
+			SpawnMovTile(NextPosition, PiecePosition);
+			
+			if (PiecePosition[0] == 1 && GField->TileIsEmpty(NextPosition[0] + 1, NextPosition[1]))
+			{
+				SpawnMovTile(FVector2D(NextPosition[0] + 1, NextPosition[1]), PiecePosition);
+				
+			}
+
+		}
 		//while x < 6 && empty
 		// if white spawn, if black add to array for randmove
-		SpawnMovTile(FVector2D(PiecePosition[0] + 1, PiecePosition[1]));
-		if (PiecePosition[0] == 1)
-		{
-			SpawnMovTile(FVector2D(PiecePosition[0] + 2, PiecePosition[1]));
-		}
+		
 	}
 	if (Piece == EPiece::Rook)
 	{
 		//while empty
 		for (int32 x = PiecePosition[0] + 1; x < GField->Size; x++)
 		{
-			SpawnMovTile(FVector2D(x, PiecePosition[1]));
+			SpawnMovTile(FVector2D(x, PiecePosition[1]), PiecePosition);
 		}
 		for (int32 x = PiecePosition[0] - 1; x > 0; x--)
 		{
-			SpawnMovTile(FVector2D(x, PiecePosition[1]));
+			SpawnMovTile(FVector2D(x, PiecePosition[1]), PiecePosition);
 		}
 		for (int32 y = PiecePosition[1] + 1; y < GField->Size; y++)
 		{
-			SpawnMovTile(FVector2D(PiecePosition[0], y));
+			SpawnMovTile(FVector2D(PiecePosition[0], y), PiecePosition);
 		}
 		for (int32 y = PiecePosition[1] - 1; y > 0; y--)
 		{
-			SpawnMovTile(FVector2D(PiecePosition[0], y));
+			SpawnMovTile(FVector2D(PiecePosition[0], y), PiecePosition);
 		}
 	}
 	if (Piece == EPiece::King)
 	{
 		//empty --> no while perche si puo muovere intorno, attenzione agli scacchi!!
-		SpawnMovTile(FVector2D(PiecePosition[0] +1, PiecePosition[1]));
-		SpawnMovTile(FVector2D(PiecePosition[0] +1, PiecePosition[1] +1));
-		SpawnMovTile(FVector2D(PiecePosition[0], PiecePosition[1] +1));
-		SpawnMovTile(FVector2D(PiecePosition[0] -1, PiecePosition[1] +1));
-		SpawnMovTile(FVector2D(PiecePosition[0] -1, PiecePosition[1]));
-		SpawnMovTile(FVector2D(PiecePosition[0] -1, PiecePosition[1] -1));
-		SpawnMovTile(FVector2D(PiecePosition[0], PiecePosition[1] -1));
-		SpawnMovTile(FVector2D(PiecePosition[0] +1, PiecePosition[1] -1));
+		SpawnMovTile(FVector2D(PiecePosition[0] +1, PiecePosition[1]), PiecePosition);
+		SpawnMovTile(FVector2D(PiecePosition[0] +1, PiecePosition[1] +1),PiecePosition);
+		SpawnMovTile(FVector2D(PiecePosition[0], PiecePosition[1] +1), PiecePosition);
+		SpawnMovTile(FVector2D(PiecePosition[0] -1, PiecePosition[1] +1), PiecePosition);
+		SpawnMovTile(FVector2D(PiecePosition[0] -1, PiecePosition[1]), PiecePosition);
+		SpawnMovTile(FVector2D(PiecePosition[0] -1, PiecePosition[1] -1), PiecePosition);
+		SpawnMovTile(FVector2D(PiecePosition[0], PiecePosition[1] -1), PiecePosition);
+		SpawnMovTile(FVector2D(PiecePosition[0] +1, PiecePosition[1] -1), PiecePosition);
 	}
 	
 }
 
-void AChess_GameMode::SpawnMovTile(const FVector2D& TilePosition/*, EPiece Piece*/)
+void AChess_GameMode::SetPieceMovesToSpawned(const FVector2D& Position)
+{
+	for (ABasePiece* Obj : GField->WPiecesArray)
+	{
+		if (Obj->GetBoardPosition() == Position)
+		{
+			Obj->SetPieceMoves(EPieceMoves::Spawned);
+		}
+	}
+}
+
+void AChess_GameMode::SpawnMovTile(const FVector2D& TilePosition, const FVector2D& PiecePosition/*, EPiece Piece*/)
 {
 	//if (Piece == EPiece::Pawn)
 	//{
@@ -123,7 +144,9 @@ void AChess_GameMode::SpawnMovTile(const FVector2D& TilePosition/*, EPiece Piece
 		ATile* Obj = GetWorld()->SpawnActor<ATile>(TileClassYellow, Location, FRotator::ZeroRotator);
 		MoveTileArray.Add(Obj);
 		MoveTileMap.Add(FVector2D(TilePosition[0], TilePosition[1]), Obj);
+		Obj->SetGridPosition(TilePosition[0], TilePosition[1]);
 		Obj->SetTileStatus(0 , ETileStatus::MOVEABLE);
+		SetPieceMovesToSpawned(PiecePosition);
 	//}
 }
 
@@ -132,6 +155,19 @@ void AChess_GameMode::DestroyMoveTiles()
 	for (ATile* Obj : MoveTileArray)
 	{
 		Obj->Destroy();
+	}
+}
+
+void AChess_GameMode::MoveClickedPiece(const FVector2D& NewPosition)
+{
+	for (ABasePiece* Obj : GField->WPiecesArray)
+	{
+		if (Obj->GetPieceStatus() == EPieceStatus::Clicked)
+		{
+			Obj->SetBoardPosition(NewPosition[0], NewPosition[1]);
+			Obj->SetActorLocation(GField->GetRelativeLocationByXYPosition(NewPosition[0], NewPosition[1]) + FVector(0, 0, 10));
+			Obj->SetPieceStatus(EPieceStatus::NotClicked);
+		}
 	}
 }
 

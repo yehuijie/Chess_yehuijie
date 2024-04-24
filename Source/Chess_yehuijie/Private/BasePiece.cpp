@@ -20,7 +20,11 @@ ABasePiece::ABasePiece()
 	StaticMeshComponent->SetupAttachment(Scene);
 
 	BoardPosition = FVector2D(0, 0);
+	OldPosition = FVector2D(0, 0);
 	Piece = EPiece::None;
+	PieceStatus = EPieceStatus::NotClicked;
+	PieceColor = EPieceColor::None;
+	PieceMoves = EPieceMoves::NotSpawned;
 
 }
 
@@ -63,6 +67,27 @@ EPieceColor ABasePiece::GetPieceColor()
 {
 	return PieceColor;
 }
+
+void ABasePiece::SetOldPosition(const double InX, const double InY)
+{
+	OldPosition.Set(InX, InY);
+}
+
+FVector2D ABasePiece::GetOldPosition()
+{
+	return OldPosition;
+}
+
+void ABasePiece::SetPieceMoves(const EPieceMoves Moves)
+{
+	PieceMoves = Moves;
+}
+
+EPieceMoves ABasePiece::GetPieceMoves()
+{
+	return PieceMoves;
+}
+
 
 // Called when the game starts or when spawned
 void ABasePiece::BeginPlay()

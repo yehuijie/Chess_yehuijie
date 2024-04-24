@@ -99,10 +99,15 @@ public:
 
     void ShowMoves(const FVector2D& PiecePosition, EPiece Piece);
 
-	void SpawnMovTile(const FVector2D& TilePosition);
+	void SetPieceMovesToSpawned(const FVector2D& Position);
+
+	void SpawnMovTile(const FVector2D& TilePosition, const FVector2D& PiecePosition);
 
 	void DestroyMoveTiles();
 
+	void MoveClickedPiece( const FVector2D& NewPosition);
+
+	
 	//void DestroyClickedPiece();
 
 	//void SpawnPiece(const FVector2D& Position);

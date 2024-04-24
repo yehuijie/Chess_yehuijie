@@ -2,6 +2,7 @@
 
 
 #include "Tile.h"
+#include "Gamefield.h"
 
 // Sets default values
 ATile::ATile()
@@ -49,6 +50,7 @@ FVector2D ATile::GetGridPosition()
 {
 	return TileGridPosition;
 }
+
 
 
 // Called when the game starts or when spawned

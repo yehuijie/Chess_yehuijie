@@ -76,20 +76,30 @@ void AChess_HumanPlayer::OnClick()
 	// GetHitResultUnderCursor function sends a ray from the mouse position and gives the corresponding hit results
 	GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(ECollisionChannel::ECC_Pawn, true, Hit);
 	AChess_GameMode* GameMode = Cast<AChess_GameMode>(GetWorld()->GetAuthGameMode());
-	 
+
 	if (Hit.bBlockingHit && FirstClick && !SecondClick)
 	{
 		if (ABasePiece* CurrPiece = Cast<ABasePiece>(Hit.GetActor()))
 		{
 			EPiece CurrPieceType = CurrPiece->GetPiece();
-			FVector2D CurrPiecePosition = CurrPiece->GetBoardPosition();
+			FVector2D PositionOnClick = CurrPiece->GetBoardPosition();
 			if (CurrPiece->IsA(AWhitePiece::StaticClass()) /* && CurrPieceType == EPiece::Pawn*/)
 			{
 				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("pawn"));
 				CurrPiece->SetPieceStatus(EPieceStatus::Clicked);
-				GameMode->ShowMoves(CurrPiecePosition, CurrPieceType);
-				FirstClick = false;
-				SecondClick = true;
+				CurrPiece->SetOldPosition(PositionOnClick[0], PositionOnClick[1]);
+				GameMode->ShowMoves(PositionOnClick, CurrPieceType);
+				if (CurrPiece->GetPieceMoves() == EPieceMoves::Spawned) 
+				{
+					FirstClick = false;
+					SecondClick = true;
+				}
+				else
+				{
+					CurrPiece->SetPieceStatus(EPieceStatus::NotClicked);
+
+				}
+				CurrPiece->SetPieceMoves(EPieceMoves::NotSpawned);
 			}
 
 				
@@ -116,10 +126,13 @@ void AChess_HumanPlayer::OnClick()
 		{
 			if (CurrTile->GetTileStatus() == ETileStatus::MOVEABLE)
 			{
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("x=%f,y=%f"), OldPosition[0], OldPosition[1]));
+				FVector2D NewPosition = CurrTile->GetGridPosition();
+				GameMode->MoveClickedPiece(NewPosition);
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("second"));
 				GameMode->DestroyMoveTiles();
 				//GameMode->DestroyClickedPiece();
-				FVector2D NewPiecePosition = CurrTile->GetGridPosition();
+				//FVector2D NewPiecePosition = CurrTile->GetGridPosition();
 				//GameMode->SpawnPiece(NewPiecePosition);
 				SecondClick = false;
 				FirstClick = true;

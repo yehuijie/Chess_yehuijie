@@ -185,10 +185,10 @@ void AGameField::GenerateWBishops()
 	ABasePiece* Obj1 = GetWorld()->SpawnActor<ABasePiece>(WBishopActor, Location1, FRotator(0, 90, 0));
 	Obj1->SetActorScale3D(FVector(BishopScale, BishopScale, 0.2));
 	Obj1->SetPiece(EPiece::Bishop);
-	Obj->SetPieceStatus(EPieceStatus::NotClicked);
-	Obj->SetPieceColor(EPieceColor::White);
-	Obj->SetBoardPosition(x, rightY);
-	WPiecesArray.Add(Obj);
+	Obj1->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj1->SetPieceColor(EPieceColor::White);
+	Obj1->SetBoardPosition(x, rightY);
+	WPiecesArray.Add(Obj1);
 	WPiecesMap.Add(FVector2D(x, rightY), Obj1);
 }
 
@@ -213,10 +213,10 @@ void AGameField::GenerateWKnights()
 	ABasePiece* Obj1 = GetWorld()->SpawnActor<ABasePiece>(WKnightActor, Location1, FRotator(0, 90, 0));
 	Obj1->SetActorScale3D(FVector(KnightScale, KnightScale, 0.2));
 	Obj1->SetPiece(EPiece::Knight);
-	Obj->SetPieceStatus(EPieceStatus::NotClicked);
-	Obj->SetPieceColor(EPieceColor::White);
-	Obj->SetBoardPosition(x, rightY);
-	WPiecesArray.Add(Obj);
+	Obj1->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj1->SetPieceColor(EPieceColor::White);
+	Obj1->SetBoardPosition(x, rightY);
+	WPiecesArray.Add(Obj1);
 	WPiecesMap.Add(FVector2D(x, rightY), Obj1);
 
 }
@@ -239,13 +239,13 @@ void AGameField::GenerateWRooks()
 	WPiecesMap.Add(FVector2D(x, leftY), Obj);
 
 	FVector Location1 = AGameField::GetRelativeLocationByXYPosition(x, rightY) + FVector(0, 0, 10);
-        ABasePiece* Obj1 = GetWorld()->SpawnActor<ABasePiece>(WRookActor, Location1, FRotator(0, 90, 0));
+    ABasePiece* Obj1 = GetWorld()->SpawnActor<ABasePiece>(WRookActor, Location1, FRotator(0, 90, 0));
 	Obj1->SetActorScale3D(FVector(RookScale, RookScale, 0.2));
 	Obj1->SetPiece(EPiece::Rook);
-	Obj->SetPieceStatus(EPieceStatus::NotClicked);
-	Obj->SetPieceColor(EPieceColor::White);
-	Obj->SetBoardPosition(x, rightY);
-	WPiecesArray.Add(Obj);
+	Obj1->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj1->SetPieceColor(EPieceColor::White);
+	Obj1->SetBoardPosition(x, rightY);
+	WPiecesArray.Add(Obj1);
 	WPiecesMap.Add(FVector2D(x, rightY), Obj1);
 }
 
@@ -323,10 +323,10 @@ void AGameField::GenerateBBishops()
 	ABasePiece* Obj1 = GetWorld()->SpawnActor<ABasePiece>(BBishopActor, Location1, FRotator(0, -90, 0));
 	Obj1->SetActorScale3D(FVector(BishopScale, BishopScale, 0.2));
 	Obj1->SetPiece(EPiece::Bishop);
-	Obj->SetPieceStatus(EPieceStatus::NotClicked);
-	Obj->SetPieceColor(EPieceColor::Black);
-	Obj->SetBoardPosition(x, rightY);
-	BPiecesArray.Add(Obj);
+	Obj1->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj1->SetPieceColor(EPieceColor::Black);
+	Obj1->SetBoardPosition(x, rightY);
+	BPiecesArray.Add(Obj1);
 	BPiecesMap.Add(FVector2D(x, rightY), Obj1);
 }
 
@@ -351,10 +351,10 @@ void AGameField::GenerateBKnights()
 	ABasePiece* Obj1 = GetWorld()->SpawnActor<ABasePiece>(BKnightActor, Location1, FRotator(0, -90, 0));
 	Obj1->SetActorScale3D(FVector(KnightScale, KnightScale, 0.2));
 	Obj1->SetPiece(EPiece::Knight);
-	Obj->SetPieceStatus(EPieceStatus::NotClicked);
-	Obj->SetPieceColor(EPieceColor::Black);
-	Obj->SetBoardPosition(x, rightY);
-	BPiecesArray.Add(Obj);
+	Obj1->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj1->SetPieceColor(EPieceColor::Black);
+	Obj1->SetBoardPosition(x, rightY);
+	BPiecesArray.Add(Obj1);
 	BPiecesMap.Add(FVector2D(x, rightY), Obj1);
 
 }
@@ -380,10 +380,10 @@ void AGameField::GenerateBRooks()
 	ABasePiece* Obj1 = GetWorld()->SpawnActor<ABasePiece>(BRookActor, Location1, FRotator(0, -90, 0));
 	Obj1->SetActorScale3D(FVector(RookScale, RookScale, 0.2));
 	Obj1->SetPiece(EPiece::Rook);
-	Obj->SetPieceStatus(EPieceStatus::NotClicked);
-	Obj->SetPieceColor(EPieceColor::Black);
-	Obj->SetBoardPosition(x, rightY);
-	BPiecesArray.Add(Obj);
+	Obj1->SetPieceStatus(EPieceStatus::NotClicked);
+	Obj1->SetPieceColor(EPieceColor::Black);
+	Obj1->SetBoardPosition(x, rightY);
+	BPiecesArray.Add(Obj1);
 	BPiecesMap.Add(FVector2D(x, rightY), Obj1);
 
 }
@@ -398,7 +398,27 @@ TArray<ATile*>& AGameField::GetTileArray()
 return TileArray;
 }
 
-FVector AGameField::GetRelativeLocationByXYPosition(const int32 InX, const int32 InY) const
+bool AGameField::TileIsEmpty(const double InX, const double InY)
+{
+	for (ATile* CurrTile : TileArray)
+	{
+		if (CurrTile->GetGridPosition() == FVector2D(InX, InY))
+		{
+			if (CurrTile->GetTileStatus() == ETileStatus::EMPTY)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+	return false;
+}
+
+
+FVector AGameField::GetRelativeLocationByXYPosition(const double InX, const double InY) const
 {
 	return TileSize * NormalizedCellPadding * FVector(InX, InY, 0);
 }

@@ -26,10 +26,18 @@ enum class EPieceStatus : uint8
 };
 
 UENUM()
+enum class EPieceMoves : uint8
+{
+	Spawned,
+	NotSpawned,
+};
+
+UENUM()
 enum class EPieceColor : uint8
 {
         White,
         Black,
+		None,
 };
 
 UCLASS()
@@ -59,6 +67,14 @@ public:
 
     EPieceColor GetPieceColor();
 
+	void SetOldPosition(const double InX, const double InY);
+
+	FVector2D GetOldPosition();
+
+	void SetPieceMoves(const EPieceMoves Moves);
+
+	EPieceMoves GetPieceMoves();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -74,6 +90,9 @@ protected:
 	FVector2D BoardPosition;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector2D OldPosition;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EPiece Piece;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -81,6 +100,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EPieceColor PieceColor;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	EPieceMoves PieceMoves;
 
 public:
 	// Called every frame

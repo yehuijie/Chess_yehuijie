@@ -165,10 +165,12 @@ public:
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 	// return a relative position given (x,y) position (moved from protected to public)
-	FVector GetRelativeLocationByXYPosition(const int32 InX, const int32 InY) const;
+	FVector GetRelativeLocationByXYPosition(const double InX, const double InY) const;
 	
 	// return (x,y) position given a relative position
 	FVector2D GetXYPositionByRelativeLocation(const FVector& Location) const;
+
+	bool TileIsEmpty(const double InX, const double InY);
 
 	
 protected:
