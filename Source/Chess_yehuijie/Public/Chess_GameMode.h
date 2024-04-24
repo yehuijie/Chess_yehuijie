@@ -43,15 +43,18 @@ public:
 
 	// keeps track of tiles
 	UPROPERTY(Transient)
-	TArray<ATile*> MoveTileArray;
+	TArray<ATile*> SpawnedTileArray;
 
 	//given a position returns a tile
 	UPROPERTY(Transient)
-	TMap<FVector2D, ATile*> MoveTileMap;
+	TMap<FVector2D, ATile*> SpawnedTileMap;
 
 	// TSubclassOf template class that provides UClass type safety
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ATile> TileClassYellow;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ATile> TileClassRed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AActor> WPawnActor;
@@ -103,9 +106,13 @@ public:
 
 	void SpawnMovTile(const FVector2D& TilePosition, const FVector2D& PiecePosition);
 
+	void SpawnEatTile(const FVector2D& TilePosition, const FVector2D& PiecePosition);
+
 	void DestroyMoveTiles();
 
 	void MoveClickedPiece( const FVector2D& NewPosition);
+
+	bool IsPieceColor(EPieceColor PieceColor, const FVector2D& Position);
 
 	
 	//void DestroyClickedPiece();

@@ -82,6 +82,10 @@ void AChess_GameMode::ShowMoves(const FVector2D& PiecePosition, EPiece Piece)
 			}
 
 		}
+		if (PiecePosition[0] < GField->Size - 1 && !(GField->TileIsEmpty(EatingMove1[0], EatingMove1[1])) && IsPieceColor(EPieceColor::Black, EatingMove1))
+		{
+			SpawnEatTile(EatingMove1, PiecePosition);
+		}
 		//while x < 6 && empty
 		// if white spawn, if black add to array for randmove
 		
@@ -142,17 +146,28 @@ void AChess_GameMode::SpawnMovTile(const FVector2D& TilePosition, const FVector2
 		
 		FVector Location = GField->GetRelativeLocationByXYPosition(TilePosition[0], TilePosition[1]) + FVector(0, 0, -5);
 		ATile* Obj = GetWorld()->SpawnActor<ATile>(TileClassYellow, Location, FRotator::ZeroRotator);
-		MoveTileArray.Add(Obj);
-		MoveTileMap.Add(FVector2D(TilePosition[0], TilePosition[1]), Obj);
+		SpawnedTileArray.Add(Obj);
+		SpawnedTileMap.Add(FVector2D(TilePosition[0], TilePosition[1]), Obj);
 		Obj->SetGridPosition(TilePosition[0], TilePosition[1]);
 		Obj->SetTileStatus(0 , ETileStatus::MOVEABLE);
 		SetPieceMovesToSpawned(PiecePosition);
 	//}
 }
 
+void AChess_GameMode::SpawnEatTile(const FVector2D& TilePosition, const FVector2D& PiecePosition)
+{
+	FVector Location = GField->GetRelativeLocationByXYPosition(TilePosition[0], TilePosition[1]) + FVector(0, 0, -5);
+	ATile* Obj = GetWorld()->SpawnActor<ATile>(TileClassRed, Location, FRotator::ZeroRotator);
+	SpawnedTileArray.Add(Obj);
+	SpawnedTileMap.Add(FVector2D(TilePosition[0], TilePosition[1]), Obj);
+	Obj->SetGridPosition(TilePosition[0], TilePosition[1]);
+	//Obj->SetTileStatus(0, ETileStatus::MOVEABLE);
+	SetPieceMovesToSpawned(PiecePosition);
+}
+
 void AChess_GameMode::DestroyMoveTiles()
 {
-	for (ATile* Obj : MoveTileArray)
+	for (ATile* Obj : SpawnedTileArray)
 	{
 		Obj->Destroy();
 	}
@@ -169,6 +184,21 @@ void AChess_GameMode::MoveClickedPiece(const FVector2D& NewPosition)
 			Obj->SetPieceStatus(EPieceStatus::NotClicked);
 		}
 	}
+}
+
+bool AChess_GameMode::IsPieceColor(EPieceColor PieceColor, const FVector2D& Position)
+{
+	if (PieceColor == EPieceColor::Black)
+	{
+		for (ABasePiece* Obj : GField->BPiecesArray)
+		{
+			if (Obj->GetBoardPosition() == Position)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 //ChangeActorLocation !!!!!
