@@ -12,7 +12,8 @@ enum class ETileStatus : uint8
 {
 	EMPTY     UMETA(DisplayName = "Empty"),
 	OCCUPIED      UMETA(DisplayName = "Occupied"),
-	MOVEABLE   UMETA(DisplayName = "Moveable"),
+	MOVE   UMETA(DisplayName = "Move"),
+	EAT   UMETA(DisplayName = "Eat"),
 };
 
 UCLASS()

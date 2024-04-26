@@ -29,6 +29,9 @@ public:
 	// tracks the number of moves in order to signal a drawn game -> registo?
 	int32 MoveCounter;
 
+	int32 debugX;
+	int32 debugY;
+
 	// TSubclassOf is a template class that provides UClass type safety.
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AGameField> GameFieldClass;
@@ -92,6 +95,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AActor> BKingActor;
 
+	UPROPERTY(Transient)
+	TArray<FVector2D> BlackMovesArray;
+
+	//UPROPERTY(Transient)
+	//TMap<FVector2D, ATile*> BlackMovesMap;
+
 	AChess_GameMode();
 
 	// Called when the game starts or when spawned
@@ -112,7 +121,13 @@ public:
 
 	void MoveClickedPiece( const FVector2D& NewPosition);
 
-	bool IsPieceColor(EPieceColor PieceColor, const FVector2D& Position);
+	bool IsPieceBlack(const FVector2D& Position);
+
+	bool IsPieceWhite(const FVector2D& Position);
+
+	void SetPieceToNotClicked();
+
+	void MoveBlackPiece();
 
 	
 	//void DestroyClickedPiece();

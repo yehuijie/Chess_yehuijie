@@ -89,6 +89,7 @@ void AChess_HumanPlayer::OnClick()
 				CurrPiece->SetPieceStatus(EPieceStatus::Clicked);
 				CurrPiece->SetOldPosition(PositionOnClick[0], PositionOnClick[1]);
 				GameMode->ShowMoves(PositionOnClick, CurrPieceType);
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("clicked"));
 				if (CurrPiece->GetPieceMoves() == EPieceMoves::Spawned) 
 				{
 					FirstClick = false;
@@ -109,7 +110,7 @@ void AChess_HumanPlayer::OnClick()
 
 			//if (CurrTile->GetTileStatus() == ETileStatus::OCCUPIED)
 			//{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("clicked"));
+				
 				//CurrTile->SetTileStatus(PlayerNumber, ETileStatus::OCCUPIED);
 				//FVector SpawnPosition = CurrTile->GetActorLocation();
 				//AChess_GameMode* GameMode = Cast<AChess_GameMode>(GetWorld()->GetAuthGameMode());
@@ -124,21 +125,51 @@ void AChess_HumanPlayer::OnClick()
 	{
 		if (ATile* CurrTile = Cast<ATile>(Hit.GetActor()))
 		{
-			if (CurrTile->GetTileStatus() == ETileStatus::MOVEABLE)
+			if (CurrTile->GetTileStatus() == ETileStatus::MOVE)
 			{
 				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("x=%f,y=%f"), OldPosition[0], OldPosition[1]));
 				FVector2D NewPosition = CurrTile->GetGridPosition();
 				GameMode->MoveClickedPiece(NewPosition);
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("second"));
-				GameMode->DestroyMoveTiles();
+				//GameMode->DestroyMoveTiles();
 				//GameMode->DestroyClickedPiece();
 				//FVector2D NewPiecePosition = CurrTile->GetGridPosition();
 				//GameMode->SpawnPiece(NewPiecePosition);
 				SecondClick = false;
 				FirstClick = true;
 			}
-		}
+			else if (CurrTile->GetTileStatus() != ETileStatus::MOVE)
+			{
+				GameMode->DestroyMoveTiles();
+			    SecondClick = false;
+			    FirstClick = true;
+
+		    }
 		
+		
+			
+		}
+		if (ABasePiece* PieceToEat = Cast<ABasePiece>(Hit.GetActor()))
+		{
+			if (PieceToEat->GetPieceToEat() == EPieceToEat::ToBeEaten) {
+				FVector2D NewPosition = PieceToEat->GetBoardPosition();
+				GameMode->MoveClickedPiece(NewPosition);
+			    SecondClick = false;
+			    FirstClick = true;
+
+
+			}
+			else if (PieceToEat->GetPieceStatus() != EPieceStatus::Clicked)
+			{
+				GameMode->SetPieceToNotClicked();
+				GameMode->DestroyMoveTiles();
+				SecondClick = false;
+				FirstClick = true;
+			}
+			
+			
+		} 
+		 
 	}
 }
 

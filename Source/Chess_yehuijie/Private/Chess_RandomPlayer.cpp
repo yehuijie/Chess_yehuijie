@@ -3,6 +3,7 @@
 
 #include "Chess_RandomPlayer.h"
 
+
 // Sets default values
 AChess_RandomPlayer::AChess_RandomPlayer()
 {
@@ -35,14 +36,23 @@ void AChess_RandomPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 void AChess_RandomPlayer::OnTurn()
 {
-	/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("AI (Random) Turn"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("AI (Random) Turn"));
 	GameInstance->SetTurnMessage(TEXT("AI (Random) Turn"));
 
 	FTimerHandle TimerHandle;
-
+	AGameField* GField = nullptr;
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
 		{
-			TArray<ATile*> FreeCells;
+			AChess_GameMode* GameMode = (AChess_GameMode*)(GetWorld()->GetAuthGameMode());
+			if (GField->BPiecesArray.Num() > 0)
+			{
+				int32 RandIdx = FMath::Rand() % GField->BPiecesArray.Num();
+				GField->BPiecesArray[RandIdx]->SetPieceStatus(EPieceStatus::Clicked);
+				GField->BPiecesArray[RandIdx]->SetOldPosition((GField->BPiecesArray[RandIdx]->GetBoardPosition())[0], (GField->BPiecesArray[RandIdx]->GetBoardPosition())[1]);
+
+			}
+		}, 3, false);
+			/*TArray<ATile*> FreeCells;
 			AChess_GameMode* GameMode = (AChess_GameMode*)(GetWorld()->GetAuthGameMode());
 			for (auto& CurrTile : GameMode->GField->GetTileArray())
 			{

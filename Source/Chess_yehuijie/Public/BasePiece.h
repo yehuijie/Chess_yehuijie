@@ -40,6 +40,14 @@ enum class EPieceColor : uint8
 		None,
 };
 
+UENUM()
+enum class EPieceToEat : uint8
+{
+	ToBeEaten,
+	NotToBeEaten,
+	
+};
+
 UCLASS()
 class CHESS_YEHUIJIE_API ABasePiece : public AActor
 {
@@ -75,6 +83,10 @@ public:
 
 	EPieceMoves GetPieceMoves();
 
+	void SetPieceToEat(const EPieceToEat ToBeEaten);
+
+	EPieceToEat GetPieceToEat();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -103,6 +115,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EPieceMoves PieceMoves;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	EPieceToEat PieceToEat;
 
 public:
 	// Called every frame

@@ -7,6 +7,7 @@
 #include "Chess_PlayerInterface.h"
 #include "Chess_GameInstance.h"
 #include "Chess_GameMode.h"
+#include "Gamefield.h"
 #include "Kismet/GameplayStatics.h"
 #include "Chess_RandomPlayer.generated.h"
 
