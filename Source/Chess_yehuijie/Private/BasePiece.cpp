@@ -26,6 +26,7 @@ ABasePiece::ABasePiece()
 	PieceColor = EPieceColor::None;
 	PieceMoves = EPieceMoves::NotSpawned;
 	PieceToEat = EPieceToEat::NotToBeEaten;
+	IsPieceOnBoard = EPieceOnBoard::OnBoard;
 
 }
 
@@ -97,6 +98,16 @@ void ABasePiece::SetPieceToEat(const EPieceToEat ToBeEaten)
 EPieceToEat ABasePiece::GetPieceToEat()
 {
 	return PieceToEat;
+}
+
+void ABasePiece::SetIsPieceOnBoard(const EPieceOnBoard OnBoard)
+{
+	IsPieceOnBoard = OnBoard;
+}
+
+EPieceOnBoard ABasePiece::GetIsPieceOnBoard()
+{
+	return IsPieceOnBoard;
 }
 
 

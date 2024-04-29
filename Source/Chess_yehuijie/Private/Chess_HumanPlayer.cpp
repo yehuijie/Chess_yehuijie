@@ -77,7 +77,7 @@ void AChess_HumanPlayer::OnClick()
 	GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(ECollisionChannel::ECC_Pawn, true, Hit);
 	AChess_GameMode* GameMode = Cast<AChess_GameMode>(GetWorld()->GetAuthGameMode());
 
-	if (Hit.bBlockingHit && FirstClick && !SecondClick)
+	if (Hit.bBlockingHit && FirstClick && !SecondClick && IsMyTurn)
 	{
 		if (ABasePiece* CurrPiece = Cast<ABasePiece>(Hit.GetActor()))
 		{
@@ -121,7 +121,7 @@ void AChess_HumanPlayer::OnClick()
 	}
 	
 
-	if (Hit.bBlockingHit && SecondClick && !FirstClick)
+	if (Hit.bBlockingHit && SecondClick && !FirstClick && IsMyTurn)
 	{
 		if (ATile* CurrTile = Cast<ATile>(Hit.GetActor()))
 		{
@@ -137,6 +137,7 @@ void AChess_HumanPlayer::OnClick()
 				//GameMode->SpawnPiece(NewPiecePosition);
 				SecondClick = false;
 				FirstClick = true;
+				IsMyTurn = false;
 			}
 			else if (CurrTile->GetTileStatus() != ETileStatus::MOVE)
 			{
@@ -156,7 +157,7 @@ void AChess_HumanPlayer::OnClick()
 				GameMode->MoveClickedPiece(NewPosition);
 			    SecondClick = false;
 			    FirstClick = true;
-
+				IsMyTurn = false;
 
 			}
 			else if (PieceToEat->GetPieceStatus() != EPieceStatus::Clicked)

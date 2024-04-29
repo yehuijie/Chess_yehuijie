@@ -20,14 +20,14 @@ ATile::ATile()
 
 	Status = ETileStatus::EMPTY;
 	// 0 is white, 1 is black
-	PlayerColor = -1;
+	//PlayerColor = -1;
 	TileGridPosition = FVector2D(0, 0);
 
 }
 
-void ATile::SetTileStatus(const int32 PieceColor, const ETileStatus TileStatus)
+void ATile::SetTileStatus( const ETileStatus TileStatus)
 {
-	PlayerColor = PieceColor;
+	
 	Status = TileStatus;
 }
 
@@ -36,10 +36,10 @@ ETileStatus ATile::GetTileStatus()
 	return Status;
 }
 
-int32 ATile::GetColor()
+/*int32 ATile::GetColor()
 {
 	return PlayerColor;
-}
+}*/
 
 void ATile::SetGridPosition(const double InX, const double InY)
 {

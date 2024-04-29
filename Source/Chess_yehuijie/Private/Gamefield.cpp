@@ -83,12 +83,12 @@ void AGameField::GenerateField()
 
 			if (x == 0 || x == 1)
 			{
-				Obj->SetTileStatus(0, ETileStatus::OCCUPIED);
+				Obj->SetTileStatus(ETileStatus::OCCUPIED);
 			}
 
 			if (x == 6 || x == 7)
 			{
-				Obj->SetTileStatus(1, ETileStatus::OCCUPIED);
+				Obj->SetTileStatus(ETileStatus::OCCUPIED);
 			}
 		}
 		 
@@ -159,6 +159,7 @@ void AGameField::GenerateWQueen()
 	Obj->SetPiece(EPiece::Queen);
 	Obj->SetPieceStatus(EPieceStatus::NotClicked);
 	Obj->SetPieceColor(EPieceColor::White);
+	Obj->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj->SetBoardPosition(x, y);
 	WPiecesArray.Add(Obj);
 	WPiecesMap.Add(FVector2D(x, y), Obj);
@@ -177,6 +178,7 @@ void AGameField::GenerateWBishops()
 	Obj->SetPiece(EPiece::Bishop);
 	Obj->SetPieceStatus(EPieceStatus::NotClicked);
 	Obj->SetPieceColor(EPieceColor::White);
+	Obj->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj->SetBoardPosition(x, leftY);
 	WPiecesArray.Add(Obj);
 	WPiecesMap.Add(FVector2D(x, leftY), Obj);
@@ -187,6 +189,7 @@ void AGameField::GenerateWBishops()
 	Obj1->SetPiece(EPiece::Bishop);
 	Obj1->SetPieceStatus(EPieceStatus::NotClicked);
 	Obj1->SetPieceColor(EPieceColor::White);
+	Obj1->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj1->SetBoardPosition(x, rightY);
 	WPiecesArray.Add(Obj1);
 	WPiecesMap.Add(FVector2D(x, rightY), Obj1);
@@ -205,6 +208,7 @@ void AGameField::GenerateWKnights()
 	Obj->SetPiece(EPiece::Knight);
 	Obj->SetPieceStatus(EPieceStatus::NotClicked);
 	Obj->SetPieceColor(EPieceColor::White);
+	Obj->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj->SetBoardPosition(x, leftY);
 	WPiecesArray.Add(Obj);
 	WPiecesMap.Add(FVector2D(x, leftY), Obj);
@@ -215,6 +219,7 @@ void AGameField::GenerateWKnights()
 	Obj1->SetPiece(EPiece::Knight);
 	Obj1->SetPieceStatus(EPieceStatus::NotClicked);
 	Obj1->SetPieceColor(EPieceColor::White);
+	Obj1->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj1->SetBoardPosition(x, rightY);
 	WPiecesArray.Add(Obj1);
 	WPiecesMap.Add(FVector2D(x, rightY), Obj1);
@@ -234,6 +239,7 @@ void AGameField::GenerateWRooks()
 	Obj->SetPiece(EPiece::Rook);
 	Obj->SetPieceStatus(EPieceStatus::NotClicked);
 	Obj->SetPieceColor(EPieceColor::White);
+	Obj->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj->SetBoardPosition(x, leftY);
 	WPiecesArray.Add(Obj);
 	WPiecesMap.Add(FVector2D(x, leftY), Obj);
@@ -244,6 +250,7 @@ void AGameField::GenerateWRooks()
 	Obj1->SetPiece(EPiece::Rook);
 	Obj1->SetPieceStatus(EPieceStatus::NotClicked);
 	Obj1->SetPieceColor(EPieceColor::White);
+	Obj1->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj1->SetBoardPosition(x, rightY);
 	WPiecesArray.Add(Obj1);
 	WPiecesMap.Add(FVector2D(x, rightY), Obj1);
@@ -261,6 +268,7 @@ void AGameField::GenerateBPawns()
 		Obj->SetPiece(EPiece::Pawn);
 		Obj->SetPieceStatus(EPieceStatus::NotClicked);
 	    Obj->SetPieceColor(EPieceColor::Black);
+		Obj->SetPieceToEat(EPieceToEat::NotToBeEaten);
 		Obj->SetBoardPosition(x, y);
 		BPiecesArray.Add(Obj);
 	    BPiecesMap.Add(FVector2D(x, y), Obj);
@@ -279,6 +287,7 @@ void AGameField::GenerateBKing()
 	Obj->SetPiece(EPiece::King);
 	Obj->SetPieceStatus(EPieceStatus::NotClicked);
 	Obj->SetPieceColor(EPieceColor::Black);
+	Obj->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj->SetBoardPosition(x, y);
 	BPiecesArray.Add(Obj);
 	BPiecesMap.Add(FVector2D(x, y), Obj);
@@ -297,6 +306,7 @@ void AGameField::GenerateBQueen()
 	Obj->SetPiece(EPiece::Queen);
 	Obj->SetPieceStatus(EPieceStatus::NotClicked);
 	Obj->SetPieceColor(EPieceColor::Black);
+	Obj->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj->SetBoardPosition(x, y);
 	BPiecesArray.Add(Obj);
 	BPiecesMap.Add(FVector2D(x, y), Obj);
@@ -315,6 +325,7 @@ void AGameField::GenerateBBishops()
 	Obj->SetPiece(EPiece::Bishop);
 	Obj->SetPieceStatus(EPieceStatus::NotClicked);
 	Obj->SetPieceColor(EPieceColor::Black);
+	Obj->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj->SetBoardPosition(x, leftY);
 	BPiecesArray.Add(Obj);
 	BPiecesMap.Add(FVector2D(x, leftY), Obj);
@@ -325,6 +336,7 @@ void AGameField::GenerateBBishops()
 	Obj1->SetPiece(EPiece::Bishop);
 	Obj1->SetPieceStatus(EPieceStatus::NotClicked);
 	Obj1->SetPieceColor(EPieceColor::Black);
+	Obj1->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj1->SetBoardPosition(x, rightY);
 	BPiecesArray.Add(Obj1);
 	BPiecesMap.Add(FVector2D(x, rightY), Obj1);
@@ -343,6 +355,7 @@ void AGameField::GenerateBKnights()
 	Obj->SetPiece(EPiece::Knight);
 	Obj->SetPieceStatus(EPieceStatus::NotClicked);
 	Obj->SetPieceColor(EPieceColor::Black);
+	Obj->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj->SetBoardPosition(x, leftY);
 	BPiecesArray.Add(Obj);
 	BPiecesMap.Add(FVector2D(x, leftY), Obj);
@@ -353,6 +366,7 @@ void AGameField::GenerateBKnights()
 	Obj1->SetPiece(EPiece::Knight);
 	Obj1->SetPieceStatus(EPieceStatus::NotClicked);
 	Obj1->SetPieceColor(EPieceColor::Black);
+	Obj1->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj1->SetBoardPosition(x, rightY);
 	BPiecesArray.Add(Obj1);
 	BPiecesMap.Add(FVector2D(x, rightY), Obj1);
@@ -373,6 +387,7 @@ void AGameField::GenerateBRooks()
 	Obj->SetPieceStatus(EPieceStatus::NotClicked);
 	Obj->SetPieceColor(EPieceColor::Black);
 	Obj->SetBoardPosition(x, leftY);
+	Obj->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	BPiecesArray.Add(Obj);
 	BPiecesMap.Add(FVector2D(x, leftY), Obj);
 
@@ -383,6 +398,7 @@ void AGameField::GenerateBRooks()
 	Obj1->SetPieceStatus(EPieceStatus::NotClicked);
 	Obj1->SetPieceColor(EPieceColor::Black);
 	Obj1->SetBoardPosition(x, rightY);
+	Obj1->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	BPiecesArray.Add(Obj1);
 	BPiecesMap.Add(FVector2D(x, rightY), Obj1);
 

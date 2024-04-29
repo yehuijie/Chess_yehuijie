@@ -24,9 +24,7 @@ void AChess_GameMode::BeginPlay()
 
 	MoveCounter = 0;
 
-	debugX = 0;
-	debugY = 0;
-
+	RandIdx = 0;
 
 	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(*TActorIterator<AChess_HumanPlayer>(GetWorld()));
 
@@ -483,7 +481,7 @@ void AChess_GameMode::SpawnMovTile(const FVector2D& TilePosition, const FVector2
 		SpawnedTileArray.Add(Obj);
 		SpawnedTileMap.Add(FVector2D(TilePosition[0], TilePosition[1]), Obj);
 		Obj->SetGridPosition(TilePosition[0], TilePosition[1]);
-		Obj->SetTileStatus(0 , ETileStatus::MOVE);
+		Obj->SetTileStatus(ETileStatus::MOVE);
 		SetPieceMovesToSpawned(PiecePosition);
 	//}
 }
@@ -517,44 +515,96 @@ void AChess_GameMode::DestroyMoveTiles()
 
 void AChess_GameMode::MoveClickedPiece(const FVector2D& NewPosition)
 {
-	for (ABasePiece* Obj : GField->WPiecesArray)
+	if (CurrentPlayer == 0)
 	{
-		if (Obj->GetPieceStatus() == EPieceStatus::Clicked)
+		for (ABasePiece* Obj : GField->WPiecesArray)
 		{
-			FVector2D OldPosition = Obj->GetBoardPosition();
-			for (ATile* OldTile : GField->TileArray)
+			if (Obj->GetPieceStatus() == EPieceStatus::Clicked)
 			{
-				if (OldTile->GetGridPosition() == OldPosition)
+				FVector2D OldPosition = Obj->GetBoardPosition();
+				for (ATile* OldTile : GField->TileArray)
 				{
-					OldTile->SetTileStatus(-1, ETileStatus::EMPTY);
+					if (OldTile->GetGridPosition() == OldPosition)
+					{
+						OldTile->SetTileStatus( ETileStatus::EMPTY);
+					}
 				}
-			}
 
-			for (ABasePiece* PieceToEat : GField->BPiecesArray)
-			{
+				for (ABasePiece* PieceToEat : GField->BPiecesArray)
+				{
 					if (PieceToEat->GetBoardPosition() == NewPosition && PieceToEat->GetPieceToEat() == EPieceToEat::ToBeEaten)
 					{
-						PieceToEat->Destroy();
-						
+						PieceToEat->SetIsPieceOnBoard(EPieceOnBoard::NotOnBoard);
+						PieceToEat->SetActorLocation(PieceToEat->GetActorLocation() - FVector(0, 0, 1000));
+						//PieceToEat->Destroy();
+
 						//GField->BPiecesArray.Remove(PieceToEat);
 					}
-		
-				
-			}
 
-			Obj->SetBoardPosition(NewPosition[0], NewPosition[1]);
-			Obj->SetActorLocation(GField->GetRelativeLocationByXYPosition(NewPosition[0], NewPosition[1]) + FVector(0, 0, 10));
-			Obj->SetPieceStatus(EPieceStatus::NotClicked);
-			for (ATile* NewTile : GField->TileArray)
-			{
-				if (NewTile->GetGridPosition() == NewPosition)
+
+				}
+
+				Obj->SetBoardPosition(NewPosition[0], NewPosition[1]);
+				Obj->SetActorLocation(GField->GetRelativeLocationByXYPosition(NewPosition[0], NewPosition[1]) + FVector(0, 0, 10));
+				Obj->SetPieceStatus(EPieceStatus::NotClicked);
+				for (ATile* NewTile : GField->TileArray)
 				{
-					NewTile->SetTileStatus(0, ETileStatus::OCCUPIED);
+					if (NewTile->GetGridPosition() == NewPosition)
+					{
+						NewTile->SetTileStatus(ETileStatus::OCCUPIED);
+					}
+				}
+			}
+		}
+		DestroyMoveTiles();
+	}
+	else if (CurrentPlayer == 1)
+	{
+		for (ABasePiece* Obj : GField->BPiecesArray)
+		{
+			if (Obj->GetBoardPosition() == GField->BPiecesArray[RandIdx]->GetBoardPosition())
+			{
+				FVector2D OldPosition = Obj->GetBoardPosition();
+				for (ATile* OldTile : GField->TileArray)
+				{
+					if (OldTile->GetGridPosition() == OldPosition)
+					{
+						OldTile->SetTileStatus(ETileStatus::EMPTY);
+					}
+				}
+				for (ABasePiece* PieceToEat : GField->WPiecesArray)
+				{
+					//for (ATile* SpawnedTile : SpawnedTileArray)
+					{
+						if (PieceToEat->GetBoardPosition() == NewPosition && /*SpawnedTile->GetTileType() == ETileType::Eat &&*/ PieceToEat->GetPieceToEat() == EPieceToEat::ToBeEaten)
+						{
+							PieceToEat->SetIsPieceOnBoard(EPieceOnBoard::NotOnBoard);
+							PieceToEat->SetActorLocation(PieceToEat->GetActorLocation() - FVector(0, 0, 1000));
+							//PieceToEat->Destroy();
+						}
+					}
+					/*if (PieceToEat->GetBoardPosition() == NewPosition && PieceToEat->GetPieceToEat() == EPieceToEat::ToBeEaten)
+					{
+						PieceToEat->SetIsPieceOnBoard(EPieceOnBoard::NotOnBoard);
+						PieceToEat->SetActorLocation(PieceToEat->GetActorLocation() - FVector(0, 0, 1000));
+						//PieceToEat->Destroy();
+						//GField->BPiecesArray.Remove(PieceToEat);
+					}*/
+				}
+				Obj->SetBoardPosition(NewPosition[0], NewPosition[1]);
+				Obj->SetActorLocation(GField->GetRelativeLocationByXYPosition(NewPosition[0], NewPosition[1]) + FVector(0, 0, 10));
+				//Obj->SetPieceStatus(EPieceStatus::NotClicked);
+				for (ATile* NewTile : GField->TileArray)
+				{
+					if (NewTile->GetGridPosition() == NewPosition)
+					{
+						NewTile->SetTileStatus(ETileStatus::OCCUPIED);
+					}
 				}
 			}
 		}
 	}
-	DestroyMoveTiles();
+	TurnNextPlayer();
 }
 
 bool AChess_GameMode::IsPieceBlack(const FVector2D& Position)
@@ -607,18 +657,185 @@ void AChess_GameMode::MoveBlackPiece()
 
 	for (ABasePiece* CurrPiece : GField->BPiecesArray)
 	{
-		if (CurrPiece->GetPieceStatus() == EPieceStatus::Clicked)
+		if (CurrPiece->GetBoardPosition() == GField->BPiecesArray[RandIdx]->GetBoardPosition())
+			//if (CurrPiece->GetPieceStatus() == EPieceStatus::Clicked)
 		{
-			if (CurrPiece->GetPiece() == EPiece::Pawn) 
+			FVector2D PiecePosition = CurrPiece->GetBoardPosition();
+
+			if (CurrPiece->GetPiece() == EPiece::Pawn)
 			{
+				FVector2D NextPosition = FVector2D(PiecePosition[0] - 1, PiecePosition[1]);
+				FVector2D EatingMove1 = FVector2D(PiecePosition[0] - 1, PiecePosition[1] + 1);
+				FVector2D EatingMove2 = FVector2D(PiecePosition[0] - 1, PiecePosition[1] - 1);
+				if (PiecePosition[0] < GField->Size - 1 && GField->TileIsEmpty(NextPosition[0], NextPosition[1]))
+				{
+					BlackMovesArray.Add(FVector2D(PiecePosition[0] - 1, PiecePosition[1]));
+
+					if (PiecePosition[0] == 6 && GField->TileIsEmpty(NextPosition[0] - 1, NextPosition[1]))
+					{
+						BlackMovesArray.Add(FVector2D(NextPosition[0] + 1, NextPosition[1]));
+
+					}
+
+				}
+				if (PiecePosition[0] < GField->Size - 1 && !(GField->TileIsEmpty(EatingMove1[0], EatingMove1[1])) && IsPieceWhite(EatingMove1) && !(IsPieceBlack(EatingMove1)))
+				{
+					for (ABasePiece* PieceToEat : GField->WPiecesArray)
+					{
+						if (PieceToEat->GetBoardPosition() == FVector2D(PiecePosition[0] - 1, PiecePosition[1] + 1))
+						{
+							PieceToEat->SetPieceToEat(EPieceToEat::ToBeEaten);
+						}
+					}
+					BlackMovesArray.Add(FVector2D(PiecePosition[0] - 1, PiecePosition[1] + 1));
+				}
+				if (PiecePosition[0] < GField->Size - 1 && !(GField->TileIsEmpty(EatingMove2[0], EatingMove2[1])) && IsPieceWhite(EatingMove2) && !(IsPieceBlack(EatingMove2)))
+				{
+					for (ABasePiece* PieceToEat : GField->WPiecesArray)
+					{
+						if (PieceToEat->GetBoardPosition() == FVector2D(PiecePosition[0] - 1, PiecePosition[1] - 1))
+						{
+							PieceToEat->SetPieceToEat(EPieceToEat::ToBeEaten);
+						}
+					}
+					BlackMovesArray.Add(FVector2D(PiecePosition[0] - 1, PiecePosition[1] - 1));
+				}
 
 			}
 			if (CurrPiece->GetPiece() == EPiece::King)
 			{
+				TArray<FVector2D> KingMoves;
+				KingMoves.Add(FVector2D(1, 0));
+				KingMoves.Add(FVector2D(1, 1));
+				KingMoves.Add(FVector2D(0, 1));
+				KingMoves.Add(FVector2D(-1, 1));
+				KingMoves.Add(FVector2D(-1, 0));
+				KingMoves.Add(FVector2D(-1, -1));
+				KingMoves.Add(FVector2D(0, -1));
+				KingMoves.Add(FVector2D(1, -1));
+
+				for (const FVector2D& Move : KingMoves)
+				{
+					if (PiecePosition[0] + Move[0] >= 0 && PiecePosition[0] + Move[0] <= GField->Size && PiecePosition[1] + Move[1] >= 0 && PiecePosition[1] + Move[1] <= GField->Size)
+					{
+						if (GField->TileIsEmpty(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]))
+						{
+							BlackMovesArray.Add(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]));
+						}
+						else if (!(GField->TileIsEmpty(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1])) && IsPieceWhite(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1])) && !(IsPieceBlack(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]))))
+						{
+							for (ABasePiece* PieceToEat : GField->WPiecesArray)
+							{
+								if (PieceToEat->GetBoardPosition() == FVector2D(CurrPiece->GetBoardPosition()[0] - Move[0], CurrPiece->GetBoardPosition()[1] - Move[1]))
+								{
+									PieceToEat->SetPieceToEat(EPieceToEat::ToBeEaten);
+								}
+							}
+							BlackMovesArray.Add(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]));
+						}
+					}
+
+
+
+				}
+
+
 
 			}
 			if (CurrPiece->GetPiece() == EPiece::Rook)
 			{
+				for (int32 x = PiecePosition[0] + 1; x <= GField->Size; x++)
+				{
+					if (GField->TileIsEmpty(x, PiecePosition[1]))
+					{
+						BlackMovesArray.Add(FVector2D(x, PiecePosition[1]));
+					}
+					else if (!(GField->TileIsEmpty(x, PiecePosition[1])) && IsPieceWhite(FVector2D(x, PiecePosition[1])) && !(IsPieceBlack(FVector2D(x, PiecePosition[1]))))
+					{
+						for (ABasePiece* PieceToEat : GField->WPiecesArray)
+						{
+							if (PieceToEat->GetBoardPosition() == FVector2D(x, PiecePosition[1]))
+							{
+								PieceToEat->SetPieceToEat(EPieceToEat::ToBeEaten);
+							}
+						}
+						BlackMovesArray.Add(FVector2D(x, PiecePosition[1]));
+						x = GField->Size + 1;
+					}
+					else
+					{
+						x = GField->Size + 1;
+					}
+				}
+				for (int32 x = PiecePosition[0] - 1; x >= 0; x--)
+				{
+					if (GField->TileIsEmpty(x, PiecePosition[1]))
+					{
+						BlackMovesArray.Add(FVector2D(x, PiecePosition[1]));
+					}
+					else if (!(GField->TileIsEmpty(x, PiecePosition[1])) && IsPieceWhite(FVector2D(x, PiecePosition[1])) && !(IsPieceBlack(FVector2D(x, PiecePosition[1]))))
+					{
+						for (ABasePiece* PieceToEat : GField->WPiecesArray)
+						{
+							if (PieceToEat->GetBoardPosition() == FVector2D(x, PiecePosition[1]))
+							{
+								PieceToEat->SetPieceToEat(EPieceToEat::ToBeEaten);
+							}
+						}
+						BlackMovesArray.Add(FVector2D(x, PiecePosition[1]));
+						x = -1;
+					}
+					else
+					{
+						x = -1;
+					}
+				}
+				for (int32 y = PiecePosition[1] + 1; y <= GField->Size; y++)
+				{
+					if (GField->TileIsEmpty(PiecePosition[0], y))
+					{
+						BlackMovesArray.Add(FVector2D(PiecePosition[0], y));
+					}
+					else if (!(GField->TileIsEmpty(PiecePosition[0], y)) && IsPieceWhite(FVector2D(PiecePosition[0], y)) && !(IsPieceBlack(FVector2D(PiecePosition[0], y))))
+					{
+						for (ABasePiece* PieceToEat : GField->WPiecesArray)
+						{
+							if (PieceToEat->GetBoardPosition() == FVector2D(PiecePosition[0], y))
+							{
+								PieceToEat->SetPieceToEat(EPieceToEat::ToBeEaten);
+							}
+						}
+						BlackMovesArray.Add(FVector2D(PiecePosition[0], y));
+						y = GField->Size + 1;
+					}
+					else
+					{
+						y = GField->Size + 1;
+					}
+				}
+				for (int32 y = PiecePosition[1] - 1; y >= 0; y--)
+				{
+					if (GField->TileIsEmpty(PiecePosition[0], y))
+					{
+						BlackMovesArray.Add(FVector2D(PiecePosition[0], y));
+					}
+					else if (!(GField->TileIsEmpty(PiecePosition[0], y)) && IsPieceWhite(FVector2D(PiecePosition[0], y)) && !(IsPieceBlack(FVector2D(PiecePosition[0], y))))
+					{
+						for (ABasePiece* PieceToEat : GField->WPiecesArray)
+						{
+							if (PieceToEat->GetBoardPosition() == FVector2D(PiecePosition[0], y))
+							{
+								PieceToEat->SetPieceToEat(EPieceToEat::ToBeEaten);
+							}
+						}
+						BlackMovesArray.Add(FVector2D(PiecePosition[0], y));
+						y = -1;
+					}
+					else
+					{
+						y = -1;
+					}
+				}
 
 			}
 			if (CurrPiece->GetPiece() == EPiece::Knight)
@@ -635,41 +852,412 @@ void AChess_GameMode::MoveBlackPiece()
 
 				for (const FVector2D& Move : KnightLMoves)
 				{
-					//if pos0+move0<... and pos1+move1<... etc
-					if (CurrPiece->GetBoardPosition()[0] - Move[0] >= 0 && CurrPiece->GetBoardPosition()[0] - Move[0] <= GField->Size && CurrPiece->GetBoardPosition()[1] - Move[1] >= 0 && CurrPiece->GetBoardPosition()[1] - Move[1] <= GField->Size)
+					if (PiecePosition[0] + Move[0] >= 0 && PiecePosition[0] + Move[0] <= GField->Size && PiecePosition[1] + Move[1] >= 0 && PiecePosition[1] + Move[1] <= GField->Size)
 					{
-						if (GField->TileIsEmpty(CurrPiece->GetBoardPosition()[0] - Move[0], CurrPiece->GetBoardPosition()[1] - Move[1]))
+						if (GField->TileIsEmpty(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]))
 						{
-							BlackMovesArray.Add(FVector2D(CurrPiece->GetBoardPosition()[0] - Move[0], CurrPiece->GetBoardPosition()[1] - Move[1]));
+							BlackMovesArray.Add(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]));
 						}
-						else if (!(GField->TileIsEmpty(CurrPiece->GetBoardPosition()[0] - Move[0], CurrPiece->GetBoardPosition()[1] - Move[1])) && IsPieceWhite(FVector2D(CurrPiece->GetBoardPosition()[0] - Move[0], CurrPiece->GetBoardPosition()[1] - Move[1])) && !(IsPieceBlack(FVector2D(CurrPiece->GetBoardPosition()[0] - Move[0], CurrPiece->GetBoardPosition()[1] - Move[1]))))
+						else if (!(GField->TileIsEmpty(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1])) && IsPieceWhite(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1])) && !(IsPieceBlack(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]))))
 						{
 							for (ABasePiece* PieceToEat : GField->WPiecesArray)
 							{
-								if (PieceToEat->GetBoardPosition() == FVector2D(CurrPiece->GetBoardPosition()[0] - Move[0], CurrPiece->GetBoardPosition()[1] - Move[1])) 
+								if (PieceToEat->GetBoardPosition() == FVector2D(CurrPiece->GetBoardPosition()[0] - Move[0], CurrPiece->GetBoardPosition()[1] - Move[1]))
 								{
 									PieceToEat->SetPieceToEat(EPieceToEat::ToBeEaten);
 								}
 							}
-							BlackMovesArray.Add(FVector2D(CurrPiece->GetBoardPosition()[0] - Move[0], CurrPiece->GetBoardPosition()[1] - Move[1]));
-							
+							BlackMovesArray.Add(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]));
 						}
 					}
+					//if pos0+move0<... and pos1+move1<... etc
+
 
 				}
 			}
 			if (CurrPiece->GetPiece() == EPiece::Bishop)
 			{
+				for (int32 x = PiecePosition[0] + 1; x <= GField->Size; x++)
+				{
+					for (int32 y = PiecePosition[1] + 1; y <= GField->Size; y++)
+					{
+						if ((x - y) == PiecePosition[0] - PiecePosition[1])
+						{
+							if (GField->TileIsEmpty(x, y))
+							{
+								BlackMovesArray.Add(FVector2D(x, y));
+							}
+							else if (!(GField->TileIsEmpty(x, y)) && IsPieceWhite(FVector2D(x, y)) && !(IsPieceBlack(FVector2D(x, y))))
+							{
+								for (ABasePiece* PieceToEat : GField->WPiecesArray)
+								{
+									if (PieceToEat->GetBoardPosition() == FVector2D(x, y))
+									{
+										PieceToEat->SetPieceToEat(EPieceToEat::ToBeEaten);
+									}
+								}
+								BlackMovesArray.Add(FVector2D(x, y));
+
+								x = GField->Size + 1;
+							}
+							else
+							{
+								x = GField->Size + 1;
+							}
+
+						}
+					}
+				}
+				for (int32 x = PiecePosition[0] - 1; x >= 0; x--)
+				{
+					for (int32 y = PiecePosition[1] - 1; y >= 0; y--)
+					{
+						if ((x - y) == PiecePosition[0] - PiecePosition[1])
+						{
+							if (GField->TileIsEmpty(x, y))
+							{
+								BlackMovesArray.Add(FVector2D(x, y));
+							}
+							else if (!(GField->TileIsEmpty(x, y)) && IsPieceWhite(FVector2D(x, y)) && !(IsPieceBlack(FVector2D(x, y))))
+							{
+								for (ABasePiece* PieceToEat : GField->WPiecesArray)
+								{
+									if (PieceToEat->GetBoardPosition() == FVector2D(x, y))
+									{
+										PieceToEat->SetPieceToEat(EPieceToEat::ToBeEaten);
+									}
+								}
+								BlackMovesArray.Add(FVector2D(x, y));
+								x = -1;
+							}
+							else
+							{
+								x = -1;
+							}
+
+						}
+					}
+				}
+				for (int32 x = PiecePosition[0] + 1; x <= GField->Size; x++)
+				{
+					for (int32 y = PiecePosition[1] - 1; y >= 0; y--)
+					{
+						if ((x + y) == PiecePosition[0] + PiecePosition[1])
+						{
+							if (GField->TileIsEmpty(x, y))
+							{
+								BlackMovesArray.Add(FVector2D(x, y));
+							}
+							else if (!(GField->TileIsEmpty(x, y)) && IsPieceWhite(FVector2D(x, y)) && !(IsPieceBlack(FVector2D(x, y))))
+							{
+								for (ABasePiece* PieceToEat : GField->WPiecesArray)
+								{
+									if (PieceToEat->GetBoardPosition() == FVector2D(x, y))
+									{
+										PieceToEat->SetPieceToEat(EPieceToEat::ToBeEaten);
+									}
+								}
+								BlackMovesArray.Add(FVector2D(x, y));
+								x = GField->Size + 1;
+							}
+							else
+							{
+								x = GField->Size + 1;
+							}
+
+						}
+					}
+				}
+				for (int32 x = PiecePosition[0] - 1; x >= 0; x--)
+				{
+					for (int32 y = PiecePosition[1] + 1; y <= GField->Size; y++)
+					{
+						if ((x + y) == PiecePosition[0] + PiecePosition[1])
+						{
+							if (GField->TileIsEmpty(x, y))
+							{
+								BlackMovesArray.Add(FVector2D(x, y));
+							}
+							else if (!(GField->TileIsEmpty(x, y)) && IsPieceWhite(FVector2D(x, y)) && !(IsPieceBlack(FVector2D(x, y))))
+							{
+								for (ABasePiece* PieceToEat : GField->WPiecesArray)
+								{
+									if (PieceToEat->GetBoardPosition() == FVector2D(x, y))
+									{
+										PieceToEat->SetPieceToEat(EPieceToEat::ToBeEaten);
+									}
+								}
+								BlackMovesArray.Add(FVector2D(x, y));
+								x = -1;
+							}
+							else
+							{
+								x = -1;
+							}
+
+						}
+					}
+				}
 
 			}
 			if (CurrPiece->GetPiece() == EPiece::Queen)
 			{
+				for (int32 x = PiecePosition[0] + 1; x <= GField->Size; x++)
+				{
+					if (GField->TileIsEmpty(x, PiecePosition[1]))
+					{
+						BlackMovesArray.Add(FVector2D(x, PiecePosition[1]));
+					}
+					else if (!(GField->TileIsEmpty(x, PiecePosition[1])) && IsPieceWhite(FVector2D(x, PiecePosition[1])) && !(IsPieceBlack(FVector2D(x, PiecePosition[1]))))
+					{
+						for (ABasePiece* PieceToEat : GField->WPiecesArray)
+						{
+							if (PieceToEat->GetBoardPosition() == FVector2D(x, PiecePosition[1]))
+							{
+								PieceToEat->SetPieceToEat(EPieceToEat::ToBeEaten);
+							}
+						}
+						BlackMovesArray.Add(FVector2D(x, PiecePosition[1]));
+						x = GField->Size + 1;
+					}
+					else
+					{
+						x = GField->Size + 1;
+					}
+				}
+				for (int32 x = PiecePosition[0] - 1; x >= 0; x--)
+				{
+					if (GField->TileIsEmpty(x, PiecePosition[1]))
+					{
+						BlackMovesArray.Add(FVector2D(x, PiecePosition[1]));
+					}
+					else if (!(GField->TileIsEmpty(x, PiecePosition[1])) && IsPieceWhite(FVector2D(x, PiecePosition[1])) && !(IsPieceBlack(FVector2D(x, PiecePosition[1]))))
+					{
+						for (ABasePiece* PieceToEat : GField->WPiecesArray)
+						{
+							if (PieceToEat->GetBoardPosition() == FVector2D(x, PiecePosition[1]))
+							{
+								PieceToEat->SetPieceToEat(EPieceToEat::ToBeEaten);
+							}
+						}
+						BlackMovesArray.Add(FVector2D(x, PiecePosition[1]));
+						x = -1;
+					}
+					else
+					{
+						x = -1;
+					}
+				}
+				for (int32 y = PiecePosition[1] + 1; y <= GField->Size; y++)
+				{
+					if (GField->TileIsEmpty(PiecePosition[0], y))
+					{
+						BlackMovesArray.Add(FVector2D(PiecePosition[0], y));
+					}
+					else if (!(GField->TileIsEmpty(PiecePosition[0], y)) && IsPieceWhite(FVector2D(PiecePosition[0], y)) && !(IsPieceBlack(FVector2D(PiecePosition[0], y))))
+					{
+						for (ABasePiece* PieceToEat : GField->WPiecesArray)
+						{
+							if (PieceToEat->GetBoardPosition() == FVector2D(PiecePosition[0], y))
+							{
+								PieceToEat->SetPieceToEat(EPieceToEat::ToBeEaten);
+							}
+						}
+						BlackMovesArray.Add(FVector2D(PiecePosition[0], y));
+						y = GField->Size + 1;
+					}
+					else
+					{
+						y = GField->Size + 1;
+					}
+				}
+				for (int32 y = PiecePosition[1] - 1; y >= 0; y--)
+				{
+					if (GField->TileIsEmpty(PiecePosition[0], y))
+					{
+						BlackMovesArray.Add(FVector2D(PiecePosition[0], y));
+					}
+					else if (!(GField->TileIsEmpty(PiecePosition[0], y)) && IsPieceWhite(FVector2D(PiecePosition[0], y)) && !(IsPieceBlack(FVector2D(PiecePosition[0], y))))
+					{
+						for (ABasePiece* PieceToEat : GField->WPiecesArray)
+						{
+							if (PieceToEat->GetBoardPosition() == FVector2D(PiecePosition[0], y))
+							{
+								PieceToEat->SetPieceToEat(EPieceToEat::ToBeEaten);
+							}
+						}
+						BlackMovesArray.Add(FVector2D(PiecePosition[0], y));
+						y = -1;
+					}
+					else
+					{
+						y = -1;
+					}
+				}
+				for (int32 x = PiecePosition[0] + 1; x <= GField->Size; x++)
+				{
+					for (int32 y = PiecePosition[1] + 1; y <= GField->Size; y++)
+					{
+						if ((x - y) == PiecePosition[0] - PiecePosition[1])
+						{
+							if (GField->TileIsEmpty(x, y))
+							{
+								BlackMovesArray.Add(FVector2D(x, y));
+							}
+							else if (!(GField->TileIsEmpty(x, y)) && IsPieceWhite(FVector2D(x, y)) && !(IsPieceBlack(FVector2D(x, y))))
+							{
+								for (ABasePiece* PieceToEat : GField->WPiecesArray)
+								{
+									if (PieceToEat->GetBoardPosition() == FVector2D(x, y))
+									{
+										PieceToEat->SetPieceToEat(EPieceToEat::ToBeEaten);
+									}
+								}
+								BlackMovesArray.Add(FVector2D(x, y));
+
+								x = GField->Size + 1;
+							}
+							else
+							{
+								x = GField->Size + 1;
+							}
+
+						}
+					}
+				}
+				for (int32 x = PiecePosition[0] - 1; x >= 0; x--)
+				{
+					for (int32 y = PiecePosition[1] - 1; y >= 0; y--)
+					{
+						if ((x - y) == PiecePosition[0] - PiecePosition[1])
+						{
+							if (GField->TileIsEmpty(x, y))
+							{
+								BlackMovesArray.Add(FVector2D(x, y));
+							}
+							else if (!(GField->TileIsEmpty(x, y)) && IsPieceWhite(FVector2D(x, y)) && !(IsPieceBlack(FVector2D(x, y))))
+							{
+								for (ABasePiece* PieceToEat : GField->WPiecesArray)
+								{
+									if (PieceToEat->GetBoardPosition() == FVector2D(x, y))
+									{
+										PieceToEat->SetPieceToEat(EPieceToEat::ToBeEaten);
+									}
+								}
+								BlackMovesArray.Add(FVector2D(x, y));
+								x = -1;
+							}
+							else
+							{
+								x = -1;
+							}
+
+						}
+					}
+				}
+				for (int32 x = PiecePosition[0] + 1; x <= GField->Size; x++)
+				{
+					for (int32 y = PiecePosition[1] - 1; y >= 0; y--)
+					{
+						if ((x + y) == PiecePosition[0] + PiecePosition[1])
+						{
+							if (GField->TileIsEmpty(x, y))
+							{
+								BlackMovesArray.Add(FVector2D(x, y));
+							}
+							else if (!(GField->TileIsEmpty(x, y)) && IsPieceWhite(FVector2D(x, y)) && !(IsPieceBlack(FVector2D(x, y))))
+							{
+								for (ABasePiece* PieceToEat : GField->WPiecesArray)
+								{
+									if (PieceToEat->GetBoardPosition() == FVector2D(x, y))
+									{
+										PieceToEat->SetPieceToEat(EPieceToEat::ToBeEaten);
+									}
+								}
+								BlackMovesArray.Add(FVector2D(x, y));
+								x = GField->Size + 1;
+							}
+							else
+							{
+								x = GField->Size + 1;
+							}
+
+						}
+					}
+				}
+				for (int32 x = PiecePosition[0] - 1; x >= 0; x--)
+				{
+					for (int32 y = PiecePosition[1] + 1; y <= GField->Size; y++)
+					{
+						if ((x + y) == PiecePosition[0] + PiecePosition[1])
+						{
+							if (GField->TileIsEmpty(x, y))
+							{
+								BlackMovesArray.Add(FVector2D(x, y));
+							}
+							else if (!(GField->TileIsEmpty(x, y)) && IsPieceWhite(FVector2D(x, y)) && !(IsPieceBlack(FVector2D(x, y))))
+							{
+								for (ABasePiece* PieceToEat : GField->WPiecesArray)
+								{
+									if (PieceToEat->GetBoardPosition() == FVector2D(x, y))
+									{
+										PieceToEat->SetPieceToEat(EPieceToEat::ToBeEaten);
+									}
+								}
+								BlackMovesArray.Add(FVector2D(x, y));
+								x = -1;
+							}
+							else
+							{
+								x = -1;
+							}
+
+						}
+					}
+				}
 
 			}
 		}
 	}
+	if (BlackMovesArray.Num() > 0)
+	{
+		int32 RandMove = FMath::RandRange(0, BlackMovesArray.Num() - 1);
+		FVector2D NewPosition = BlackMovesArray[RandMove];
+		MoveClickedPiece(NewPosition);
+		BlackMovesArray.Empty();
+	}
+	else
+	{
+		//GField->BPiecesArray[RandIdx]->SetPieceStatus(EPieceStatus::NotClicked);
+		SetBlackToMove();
+		MoveBlackPiece();
+	}
+
+
+
+
 }
 
+void AChess_GameMode::SetBlackToMove()
+{
+	RandIdx = FMath::RandRange(0, GField->BPiecesArray.Num() - 1);
+
+	while (GField->BPiecesArray[RandIdx]->GetIsPieceOnBoard() == EPieceOnBoard::NotOnBoard)
+	{
+		RandIdx = FMath::RandRange(0, GField->BPiecesArray.Num() - 1);
+
+	}
+	//if (GField->BPiecesArray[RandIdx]->GetIsPieceOnBoard() != EPieceOnBoard::NotOnBoard)
+//GField->BPiecesArray[RandIdx]->SetPieceStatus(EPieceStatus::Clicked);
+	GField->BPiecesArray[RandIdx]->SetOldPosition((GField->BPiecesArray[RandIdx]->GetBoardPosition())[0], (GField->BPiecesArray[RandIdx]->GetBoardPosition())[1]);
+
+}
+
+int32 AChess_GameMode::GetBlackArraySize()
+{
+	int32 Size = GField->BPiecesArray.Num();
+	return Size;
+}
 
 
 

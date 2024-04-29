@@ -48,6 +48,13 @@ enum class EPieceToEat : uint8
 	
 };
 
+UENUM()
+enum class EPieceOnBoard : uint8
+{
+	NotOnBoard,
+	OnBoard,
+};
+
 UCLASS()
 class CHESS_YEHUIJIE_API ABasePiece : public AActor
 {
@@ -87,6 +94,10 @@ public:
 
 	EPieceToEat GetPieceToEat();
 
+	void SetIsPieceOnBoard(const EPieceOnBoard OnBoard);
+
+	EPieceOnBoard GetIsPieceOnBoard();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -119,6 +130,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EPieceToEat PieceToEat;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	EPieceOnBoard IsPieceOnBoard;
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

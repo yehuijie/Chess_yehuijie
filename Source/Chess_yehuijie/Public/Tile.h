@@ -26,7 +26,7 @@ public:
 	ATile();
 
 	// set the player owner and the status of a tile
-	void SetTileStatus(const int32 TileOwner, const ETileStatus TileStatus);
+	void SetTileStatus(const ETileStatus TileStatus);
 
 	// get the tile status
 	ETileStatus GetTileStatus();
@@ -55,8 +55,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	ETileStatus Status;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	int32 PlayerColor;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	//int32 PlayerColor;
 
 	// (x, y) position of the tile
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

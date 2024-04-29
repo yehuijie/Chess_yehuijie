@@ -29,8 +29,7 @@ public:
 	// tracks the number of moves in order to signal a drawn game -> registo?
 	int32 MoveCounter;
 
-	int32 debugX;
-	int32 debugY;
+	int32 RandIdx;
 
 	// TSubclassOf is a template class that provides UClass type safety.
 	UPROPERTY(EditDefaultsOnly)
@@ -128,6 +127,10 @@ public:
 	void SetPieceToNotClicked();
 
 	void MoveBlackPiece();
+
+	void SetBlackToMove();
+
+	int32 GetBlackArraySize();
 
 	
 	//void DestroyClickedPiece();
