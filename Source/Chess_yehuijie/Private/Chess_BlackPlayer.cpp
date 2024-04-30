@@ -46,8 +46,8 @@ void AChess_BlackPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 void AChess_BlackPlayer::OnTurn()
 {
-	IsMyTurn = true;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Your Turn"));
+	IsBlackTurn = true;
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Black Turn"));
 	//GameInstance->SetTurnMessage(TEXT("Human Turn"));
 }
 
@@ -66,7 +66,7 @@ void AChess_BlackPlayer::OnLose()
 
 void AChess_BlackPlayer::OnClick()
 {
-	//Structure containing information about one hit of a trace, such as point of impact and surface normal at that point
+	/*//Structure containing information about one hit of a trace, such as point of impact and surface normal at that point
 	FHitResult Hit = FHitResult(ForceInit);
 	// GetHitResultUnderCursor function sends a ray from the mouse position and gives the corresponding hit results
 	GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(ECollisionChannel::ECC_Pawn, true, Hit);
@@ -78,14 +78,14 @@ void AChess_BlackPlayer::OnClick()
 		{
 			EPiece CurrPieceType = CurrPiece->GetPiece();
 			FVector2D PositionOnClick = CurrPiece->GetBoardPosition();
-			if (CurrPiece->IsA(AWhitePiece::StaticClass()) /* && CurrPieceType == EPiece::Pawn*/)
+			if (CurrPiece->IsA(ABlackPiece::StaticClass()) /* && CurrPieceType == EPiece::Pawn)
 			{
 				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("pawn"));
 				CurrPiece->SetPieceStatus(EPieceStatus::Clicked);
 				CurrPiece->SetOldPosition(PositionOnClick[0], PositionOnClick[1]);
 				///need to edit
-				GameMode->ShowMoves(PositionOnClick, CurrPieceType);
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("clicked"));
+				GameMode->ShowMoves(PositionOnClick, CurrPieceType, "Black");
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("clicked"));
 				if (CurrPiece->GetPieceMoves() == EPieceMoves::Spawned)
 				{
 					FirstClick = false;
@@ -117,7 +117,7 @@ void AChess_BlackPlayer::OnClick()
 	}
 
 
-	if (Hit.bBlockingHit && SecondClick && !FirstClick && IsMyTurn)
+	if (Hit.bBlockingHit && SecondClick && !FirstClick && IsBlackTurn)
 	{
 		if (ATile* CurrTile = Cast<ATile>(Hit.GetActor()))
 		{
@@ -126,7 +126,7 @@ void AChess_BlackPlayer::OnClick()
 				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("x=%f,y=%f"), OldPosition[0], OldPosition[1]));
 				FVector2D NewPosition = CurrTile->GetGridPosition();
 				GameMode->MoveClickedPiece(NewPosition);
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("second"));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("second"));
 				//GameMode->DestroyMoveTiles();
 				//GameMode->DestroyClickedPiece();
 				//FVector2D NewPiecePosition = CurrTile->GetGridPosition();
@@ -167,7 +167,7 @@ void AChess_BlackPlayer::OnClick()
 
 		}
 
-	}
+	}*/
 }
 
 

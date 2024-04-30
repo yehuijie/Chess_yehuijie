@@ -52,7 +52,7 @@ void AChess_HumanPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 void AChess_HumanPlayer::OnTurn()
 {
 	IsMyTurn = true;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Your Turn"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("White Turn"));
 	//GameInstance->SetTurnMessage(TEXT("Human Turn"));
 }
 
@@ -88,7 +88,7 @@ void AChess_HumanPlayer::OnClick()
 				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("pawn"));
 				CurrPiece->SetPieceStatus(EPieceStatus::Clicked);
 				CurrPiece->SetOldPosition(PositionOnClick[0], PositionOnClick[1]);
-				GameMode->ShowMoves(PositionOnClick, CurrPieceType);
+				GameMode->ShowMoves(PositionOnClick, CurrPieceType, "White");
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("clicked"));
 				if (CurrPiece->GetPieceMoves() == EPieceMoves::Spawned) 
 				{
@@ -129,7 +129,7 @@ void AChess_HumanPlayer::OnClick()
 			{
 				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("x=%f,y=%f"), OldPosition[0], OldPosition[1]));
 				FVector2D NewPosition = CurrTile->GetGridPosition();
-				GameMode->MoveClickedPiece(NewPosition);
+				GameMode->MoveClickedPiece(NewPosition, "White");
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("second"));
 				//GameMode->DestroyMoveTiles();
 				//GameMode->DestroyClickedPiece();
@@ -154,7 +154,7 @@ void AChess_HumanPlayer::OnClick()
 		{
 			if (PieceToEat->GetPieceToEat() == EPieceToEat::ToBeEaten) {
 				FVector2D NewPosition = PieceToEat->GetBoardPosition();
-				GameMode->MoveClickedPiece(NewPosition);
+				GameMode->MoveClickedPiece(NewPosition, "White");
 			    SecondClick = false;
 			    FirstClick = true;
 				IsMyTurn = false;
@@ -171,6 +171,103 @@ void AChess_HumanPlayer::OnClick()
 			
 		} 
 		 
+	}
+
+	if (Hit.bBlockingHit && FirstClick && !SecondClick && !IsMyTurn)
+	{
+		if (ABasePiece* CurrPiece = Cast<ABasePiece>(Hit.GetActor()))
+		{
+			EPiece CurrPieceType = CurrPiece->GetPiece();
+			FVector2D PositionOnClick = CurrPiece->GetBoardPosition();
+			if (CurrPiece->IsA(ABlackPiece::StaticClass()) /* && CurrPieceType == EPiece::Pawn*/)
+			{
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("pawn"));
+				CurrPiece->SetPieceStatus(EPieceStatus::Clicked);
+				CurrPiece->SetOldPosition(PositionOnClick[0], PositionOnClick[1]);
+				///need to edit
+				GameMode->ShowMoves(PositionOnClick, CurrPieceType, "Black");
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("clicked"));
+				if (CurrPiece->GetPieceMoves() == EPieceMoves::Spawned)
+				{
+					FirstClick = false;
+					SecondClick = true;
+				}
+				else
+				{
+					CurrPiece->SetPieceStatus(EPieceStatus::NotClicked);
+
+				}
+				CurrPiece->SetPieceMoves(EPieceMoves::NotSpawned);
+			}
+
+
+
+
+
+
+			//if (CurrTile->GetTileStatus() == ETileStatus::OCCUPIED)
+			//{
+
+				//CurrTile->SetTileStatus(PlayerNumber, ETileStatus::OCCUPIED);
+				//FVector SpawnPosition = CurrTile->GetActorLocation();
+				//AChess_GameMode* GameMode = Cast<AChess_GameMode>(GetWorld()->GetAuthGameMode());
+				//GameMode->SetCellSign(PlayerNumber, SpawnPosition);
+				//IsMyTurn = false;
+			//}
+		}
+	}
+
+
+	if (Hit.bBlockingHit && SecondClick && !FirstClick && !IsMyTurn)
+	{
+		if (ATile* CurrTile = Cast<ATile>(Hit.GetActor()))
+		{
+			if (CurrTile->GetTileStatus() == ETileStatus::MOVE)
+			{
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("x=%f,y=%f"), OldPosition[0], OldPosition[1]));
+				FVector2D NewPosition = CurrTile->GetGridPosition();
+				GameMode->MoveClickedPiece(NewPosition, "Black");
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("second"));
+				//GameMode->DestroyMoveTiles();
+				//GameMode->DestroyClickedPiece();
+				//FVector2D NewPiecePosition = CurrTile->GetGridPosition();
+				//GameMode->SpawnPiece(NewPiecePosition);
+				SecondClick = false;
+				FirstClick = true;
+				IsMyTurn = true;
+			}
+			else if (CurrTile->GetTileStatus() != ETileStatus::MOVE)
+			{
+				GameMode->DestroyMoveTiles();
+				SecondClick = false;
+				FirstClick = true;
+
+			}
+
+
+
+		}
+		if (ABasePiece* PieceToEat = Cast<ABasePiece>(Hit.GetActor()))
+		{
+			if (PieceToEat->GetPieceToEat() == EPieceToEat::ToBeEaten) {
+				FVector2D NewPosition = PieceToEat->GetBoardPosition();
+				GameMode->MoveClickedPiece(NewPosition, "Black");
+				SecondClick = false;
+				FirstClick = true;
+				IsMyTurn = true;
+
+			}
+			else if (PieceToEat->GetPieceStatus() != EPieceStatus::Clicked)
+			{
+				GameMode->SetPieceToNotClicked();
+				GameMode->DestroyMoveTiles();
+				SecondClick = false;
+				FirstClick = true;
+			}
+
+
+		}
+
 	}
 }
 

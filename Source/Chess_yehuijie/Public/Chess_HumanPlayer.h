@@ -39,6 +39,7 @@ protected:
 	// keeps track of turn
 	bool IsMyTurn = false;
 
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

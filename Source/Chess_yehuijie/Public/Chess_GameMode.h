@@ -97,6 +97,81 @@ public:
 	UPROPERTY(Transient)
 	TArray<FVector2D> BlackMovesArray;
 
+	UPROPERTY(Transient)
+	TArray<FVector2D> BlackPawnMovesArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> QueenMovesArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> KingMovesArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> BishopMovesArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> KnightMovesArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> RookMovesArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> WhiteMovesArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> WhitePawnMovesArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> WhiteQueenMovesArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> WhiteKingMovesArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> WhiteBishopMovesArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> WhiteKnightMovesArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> WhiteRookMovesArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> QueenEatingMovesArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> KingEatingMovesArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> BishopEatingMovesArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> KnightEatingMovesArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> RookEatingMovesArray;
+
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> WhitePawnEatingMovesArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> WhiteQueenEatingMovesArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> WhiteKingEatingMovesArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> WhiteBishopEatingMovesArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> WhiteKnightEatingMovesArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> WhiteRookEatingMovesArray;
+
+	
+
 	//UPROPERTY(Transient)
 	//TMap<FVector2D, ATile*> BlackMovesMap;
 
@@ -108,7 +183,32 @@ public:
 	// called at the start of the game
 	void ChoosePlayerAndStartGame();
 
-    void ShowMoves(const FVector2D& PiecePosition, EPiece Piece);
+	void GeneratePawnMoves(const FVector2D& PiecePosition, FString Color);
+
+	void GenerateQueenMoves(const FVector2D& PiecePosition, FString Color);
+
+	void GenerateKingMoves(const FVector2D& PiecePosition, FString Color);
+
+	void GenerateRookMoves(const FVector2D& PiecePosition, FString Color);
+
+	void GenerateBishopMoves(const FVector2D& PiecePosition, FString Color);
+
+	void GenerateKnightMoves(const FVector2D& PiecePosition, FString Color);
+
+	void GeneratePawnEatingMoves(const FVector2D& PiecePosition, FString Color);
+
+	/*void GenerateQueenEatingMoves(const FVector2D& Position, FString Color);
+
+	void GenerateKingEatingMoves(const FVector2D& Position, FString Color);
+
+	void GenerateRookEatingMoves(const FVector2D& Position, FString Color);
+
+	void GenerateBishopEatingMoves(const FVector2D& Position, FString Color);
+
+	void GenerateKnightEatingMoves(const FVector2D& Position, FString Color);*/
+
+
+    void ShowMoves(const FVector2D& PiecePosition, EPiece Piece, FString Color);
 
 	void SetPieceMovesToSpawned(const FVector2D& Position);
 
@@ -118,7 +218,7 @@ public:
 
 	void DestroyMoveTiles();
 
-	void MoveClickedPiece( const FVector2D& NewPosition);
+	void MoveClickedPiece( const FVector2D& NewPosition, FString Color);
 
 	bool IsPieceBlack(const FVector2D& Position);
 
@@ -126,11 +226,11 @@ public:
 
 	void SetPieceToNotClicked();
 
-	void MoveBlackPiece();
+	//void MoveBlackPiece();
 
-	void SetBlackToMove();
+	//void SetBlackToMove();
 
-	int32 GetBlackArraySize();
+	//int32 GetBlackArraySize();
 
 	
 	//void DestroyClickedPiece();

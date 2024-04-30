@@ -36,14 +36,14 @@ void AChess_RandomPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 void AChess_RandomPlayer::OnTurn()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("AI (Random) Turn"));
+	/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("AI (Random) Turn"));
 	GameInstance->SetTurnMessage(TEXT("AI (Random) Turn"));
 
 	FTimerHandle TimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
 		{
 			AChess_GameMode* GameMode = (AChess_GameMode*)(GetWorld()->GetAuthGameMode());
-			int32 ArraySize = GameMode->GetBlackArraySize();/*GameMode->GField->BPiecesArray.Num()*/
+			int32 ArraySize = GameMode->GetBlackArraySize();/*GameMode->GField->BPiecesArray.Num()
 			if (ArraySize > 0)
 			{
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("rand"));
@@ -55,7 +55,7 @@ void AChess_RandomPlayer::OnTurn()
 				//int32 RandMove = FMath::RandRange(0, ArraySize); 
 				//FVector2D NewPosition = GameMode->BlackMovesArray[RandMove];
 			}
-		}, 1, false);
+		}, 1, false);*/
 	/*TArray<ATile*> FreeCells;
 	AChess_GameMode* GameMode = (AChess_GameMode*)(GetWorld()->GetAuthGameMode());
 	for (auto& CurrTile : GameMode->GField->GetTileArray())

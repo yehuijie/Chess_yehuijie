@@ -33,9 +33,26 @@ void AChess_PlayerController::SetupInputComponent()
 
 void AChess_PlayerController::ClickOnGrid()
 {
-	const auto HumanPlayer = Cast<AChess_HumanPlayer>(GetPawn());
+	/*const auto HumanPlayer = Cast<AChess_HumanPlayer>(GetPawn());
 	if (IsValid(HumanPlayer))
 	{
 		HumanPlayer->OnClick();
+	}
+	const auto BlackPlayer = Cast<AChess_BlackPlayer>(GetPawn());
+	if (IsValid(BlackPlayer))
+	{
+		BlackPlayer->OnClick();
+	}*/
+	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(GetPawn());
+	AChess_BlackPlayer* BlackPlayer = Cast<AChess_BlackPlayer>(GetPawn());
+
+	if (HumanPlayer)
+	{
+		HumanPlayer->OnClick();
+	}
+
+	if (BlackPlayer)
+	{
+		BlackPlayer->OnClick();
 	}
 }
