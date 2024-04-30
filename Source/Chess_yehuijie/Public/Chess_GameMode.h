@@ -98,7 +98,7 @@ public:
 	TArray<FVector2D> BlackMovesArray;
 
 	UPROPERTY(Transient)
-	TArray<FVector2D> BlackPawnMovesArray;
+	TArray<FVector2D> PawnMovesArray;
 
 	UPROPERTY(Transient)
 	TArray<FVector2D> QueenMovesArray;
@@ -118,7 +118,7 @@ public:
 	UPROPERTY(Transient)
 	TArray<FVector2D> WhiteMovesArray;
 
-	UPROPERTY(Transient)
+	/*UPROPERTY(Transient)
 	TArray<FVector2D> WhitePawnMovesArray;
 
 	UPROPERTY(Transient)
@@ -134,7 +134,7 @@ public:
 	TArray<FVector2D> WhiteKnightMovesArray;
 
 	UPROPERTY(Transient)
-	TArray<FVector2D> WhiteRookMovesArray;
+	TArray<FVector2D> WhiteRookMovesArray;*/
 
 	UPROPERTY(Transient)
 	TArray<FVector2D> QueenEatingMovesArray;
@@ -153,9 +153,15 @@ public:
 
 
 	UPROPERTY(Transient)
-	TArray<FVector2D> WhitePawnEatingMovesArray;
+	TArray<FVector2D> PawnEatingMovesArray;
 
 	UPROPERTY(Transient)
+	TArray<FVector2D> WhiteChecksArray;
+
+	UPROPERTY(Transient)
+	TArray<FVector2D> BlackChecksArray;
+
+	/*UPROPERTY(Transient)
 	TArray<FVector2D> WhiteQueenEatingMovesArray;
 
 	UPROPERTY(Transient)
@@ -168,7 +174,7 @@ public:
 	TArray<FVector2D> WhiteKnightEatingMovesArray;
 
 	UPROPERTY(Transient)
-	TArray<FVector2D> WhiteRookEatingMovesArray;
+	TArray<FVector2D> WhiteRookEatingMovesArray;*/
 
 	
 
@@ -195,9 +201,9 @@ public:
 
 	void GenerateKnightMoves(const FVector2D& PiecePosition, FString Color);
 
-	void GeneratePawnEatingMoves(const FVector2D& PiecePosition, FString Color);
+	/*void GeneratePawnEatingMoves(const FVector2D& PiecePosition, FString Color);
 
-	/*void GenerateQueenEatingMoves(const FVector2D& Position, FString Color);
+	void GenerateQueenEatingMoves(const FVector2D& Position, FString Color);
 
 	void GenerateKingEatingMoves(const FVector2D& Position, FString Color);
 
@@ -226,6 +232,11 @@ public:
 
 	void SetPieceToNotClicked();
 
+	void VerifyChecksByColorAfterTurn(FString Color);
+
+	void SetTilesToNotCheckedByColorBeforeTurn(FString Color);
+
+	bool IsPieceProtected();
 	//void MoveBlackPiece();
 
 	//void SetBlackToMove();

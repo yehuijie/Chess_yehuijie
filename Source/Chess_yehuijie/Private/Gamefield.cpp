@@ -125,8 +125,8 @@ void AGameField::GenerateWPawns()
 		Obj->SetPieceStatus(EPieceStatus::NotClicked);
 		Obj->SetPieceColor(EPieceColor::White);
 		Obj->SetBoardPosition(x, y);
-		WPiecesArray.Add(Obj);
-		WPiecesMap.Add(FVector2D(x, y), Obj);
+		PiecesArray.Add(Obj);
+		PiecesMap.Add(FVector2D(x, y), Obj);
 	}
 }
 
@@ -143,8 +143,8 @@ void AGameField::GenerateWKing()
 	Obj->SetPieceStatus(EPieceStatus::NotClicked);
 	Obj->SetPieceColor(EPieceColor::White);
 	Obj->SetBoardPosition(x, y);
-	WPiecesArray.Add(Obj);
-	WPiecesMap.Add(FVector2D(x, y), Obj);
+	PiecesArray.Add(Obj);
+	PiecesMap.Add(FVector2D(x, y), Obj);
 }
 
 void AGameField::GenerateWQueen()
@@ -161,8 +161,8 @@ void AGameField::GenerateWQueen()
 	Obj->SetPieceColor(EPieceColor::White);
 	Obj->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj->SetBoardPosition(x, y);
-	WPiecesArray.Add(Obj);
-	WPiecesMap.Add(FVector2D(x, y), Obj);
+	PiecesArray.Add(Obj);
+	PiecesMap.Add(FVector2D(x, y), Obj);
 }
 
 void AGameField::GenerateWBishops()
@@ -180,8 +180,8 @@ void AGameField::GenerateWBishops()
 	Obj->SetPieceColor(EPieceColor::White);
 	Obj->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj->SetBoardPosition(x, leftY);
-	WPiecesArray.Add(Obj);
-	WPiecesMap.Add(FVector2D(x, leftY), Obj);
+	PiecesArray.Add(Obj);
+	PiecesMap.Add(FVector2D(x, leftY), Obj);
 
 	FVector Location1 = AGameField::GetRelativeLocationByXYPosition(x, rightY) + FVector(0, 0, 10);
 	ABasePiece* Obj1 = GetWorld()->SpawnActor<ABasePiece>(WBishopActor, Location1, FRotator(0, 90, 0));
@@ -191,8 +191,8 @@ void AGameField::GenerateWBishops()
 	Obj1->SetPieceColor(EPieceColor::White);
 	Obj1->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj1->SetBoardPosition(x, rightY);
-	WPiecesArray.Add(Obj1);
-	WPiecesMap.Add(FVector2D(x, rightY), Obj1);
+	PiecesArray.Add(Obj1);
+	PiecesMap.Add(FVector2D(x, rightY), Obj1);
 }
 
 void AGameField::GenerateWKnights()
@@ -210,8 +210,8 @@ void AGameField::GenerateWKnights()
 	Obj->SetPieceColor(EPieceColor::White);
 	Obj->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj->SetBoardPosition(x, leftY);
-	WPiecesArray.Add(Obj);
-	WPiecesMap.Add(FVector2D(x, leftY), Obj);
+	PiecesArray.Add(Obj);
+    PiecesMap.Add(FVector2D(x, leftY), Obj);
 
 	FVector Location1 = AGameField::GetRelativeLocationByXYPosition(x, rightY) + FVector(0, 0, 10);
 	ABasePiece* Obj1 = GetWorld()->SpawnActor<ABasePiece>(WKnightActor, Location1, FRotator(0, 90, 0));
@@ -221,8 +221,8 @@ void AGameField::GenerateWKnights()
 	Obj1->SetPieceColor(EPieceColor::White);
 	Obj1->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj1->SetBoardPosition(x, rightY);
-	WPiecesArray.Add(Obj1);
-	WPiecesMap.Add(FVector2D(x, rightY), Obj1);
+	PiecesArray.Add(Obj1);
+	PiecesMap.Add(FVector2D(x, rightY), Obj1);
 
 }
 
@@ -241,8 +241,8 @@ void AGameField::GenerateWRooks()
 	Obj->SetPieceColor(EPieceColor::White);
 	Obj->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj->SetBoardPosition(x, leftY);
-	WPiecesArray.Add(Obj);
-	WPiecesMap.Add(FVector2D(x, leftY), Obj);
+	PiecesArray.Add(Obj);
+	PiecesMap.Add(FVector2D(x, leftY), Obj);
 
 	FVector Location1 = AGameField::GetRelativeLocationByXYPosition(x, rightY) + FVector(0, 0, 10);
     ABasePiece* Obj1 = GetWorld()->SpawnActor<ABasePiece>(WRookActor, Location1, FRotator(0, 90, 0));
@@ -252,8 +252,8 @@ void AGameField::GenerateWRooks()
 	Obj1->SetPieceColor(EPieceColor::White);
 	Obj1->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj1->SetBoardPosition(x, rightY);
-	WPiecesArray.Add(Obj1);
-	WPiecesMap.Add(FVector2D(x, rightY), Obj1);
+	PiecesArray.Add(Obj1);
+	PiecesMap.Add(FVector2D(x, rightY), Obj1);
 }
 
 void AGameField::GenerateBPawns()
@@ -270,8 +270,8 @@ void AGameField::GenerateBPawns()
 	    Obj->SetPieceColor(EPieceColor::Black);
 		Obj->SetPieceToEat(EPieceToEat::NotToBeEaten);
 		Obj->SetBoardPosition(x, y);
-		BPiecesArray.Add(Obj);
-	    BPiecesMap.Add(FVector2D(x, y), Obj);
+		PiecesArray.Add(Obj);
+	    PiecesMap.Add(FVector2D(x, y), Obj);
 	}
 }
 
@@ -289,8 +289,8 @@ void AGameField::GenerateBKing()
 	Obj->SetPieceColor(EPieceColor::Black);
 	Obj->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj->SetBoardPosition(x, y);
-	BPiecesArray.Add(Obj);
-	BPiecesMap.Add(FVector2D(x, y), Obj);
+	PiecesArray.Add(Obj);
+	PiecesMap.Add(FVector2D(x, y), Obj);
 
 }
 
@@ -308,8 +308,8 @@ void AGameField::GenerateBQueen()
 	Obj->SetPieceColor(EPieceColor::Black);
 	Obj->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj->SetBoardPosition(x, y);
-	BPiecesArray.Add(Obj);
-	BPiecesMap.Add(FVector2D(x, y), Obj);
+	PiecesArray.Add(Obj);
+	PiecesMap.Add(FVector2D(x, y), Obj);
 
 }
 
@@ -327,8 +327,8 @@ void AGameField::GenerateBBishops()
 	Obj->SetPieceColor(EPieceColor::Black);
 	Obj->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj->SetBoardPosition(x, leftY);
-	BPiecesArray.Add(Obj);
-	BPiecesMap.Add(FVector2D(x, leftY), Obj);
+	PiecesArray.Add(Obj);
+	PiecesMap.Add(FVector2D(x, leftY), Obj);
 
 	FVector Location1 = AGameField::GetRelativeLocationByXYPosition(x, rightY) + FVector(0, 0, 10);
 	ABasePiece* Obj1 = GetWorld()->SpawnActor<ABasePiece>(BBishopActor, Location1, FRotator(0, -90, 0));
@@ -338,8 +338,8 @@ void AGameField::GenerateBBishops()
 	Obj1->SetPieceColor(EPieceColor::Black);
 	Obj1->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj1->SetBoardPosition(x, rightY);
-	BPiecesArray.Add(Obj1);
-	BPiecesMap.Add(FVector2D(x, rightY), Obj1);
+	PiecesArray.Add(Obj1);
+	PiecesMap.Add(FVector2D(x, rightY), Obj1);
 }
 
 void AGameField::GenerateBKnights()
@@ -357,8 +357,8 @@ void AGameField::GenerateBKnights()
 	Obj->SetPieceColor(EPieceColor::Black);
 	Obj->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj->SetBoardPosition(x, leftY);
-	BPiecesArray.Add(Obj);
-	BPiecesMap.Add(FVector2D(x, leftY), Obj);
+	PiecesArray.Add(Obj);
+	PiecesMap.Add(FVector2D(x, leftY), Obj);
 
 	FVector Location1 = AGameField::GetRelativeLocationByXYPosition(x, rightY) + FVector(0, 0, 10);
 	ABasePiece* Obj1 = GetWorld()->SpawnActor<ABasePiece>(BKnightActor, Location1, FRotator(0, -90, 0));
@@ -368,8 +368,8 @@ void AGameField::GenerateBKnights()
 	Obj1->SetPieceColor(EPieceColor::Black);
 	Obj1->SetPieceToEat(EPieceToEat::NotToBeEaten);
 	Obj1->SetBoardPosition(x, rightY);
-	BPiecesArray.Add(Obj1);
-	BPiecesMap.Add(FVector2D(x, rightY), Obj1);
+    PiecesArray.Add(Obj1);
+	PiecesMap.Add(FVector2D(x, rightY), Obj1);
 
 }
 
@@ -388,8 +388,8 @@ void AGameField::GenerateBRooks()
 	Obj->SetPieceColor(EPieceColor::Black);
 	Obj->SetBoardPosition(x, leftY);
 	Obj->SetPieceToEat(EPieceToEat::NotToBeEaten);
-	BPiecesArray.Add(Obj);
-	BPiecesMap.Add(FVector2D(x, leftY), Obj);
+	PiecesArray.Add(Obj);
+	PiecesMap.Add(FVector2D(x, leftY), Obj);
 
 	FVector Location1 = AGameField::GetRelativeLocationByXYPosition(x, rightY) + FVector(0, 0, 10);
 	ABasePiece* Obj1 = GetWorld()->SpawnActor<ABasePiece>(BRookActor, Location1, FRotator(0, -90, 0));
@@ -399,8 +399,8 @@ void AGameField::GenerateBRooks()
 	Obj1->SetPieceColor(EPieceColor::Black);
 	Obj1->SetBoardPosition(x, rightY);
 	Obj1->SetPieceToEat(EPieceToEat::NotToBeEaten);
-	BPiecesArray.Add(Obj1);
-	BPiecesMap.Add(FVector2D(x, rightY), Obj1);
+	PiecesArray.Add(Obj1);
+	PiecesMap.Add(FVector2D(x, rightY), Obj1);
 
 }
 

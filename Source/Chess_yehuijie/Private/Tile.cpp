@@ -22,7 +22,8 @@ ATile::ATile()
 	// 0 is white, 1 is black
 	//PlayerColor = -1;
 	TileGridPosition = FVector2D(0, 0);
-
+	IsCheckedB = EIsCheckByBlacks::NotChecked;
+	IsCheckedW = EIsCheckByWhites::NotChecked;
 }
 
 void ATile::SetTileStatus( const ETileStatus TileStatus)
@@ -50,6 +51,28 @@ FVector2D ATile::GetGridPosition()
 {
 	return TileGridPosition;
 }
+
+void ATile::SetIsCheckByBlacks(const EIsCheckByBlacks IsCheck)
+{
+	IsCheckedB = IsCheck;
+}
+
+EIsCheckByBlacks ATile::GetIsCheckbyBlacks()
+{
+	return IsCheckedB;
+}
+
+void ATile::SetIsCheckByWhites(const EIsCheckByWhites IsCheck)
+{
+	IsCheckedW = IsCheck;
+}
+
+EIsCheckByWhites ATile::GetIsCheckbyWhites()
+{
+	return IsCheckedW;
+}
+
+
 
 
 

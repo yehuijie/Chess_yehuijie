@@ -55,6 +55,14 @@ enum class EPieceOnBoard : uint8
 	OnBoard,
 };
 
+/*UENUM()
+enum class EPieceIsProtected : uint8
+{
+	NotProtected,
+	Protected,
+};*/
+
+
 UCLASS()
 class CHESS_YEHUIJIE_API ABasePiece : public AActor
 {
@@ -98,6 +106,10 @@ public:
 
 	EPieceOnBoard GetIsPieceOnBoard();
 
+	//void SetIsPieceProtected(const EPieceIsProtected IsProtected);
+	
+	//EPieceIsProtected GetIsPieceProtected();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -132,6 +144,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EPieceOnBoard IsPieceOnBoard;
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	//EPieceIsProtected IsPieceProtected;
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

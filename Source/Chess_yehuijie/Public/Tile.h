@@ -16,6 +16,20 @@ enum class ETileStatus : uint8
 	EAT   UMETA(DisplayName = "Eat"),
 };
 
+UENUM()
+enum class EIsCheckByBlacks : uint8
+{
+	Checked,
+	NotChecked,
+};
+
+UENUM()
+enum class EIsCheckByWhites : uint8
+{
+	Checked,
+	NotChecked,
+};
+
 UCLASS()
 class CHESS_YEHUIJIE_API ATile : public AActor
 {
@@ -32,13 +46,21 @@ public:
 	ETileStatus GetTileStatus();
 
 	// get the tile owner
-	int32 GetColor();
+	//int32 GetColor();
 
 	// set the (x, y) position
 	void SetGridPosition(const double InX, const double InY);
 
 	// get the (x, y) position
 	FVector2D GetGridPosition();
+
+	void SetIsCheckByBlacks(const EIsCheckByBlacks IsCheck);
+
+	EIsCheckByBlacks GetIsCheckbyBlacks();
+
+	void SetIsCheckByWhites(const EIsCheckByWhites IsCheck);
+
+	EIsCheckByWhites GetIsCheckbyWhites();
 
 
 
@@ -61,6 +83,12 @@ protected:
 	// (x, y) position of the tile
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FVector2D TileGridPosition;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	EIsCheckByBlacks IsCheckedB;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	EIsCheckByWhites IsCheckedW;
 
 	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
 	UMaterialInstance* Black;

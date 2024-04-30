@@ -110,6 +110,16 @@ EPieceOnBoard ABasePiece::GetIsPieceOnBoard()
 	return IsPieceOnBoard;
 }
 
+/*void ABasePiece::SetIsPieceProtected(const EPieceIsProtected IsProtected)
+{
+	IsPieceProtected = IsProtected;
+}
+
+EPieceIsProtected ABasePiece::GetIsPieceProtected()
+{
+	return IsPieceProtected;
+}*/
+
 
 // Called when the game starts or when spawned
 void ABasePiece::BeginPlay()
