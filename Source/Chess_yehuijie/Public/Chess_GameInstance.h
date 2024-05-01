@@ -27,12 +27,6 @@ public:
 	UPROPERTY(EditAnywhere)
 	FString CurrentTurnMessage = "Current Player";
 
-	// increment the score for human player
-	//void IncrementScoreHumanPlayer();
-
-	// increment the score for AI player
-	//void IncrementScoreAiPlayer();
-
 	// get the score for human player
 	UFUNCTION(BlueprintCallable)
 	int32 GetScoreHumanPlayer();
