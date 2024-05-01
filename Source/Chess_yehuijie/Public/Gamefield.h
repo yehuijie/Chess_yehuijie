@@ -35,11 +35,6 @@ public:
 
 	static const int32 NOT_ASSIGNED = -1;
 
-	// BlueprintAssignable Usable with Multicast Delegates only. Exposes the property for assigning in Blueprints.
-	// declare a variable of type FOnReset (delegate)
-	//UPROPERTY(BlueprintAssignable)
-	//FOnReset OnResetEvent; --> maybe?
-
 	// size of field
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 Size;
@@ -61,95 +56,29 @@ public:
 	UPROPERTY(Transient)
 	TMap<FVector2D, ABasePiece*> PiecesMap;
 
-	// keeps track of pawns
-	/*UPROPERTY(Transient)
-	TArray<AWhitePiece*> WKingArray;
-	UPROPERTY(Transient)
-	TMap<FVector2D, AWhitePiece*> WKingMap;
-	
-	UPROPERTY(Transient)
-	TArray<AWhitePiece*> WQueenArray;
-	UPROPERTY(Transient)
-	TMap<FVector2D, AWhitePiece*> WQueenMap;
-	
-	UPROPERTY(Transient)
-	TArray<AWhitePiece*> WBishopArray;
-	UPROPERTY(Transient)
-	TMap<FVector2D, AWhitePiece*> WBishopMap;
-	
-	UPROPERTY(Transient)
-	TArray<AWhitePiece*> WKnightArray;
-	UPROPERTY(Transient)
-	TMap<FVector2D, AWhitePiece*> WKnightMap;
-	
-	UPROPERTY(Transient)
-	TArray<AWhitePiece*> WRookArray;
-	UPROPERTY(Transient)
-	TMap<FVector2D, AWhitePiece*> WRookMap;*/
-
-	//UPROPERTY(Transient)
-	//TArray<ABasePiece*> BPiecesArray;
-	//UPROPERTY(Transient)
-	//TMap<FVector2D, ABasePiece*> BPiecesMap;
-	
-	/*UPROPERTY(Transient)
-	TArray<ABlackPiece*> BKingArray;
-	UPROPERTY(Transient)	
-	TMap<FVector2D, ABlackPiece*> BKingMap;
-
-	UPROPERTY(Transient)
-	TArray<ABlackPiece*> BQueenArray;
-	UPROPERTY(Transient)
-	TMap<FVector2D, ABlackPiece*> BQueenMap;
-
-	UPROPERTY(Transient)
-	TArray<ABlackPiece*> BBishopArray;
-	UPROPERTY(Transient)
-	TMap<FVector2D, ABlackPiece*> BBishopMap;
-
-	UPROPERTY(Transient)
-	TArray<ABlackPiece*> BKnightArray;
-	UPROPERTY(Transient)
-	TMap<FVector2D, ABlackPiece*> BKnightMap;
-
-	UPROPERTY(Transient)
-	TArray<ABlackPiece*> BRookArray;
-	UPROPERTY(Transient)
-	TMap<FVector2D, ABlackPiece*> BRookMap;*/
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AWhitePiece> WPawnActor;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AWhitePiece> WRookActor;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AWhitePiece> WKnightActor;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AWhitePiece> WBishopActor;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AWhitePiece> WQueenActor;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AWhitePiece> WKingActor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<ABlackPiece> BPawnActor;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<ABlackPiece> BRookActor;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<ABlackPiece> BKnightActor;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<ABlackPiece> BBishopActor;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<ABlackPiece> BQueenActor;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<ABlackPiece> BKingActor;
 
@@ -177,37 +106,23 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	// remove all signs from the field
-	//UFUNCTION(BlueprintCallable)
-	//void ResetField();
-
 	// generate an empty game field
 	void GenerateField();
 
 	void GeneratePieces();
 
 	void GenerateWPawns();
-
 	void GenerateWKing();
-
 	void GenerateWQueen();
-
 	void GenerateWBishops();
-
 	void GenerateWKnights();
-
 	void GenerateWRooks();
 
 	void GenerateBPawns();
-
 	void GenerateBKing();
-
 	void GenerateBQueen();
-
 	void GenerateBBishops();
-
 	void GenerateBKnights();
-
 	void GenerateBRooks();
 
 	// return a (x,y) position given a hit (click) on a field tile
@@ -215,18 +130,5 @@ protected:
 
 	// return the array of tile pointers
 	TArray<ATile*>& GetTileArray();
-
-	
-
-	
-	// check if a position is a win position
-	//bool IsWinPosition(const FVector2D Position) const;
-
-	// checking if is a valid field position
-	//inline bool IsValidPosition(const FVector2D Position) const;
-
-	//public:	
-		// Called every frame
-	//	virtual void Tick(float DeltaTime) override;
 
 };
