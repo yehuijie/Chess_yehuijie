@@ -13,7 +13,6 @@ enum class ETileStatus : uint8
 	EMPTY     UMETA(DisplayName = "Empty"),
 	OCCUPIED      UMETA(DisplayName = "Occupied"),
 	MOVE   UMETA(DisplayName = "Move"),
-	EAT   UMETA(DisplayName = "Eat"),
 };
 
 UENUM()
