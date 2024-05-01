@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copia-incollato da TTT, non uso praticamente nulla se non Get/SetTurnMessage in quanto il mio gioco è ancora incompleto
 
 #pragma once
 
