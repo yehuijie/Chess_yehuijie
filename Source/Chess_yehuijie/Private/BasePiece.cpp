@@ -23,7 +23,7 @@ ABasePiece::ABasePiece()
 	OldPosition = FVector2D(0, 0);
 	Piece = EPiece::None;
 	PieceStatus = EPieceStatus::NotClicked;
-	PieceColor = EPieceColor::None;
+	//PieceColor = EPieceColor::None;
 	PieceMoves = EPieceMoves::NotSpawned;
 	PieceToEat = EPieceToEat::NotToBeEaten;
 	IsPieceOnBoard = EPieceOnBoard::OnBoard;
@@ -57,14 +57,14 @@ EPieceStatus ABasePiece::GetPieceStatus()
 	return PieceStatus;
 }
 
-void ABasePiece::SetPieceColor(const EPieceColor Color)
-{
-	PieceColor = Color;
-}
-EPieceColor ABasePiece::GetPieceColor()
-{
-	return PieceColor;
-}
+//void ABasePiece::SetPieceColor(const EPieceColor Color)
+//{
+//	PieceColor = Color;
+//}
+//EPieceColor ABasePiece::GetPieceColor()
+//{
+//	return PieceColor;
+//}
 
 void ABasePiece::SetOldPosition(const double InX, const double InY)
 {
