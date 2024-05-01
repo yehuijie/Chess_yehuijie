@@ -41,25 +41,18 @@ public:
 
 	// set the player owner and the status of a tile
 	void SetTileStatus(const ETileStatus TileStatus);
-
 	// get the tile status
 	ETileStatus GetTileStatus();
 
-	// get the tile owner
-	//int32 GetColor();
-
 	// set the (x, y) position
 	void SetGridPosition(const double InX, const double InY);
-
 	// get the (x, y) position
 	FVector2D GetGridPosition();
 
 	void SetIsCheckByBlacks(const EIsCheckByBlacks IsCheck);
-
 	EIsCheckByBlacks GetIsCheckbyBlacks();
 
 	void SetIsCheckByWhites(const EIsCheckByWhites IsCheck);
-
 	EIsCheckByWhites GetIsCheckbyWhites();
 
 
@@ -77,9 +70,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	ETileStatus Status;
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	//int32 PlayerColor;
-
 	// (x, y) position of the tile
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FVector2D TileGridPosition;
@@ -89,21 +79,4 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EIsCheckByWhites IsCheckedW;
-
-	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
-	UMaterialInstance* Black;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
-	UMaterialInstance* White;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
-	UMaterialInstance* Yellow;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
-	UMaterialInstance* Red;*/
-
-	//public:	
-		// Called every frame
-	//	virtual void Tick(float DeltaTime) override;
-
 };
