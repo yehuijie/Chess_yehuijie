@@ -32,13 +32,13 @@ enum class EPieceMoves : uint8
 	NotSpawned,
 };
 
-UENUM()
-enum class EPieceColor : uint8
-{
-        White,
-        Black,
-	None,
-};
+//UENUM()
+//enum class EPieceColor : uint8
+//{
+//        White,
+//        Black,
+//	None,
+//};
 
 UENUM()
 enum class EPieceToEat : uint8
@@ -76,8 +76,8 @@ public:
 	void SetPieceStatus(const EPieceStatus Status);
 	EPieceStatus GetPieceStatus();
 
-        void SetPieceColor(const EPieceColor Color);
-        EPieceColor GetPieceColor();
+        //void SetPieceColor(const EPieceColor Color);
+        //EPieceColor GetPieceColor();
 
 	void SetOldPosition(const double InX, const double InY);
 	FVector2D GetOldPosition();
@@ -114,8 +114,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EPieceStatus PieceStatus;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	EPieceColor PieceColor;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	//EPieceColor PieceColor;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EPieceMoves PieceMoves;
