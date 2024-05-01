@@ -37,7 +37,7 @@ enum class EPieceColor : uint8
 {
         White,
         Black,
-		None,
+	None,
 };
 
 UENUM()
@@ -55,14 +55,6 @@ enum class EPieceOnBoard : uint8
 	OnBoard,
 };
 
-/*UENUM()
-enum class EPieceIsProtected : uint8
-{
-	NotProtected,
-	Protected,
-};*/
-
-
 UCLASS()
 class CHESS_YEHUIJIE_API ABasePiece : public AActor
 {
@@ -79,36 +71,25 @@ public:
 	FVector2D GetBoardPosition();
 
 	void SetPiece(const EPiece PieceType);
-
 	EPiece GetPiece();
 
 	void SetPieceStatus(const EPieceStatus Status);
-
 	EPieceStatus GetPieceStatus();
 
-    void SetPieceColor(const EPieceColor Color);
-
-    EPieceColor GetPieceColor();
+        void SetPieceColor(const EPieceColor Color);
+        EPieceColor GetPieceColor();
 
 	void SetOldPosition(const double InX, const double InY);
-
 	FVector2D GetOldPosition();
 
 	void SetPieceMoves(const EPieceMoves Moves);
-
 	EPieceMoves GetPieceMoves();
 
 	void SetPieceToEat(const EPieceToEat ToBeEaten);
-
 	EPieceToEat GetPieceToEat();
 
 	void SetIsPieceOnBoard(const EPieceOnBoard OnBoard);
-
 	EPieceOnBoard GetIsPieceOnBoard();
-
-	//void SetIsPieceProtected(const EPieceIsProtected IsProtected);
-	
-	//EPieceIsProtected GetIsPieceProtected();
 
 protected:
 	// Called when the game starts or when spawned
@@ -145,8 +126,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EPieceOnBoard IsPieceOnBoard;
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	//EPieceIsProtected IsPieceProtected;
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
