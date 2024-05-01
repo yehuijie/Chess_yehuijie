@@ -159,5 +159,9 @@ public:
 
 	// called at the end of the game turn
 	void TurnNextPlayer();
+
+        /*void MoveBlackPiece();
+        void SetBlackToMove();
+        int32 GetBlackArraySize();*/
 };
 	
