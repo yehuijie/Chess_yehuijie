@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// I created this Class solely to make recognising Black/White Pieces easier
 
 #pragma once
 
