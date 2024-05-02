@@ -1,5 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// In fondo al file ci sono le funzioni che avevo iniziato a scrivere per provare a far funzionare il RandomPlayer, ma ho riscontrato
+// dei problemi perchè avevo skippato il 5. ed ero passato direttamente al punto 7.
 
 #include "Chess_GameMode.h"
 #include "Chess_PlayerController.h"
@@ -9,27 +9,35 @@
 #include "GameField.h"
 #include "EngineUtils.h"
 
+// Sets default values
 AChess_GameMode::AChess_GameMode()
 {
+	// initialization
 	PlayerControllerClass = AChess_PlayerController::StaticClass();
 	DefaultPawnClass = AChess_HumanPlayer::StaticClass();
 	FieldSize = 8;
 }
 
+// Called when the game starts or when spawned
 void AChess_GameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// tracks if the game is over (non utilizzato)
 	IsGameOver = false;
 
+	// tracks the number of moves in order to signal a drawn game (non utilizzato)
 	MoveCounter = 0;
 
+	// random index to select a random Piece for the RandomPlayer (non utilizzato)
 	RandIdx = 0;
 
+	// Casts a HumanPlayer within the Current World, if Failed it returns nullptr
 	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(*TActorIterator<AChess_HumanPlayer>(GetWorld()));
 
 	if (GameFieldClass != nullptr)
 	{
+		// Spawn the GameField/Chessboard and Set the FieldSize
 		GField = GetWorld()->SpawnActor<AGameField>(GameFieldClass);
 		GField->Size = FieldSize;
 
@@ -39,43 +47,57 @@ void AChess_GameMode::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("Game Field is null"));
 	}
 
+	// Set a Fixed Camera
 	float CameraPosX = ((GField->TileSize * (FieldSize + ((FieldSize - 1) * GField->NormalizedCellPadding) - (FieldSize - 1))) / 2) - (GField->TileSize / 2);
 	FVector CameraPos(CameraPosX, CameraPosX, 1000.0f);
 	HumanPlayer->SetActorLocationAndRotation(CameraPos, FRotationMatrix::MakeFromX(FVector(0, 0, -1)).Rotator());
 
-	// Human player = 0
+	// Human player = 0, add it to the Players Array
 	Players.Add(HumanPlayer);
+
+	// Manca un secondo player aggiunto nell'Array perchè non sono riuscito ad implemetare il RandomPlayer ed ho riscontrato 
+	// difficolta con BlackPlayer, nel senso che non partiva il turno dei Neri
 	
 	//AChess_BlackPlayer* BlackPlayer = GetWorld()->SpawnActor<AChess_BlackPlayer>(FVector(), FRotator());
 	//Players.Add(BlackPlayer);
 
+	// called at the start of the game to pick who is starting
 	this->ChoosePlayerAndStartGame();
 }
 
+// It's Fixed that White always starts
 void AChess_GameMode::ChoosePlayerAndStartGame()
 {
-	CurrentPlayer = 0; // 0 = human and always starts
+	// 0 = Human/White and always starts
+	CurrentPlayer = 0; 
+	// non utilizzato
 	MoveCounter += 1;
+	// Calls OnTurn of the starting Player
 	Players[CurrentPlayer]->OnTurn();
 }
 
+// Called when a Pawn is Clicked, in order to generate the possible Moves and fill the respective Arrays
 void AChess_GameMode::GeneratePawnMoves(const FVector2D& PiecePosition, FString Color)
 {
+	// If it's a White Pawn, then it Moves Forward, x=(x+1) Position
 	if (Color == "White")
 	{
 		FVector2D NextPosition = FVector2D(PiecePosition[0] + 1, PiecePosition[1]);
 		FVector2D EatingMove1 = FVector2D(PiecePosition[0] + 1, PiecePosition[1] + 1);
 		FVector2D EatingMove2 = FVector2D(PiecePosition[0] + 1, PiecePosition[1] - 1);
+		// If we're within the Board and NextPosition Tile is Empty, add the Position to PawnMovesArray
 		if (PiecePosition[0] < GField->Size - 1 && GField->TileIsEmpty(NextPosition[0], NextPosition[1]))
 		{
 			PawnMovesArray.Add(NextPosition);
-
+			
+                        // If the White Pawn is in its starting Position, then it can Move 2 Tiles Foward
 			if (PiecePosition[0] == 1 && GField->TileIsEmpty(NextPosition[0] + 1, NextPosition[1]))
 			{
 				PawnMovesArray.Add(FVector2D(NextPosition[0] + 1, NextPosition[1]));
 			}
 
 		}
+		// The Pawn can Eat Diagonally, if one of the 2 Diagonal Tiles in front of him are not Empty and are Occupied by a Black Piece, add the Position to PawnEatingMovesArray
 		if (PiecePosition[0] < GField->Size - 1 && !(GField->TileIsEmpty(EatingMove1[0], EatingMove1[1])) && IsPieceBlack(EatingMove1) && !(IsPieceWhite(EatingMove1)))
 		{
 			PawnEatingMovesArray.Add(EatingMove1);
@@ -85,21 +107,25 @@ void AChess_GameMode::GeneratePawnMoves(const FVector2D& PiecePosition, FString 
 			PawnEatingMovesArray.Add(EatingMove2);
 		}
 	}
+	// If it's a Black Pawn, then it Moves Backwards, x=(x-1) Position
 	if (Color == "Black")
 	{
 		FVector2D NextPosition = FVector2D(PiecePosition[0] - 1, PiecePosition[1]);
 		FVector2D EatingMove1 = FVector2D(PiecePosition[0] - 1, PiecePosition[1] + 1);
 		FVector2D EatingMove2 = FVector2D(PiecePosition[0] - 1, PiecePosition[1] - 1);
 
+		// If we're within the Board and NextPosition Tile is Empty, add the Position to PawnMovesArray
 		if (PiecePosition[0] < GField->Size - 1 && GField->TileIsEmpty(NextPosition[0], NextPosition[1]))
 		{
 			PawnMovesArray.Add(NextPosition);
 
+			 // If the White Pawn is in its starting Position, then it can Move 2 Tiles Backwards
 			if (PiecePosition[0] == 6 && GField->TileIsEmpty(NextPosition[0] - 1, NextPosition[1]))
 			{
 				PawnMovesArray.Add(FVector2D(NextPosition[0] - 1, NextPosition[1]));
 			}
 		}
+		// The Pawn can Eat Diagonally, if one of the 2 Diagonal Tiles in behind of him are not Empty and are Occupied by a White Piece, add the Position to PawnEatingMovesArray
 		if (PiecePosition[0] < GField->Size - 1 && !(GField->TileIsEmpty(EatingMove1[0], EatingMove1[1])) && IsPieceWhite(EatingMove1) && !(IsPieceBlack(EatingMove1)))
 		{
 			PawnEatingMovesArray.Add(EatingMove1);
@@ -111,112 +137,138 @@ void AChess_GameMode::GeneratePawnMoves(const FVector2D& PiecePosition, FString 
 	}
 }
 
+// Called when a Queen is Clicked, in order to generate the possible Moves and fill the respective Arrays
 void AChess_GameMode::GenerateQueenMoves(const FVector2D& PiecePosition, FString Color)
 {
+	// checks that the Forward Move doesn't go out of the Board
 	for (int32 x = PiecePosition[0] + 1; x <= GField->Size; x++)
 	{
+		// If the NextPosition Tile is Empty, it keeps adding the NextPostion to the QueenMovesArray, it Stops when Finds another Piece, so it backs out of the For
 		if (GField->TileIsEmpty(x, PiecePosition[1]))
 		{
 			QueenMovesArray.Add(FVector2D(x, PiecePosition[1]));
 		}
+		// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the QueenEatingMovesArray
 		else if (Color == "White" && !(GField->TileIsEmpty(x, PiecePosition[1])) && IsPieceBlack(FVector2D(x, PiecePosition[1])) && !(IsPieceWhite(FVector2D(x, PiecePosition[1]))))
 		{
 			QueenEatingMovesArray.Add(FVector2D(x, PiecePosition[1]));
 			x = GField->Size + 1;
 		}
+		// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the QueenEatingMovesArray
 		else if (Color == "Black" && !(GField->TileIsEmpty(x, PiecePosition[1])) && IsPieceWhite(FVector2D(x, PiecePosition[1])) && !(IsPieceBlack(FVector2D(x, PiecePosition[1]))))
 		{
 			QueenEatingMovesArray.Add(FVector2D(x, PiecePosition[1]));
 			x = GField->Size + 1;
 		}
+		// If the NextPosition is Occupied by a Piece of the same Color, get out of the For
 		else
 		{
 			x = GField->Size + 1;
 		}
 	}
+	// checks that the Backward Move doesn't go out of the Board
 	for (int32 x = PiecePosition[0] - 1; x >= 0; x--)
 	{
+		// If the NextPosition Tile is Empty, it keeps adding the NextPostion to the QueenMovesArray, it Stops when Finds another Piece, so it backs out of the For
 		if (GField->TileIsEmpty(x, PiecePosition[1]))
 		{
 			QueenMovesArray.Add(FVector2D(x, PiecePosition[1]));
 		}
+		// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the QueenEatingMovesArray
 		else if (Color == "White" && !(GField->TileIsEmpty(x, PiecePosition[1])) && IsPieceBlack(FVector2D(x, PiecePosition[1])) && !(IsPieceWhite(FVector2D(x, PiecePosition[1]))))
 		{
 			QueenEatingMovesArray.Add(FVector2D(x, PiecePosition[1]));
 			x = -1;
 		}
+		// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the QueenEatingMovesArray
 		else if (Color == "Black" && !(GField->TileIsEmpty(x, PiecePosition[1])) && IsPieceWhite(FVector2D(x, PiecePosition[1])) && !(IsPieceBlack(FVector2D(x, PiecePosition[1]))))
 		{
 			QueenEatingMovesArray.Add(FVector2D(x, PiecePosition[1]));
 			x = -1;
 		}
+		// If the NextPosition is Occupied by a Piece of the same Color, get out of the For
 		else
 		{
 			x = -1;
 		}
 	}
+	// checks that the Move to the Right doesn't go out of the Board
 	for (int32 y = PiecePosition[1] + 1; y <= GField->Size; y++)
 	{
+		// If the NextPosition Tile is Empty, it keeps adding the NextPostion to the QueenMovesArray, it Stops when Finds another Piece, so it backs out of the For
 		if (GField->TileIsEmpty(PiecePosition[0], y))
 		{
 			QueenMovesArray.Add(FVector2D(PiecePosition[0], y));
 		}
+		// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the QueenEatingMovesArray
 		else if (Color == "White" && !(GField->TileIsEmpty(PiecePosition[0], y)) && IsPieceBlack(FVector2D(PiecePosition[0], y)) && !(IsPieceWhite(FVector2D(PiecePosition[0], y))))
 		{
 			QueenEatingMovesArray.Add(FVector2D(PiecePosition[0], y));;
 			y = GField->Size + 1;
 		}
+		// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the QueenEatingMovesArray
 		else if (Color == "Black" && !(GField->TileIsEmpty(PiecePosition[0], y)) && IsPieceWhite(FVector2D(PiecePosition[0], y)) && !(IsPieceBlack(FVector2D(PiecePosition[0], y))))
 		{
 			QueenEatingMovesArray.Add(FVector2D(PiecePosition[0], y));
 			y = GField->Size + 1;
 		}
+		// If the NextPosition is Occupied by a Piece of the same Color, get out of the For
 		else
 		{
 			y = GField->Size + 1;
 		}
 	}
+	// checks that the Move to the Left doesn't go out of the Board
 	for (int32 y = PiecePosition[1] - 1; y >= 0; y--)
 	{
+		// If the NextPosition Tile is Empty, it keeps adding the NextPostion to the QueenMovesArray, it Stops when Finds another Piece, so it backs out of the For
 		if (GField->TileIsEmpty(PiecePosition[0], y))
 		{
 			QueenMovesArray.Add(FVector2D(PiecePosition[0], y));
 		}
+		// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the QueenEatingMovesArray
 		else if (Color == "White" && !(GField->TileIsEmpty(PiecePosition[0], y)) && IsPieceBlack(FVector2D(PiecePosition[0], y)) && !(IsPieceWhite(FVector2D(PiecePosition[0], y))))
 		{
 			QueenEatingMovesArray.Add(FVector2D(PiecePosition[0], y));
 			y = -1;
 		}
+		// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the QueenEatingMovesArray
 		else if (Color == "Black" && !(GField->TileIsEmpty(PiecePosition[0], y)) && IsPieceWhite(FVector2D(PiecePosition[0], y)) && !(IsPieceBlack(FVector2D(PiecePosition[0], y))))
 		{
 			QueenEatingMovesArray.Add(FVector2D(PiecePosition[0], y));
 			y = -1;
 		}
+		// If the NextPosition is Occupied by a Piece of the same Color, get out of the For
 		else
 		{
 			y = -1;
 		}
 	}
+	// checks that the Move to the Top-Right doesn't go out of the Board
 	for (int32 x = PiecePosition[0] + 1; x <= GField->Size; x++)
 	{
 		for (int32 y = PiecePosition[1] + 1; y <= GField->Size; y++)
 		{
 			if ((x - y) == PiecePosition[0] - PiecePosition[1])
 			{
+				// If the NextPosition Tile is Empty, it keeps adding the NextPostion to the QueenMovesArray, it Stops when Finds another Piece, so it backs out of the For
 				if (GField->TileIsEmpty(x, y))
 				{
 					QueenMovesArray.Add(FVector2D(x, y));
 				}
+				// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the QueenEatingMovesArray
 				else if (Color == "White" && !(GField->TileIsEmpty(x, y)) && IsPieceBlack(FVector2D(x, y)) && !(IsPieceWhite(FVector2D(x, y))))
 				{
 					QueenEatingMovesArray.Add(FVector2D(x, y));
 					x = GField->Size + 1;
 				}
+				// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the QueenEatingMovesArray
 				else if (Color == "Black" && !(GField->TileIsEmpty(x, y)) && IsPieceWhite(FVector2D(x, y)) && !(IsPieceBlack(FVector2D(x, y))))
 				{
 					QueenEatingMovesArray.Add(FVector2D(x, y));
 					x = GField->Size + 1;
 				}
+				// If the NextPosition is Occupied by a Piece of the same Color, get out of the For
 				else
 				{
 					x = GField->Size + 1;
@@ -225,26 +277,31 @@ void AChess_GameMode::GenerateQueenMoves(const FVector2D& PiecePosition, FString
 			}
 		}
 	}
+	// checks that the Move to the Bottom-Left doesn't go out of the Board
 	for (int32 x = PiecePosition[0] - 1; x >= 0; x--)
 	{
 		for (int32 y = PiecePosition[1] - 1; y >= 0; y--)
 		{
 			if ((x - y) == PiecePosition[0] - PiecePosition[1])
 			{
+				// If the NextPosition Tile is Empty, it keeps adding the NextPostion to the QueenMovesArray, it Stops when Finds another Piece, so it backs out of the For
 				if (GField->TileIsEmpty(x, y))
 				{
 					QueenMovesArray.Add(FVector2D(x, y));
 				}
+				// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the QueenEatingMovesArray
 				else if (Color == "White" && !(GField->TileIsEmpty(x, y)) && IsPieceBlack(FVector2D(x, y)) && !(IsPieceWhite(FVector2D(x, y))))
 				{
 					QueenEatingMovesArray.Add(FVector2D(x, y));
 					x = -1;
 				}
+				// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the QueenEatingMovesArray
 				else if (Color == "Black" && !(GField->TileIsEmpty(x, y)) && IsPieceWhite(FVector2D(x, y)) && !(IsPieceBlack(FVector2D(x, y))))
 				{
 					QueenEatingMovesArray.Add(FVector2D(x, y));
 					x = -1;
 				}
+				// If the NextPosition is Occupied by a Piece of the same Color, get out of the For
 				else
 				{
 					x = -1;
@@ -253,26 +310,31 @@ void AChess_GameMode::GenerateQueenMoves(const FVector2D& PiecePosition, FString
 			}
 		}
 	}
+	// checks that the Move to the Top-Left doesn't go out of the Board
 	for (int32 x = PiecePosition[0] + 1; x <= GField->Size; x++)
 	{
 		for (int32 y = PiecePosition[1] - 1; y >= 0; y--)
 		{
 			if ((x + y) == PiecePosition[0] + PiecePosition[1])
 			{
+				// If the NextPosition Tile is Empty, it keeps adding the NextPostion to the QueenMovesArray, it Stops when Finds another Piece, so it backs out of the For
 				if (GField->TileIsEmpty(x, y))
 				{
 					QueenMovesArray.Add(FVector2D(x, y));
 				}
+				// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the QueenEatingMovesArray
 				else if (Color == "White" && !(GField->TileIsEmpty(x, y)) && IsPieceBlack(FVector2D(x, y)) && !(IsPieceWhite(FVector2D(x, y))))
 				{
 					QueenEatingMovesArray.Add(FVector2D(x, y));
 					x = GField->Size + 1;
 				}
+				// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the QueenEatingMovesArray
 				else if (Color == "Black" && !(GField->TileIsEmpty(x, y)) && IsPieceWhite(FVector2D(x, y)) && !(IsPieceBlack(FVector2D(x, y))))
 				{
 					QueenEatingMovesArray.Add(FVector2D(x, y));
 					x = GField->Size + 1;
 				}
+				// If the NextPosition is Occupied by a Piece of the same Color, get out of the For
 				else
 				{
 					x = GField->Size + 1;
@@ -281,27 +343,31 @@ void AChess_GameMode::GenerateQueenMoves(const FVector2D& PiecePosition, FString
 			}
 		}
 	}
+	// checks that the Move to the Bottom-Right doesn't go out of the Board
 	for (int32 x = PiecePosition[0] - 1; x >= 0; x--)
 	{
 		for (int32 y = PiecePosition[1] + 1; y <= GField->Size; y++)
 		{
 			if ((x + y) == PiecePosition[0] + PiecePosition[1])
 			{
+				// If the NextPosition Tile is Empty, it keeps adding the NextPostion to the QueenMovesArray, it Stops when Finds another Piece, so it backs out of the For
 				if (GField->TileIsEmpty(x, y))
 				{
 					QueenMovesArray.Add(FVector2D(x, y));
 				}
+				// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the QueenEatingMovesArray
 				else if (Color == "White" && !(GField->TileIsEmpty(x, y)) && IsPieceBlack(FVector2D(x, y)) && !(IsPieceWhite(FVector2D(x, y))))
 				{
 					QueenEatingMovesArray.Add(FVector2D(x, y));
 					x = -1;
 				}
-
+				// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the QueenEatingMovesArray
 				else if (Color == "Black" && !(GField->TileIsEmpty(x, y)) && IsPieceWhite(FVector2D(x, y)) && !(IsPieceBlack(FVector2D(x, y))))
 				{
 					QueenEatingMovesArray.Add(FVector2D(x, y));
 					x = -1;
 				}
+				// If the NextPosition is Occupied by a Piece of the same Color, get out of the For
 				else
 				{
 					x = -1;
@@ -312,9 +378,10 @@ void AChess_GameMode::GenerateQueenMoves(const FVector2D& PiecePosition, FString
 	}
 }
 
+// Called when a King is Clicked, in order to generate the possible Moves and fill the respective Arrays
 void AChess_GameMode::GenerateKingMoves(const FVector2D& PiecePosition, FString Color)
 {
-	
+	// Array containing all the Possible Moves for the King
 	TArray<FVector2D> KingMoves;
 	KingMoves.Add(FVector2D(1, 0));
 	KingMoves.Add(FVector2D(1, 1));
@@ -328,9 +395,13 @@ void AChess_GameMode::GenerateKingMoves(const FVector2D& PiecePosition, FString 
 	
 
 	for (const FVector2D& Move : KingMoves)
-	{			
+	{	
+		// Durante i Tests mi è sembrato che le mosse del Re non venissero correttamente generate quando il Re dovesse interagine con dei Pedoni, ma non ho fatto in tempo a capirne il motivo
+		
+		// If we're within the Board and NextPosition Tile is Empty, add the Position to KingMovesArray
 		if (PiecePosition[0] + Move[0] >= 0 && PiecePosition[0] + Move[0] <= GField->Size && PiecePosition[1] + Move[1] >= 0 && PiecePosition[1] + Move[1] <= GField->Size)			
 		{
+			// If the King would move to a Tile Checked by the opposing Color, remove the Position from KingMovesArray
 			if (Color == "White" && GField->TileIsEmpty(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]))
 			{
 				KingMovesArray.Add(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]));
@@ -343,6 +414,7 @@ void AChess_GameMode::GenerateKingMoves(const FVector2D& PiecePosition, FString 
 					}
 				}
 			}
+			// If the King would move to a Tile Checked by the opposing Color, remove the Position from KingMovesArray
 			if (Color == "Black" && GField->TileIsEmpty(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]))
 			{
 				KingMovesArray.Add(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]));
@@ -355,11 +427,13 @@ void AChess_GameMode::GenerateKingMoves(const FVector2D& PiecePosition, FString 
 					}
 				}
 			}
+			// If the NextPosition is not Empty, Occupied by the opposing Color, and the Piece is not Protected by another Piece (Meaning that if eaten, would make the King go into a Check), then add the Position to KingEatingMovesArray
 			else if (Color == "White" && !(GField->TileIsEmpty(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1])) && IsPieceBlack(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1])) && !(IsPieceWhite(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]))) && !IsPieceProtected())
 			{
 				KingEatingMovesArray.Add(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]));
 				
 			}
+			// If the NextPosition is not Empty, Occupied by the opposing Color, and the Piece is not Protected by another Piece (Meaning that if eaten, would make the King go into a Check), then add the Position to KingEatingMovesArray
 			else if (Color == "Black" && !(GField->TileIsEmpty(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1])) && IsPieceWhite(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1])) && !(IsPieceBlack(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]))) && !IsPieceProtected())
 			{
 				KingEatingMovesArray.Add(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]));
@@ -369,87 +443,108 @@ void AChess_GameMode::GenerateKingMoves(const FVector2D& PiecePosition, FString 
 	}	
 }
 
+// Called when a Rook is Clicked, in order to generate the possible Moves and fill the respective Arrays
 void AChess_GameMode::GenerateRookMoves(const FVector2D& PiecePosition, FString Color)
 {
+	// checks that the Forward Move doesn't go out of the Board
 	for (int32 x = PiecePosition[0] + 1; x <= GField->Size; x++)
 	{
+		// If the NextPosition Tile is Empty, it keeps adding the NextPostion to the RookMovesArray, it Stops when Finds another Piece, so it backs out of the For
 		if (GField->TileIsEmpty(x, PiecePosition[1]))
 		{
 			RookMovesArray.Add(FVector2D(x, PiecePosition[1]));
 		}
+		// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the RookEatingMovesArray
 		else if (Color == "White" && !(GField->TileIsEmpty(x, PiecePosition[1])) && IsPieceBlack(FVector2D(x, PiecePosition[1])) && !(IsPieceWhite(FVector2D(x, PiecePosition[1]))))
 		{
 			RookEatingMovesArray.Add(FVector2D(x, PiecePosition[1]));
 			x = GField->Size + 1;
 		}
+		// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the RookEatingMovesArray
 		else if (Color == "Black" && !(GField->TileIsEmpty(x, PiecePosition[1])) && IsPieceWhite(FVector2D(x, PiecePosition[1])) && !(IsPieceBlack(FVector2D(x, PiecePosition[1]))))
 		{
 			RookEatingMovesArray.Add(FVector2D(x, PiecePosition[1]));
 			x = GField->Size + 1;
 		}
+		// If the NextPosition is Occupied by a Piece of the same Color, get out of the For
 		else
 		{
 			x = GField->Size + 1;
 		}
 	}
+	// checks that the Backward Move doesn't go out of the Board
 	for (int32 x = PiecePosition[0] - 1; x >= 0; x--)
 	{
+		// If the NextPosition Tile is Empty, it keeps adding the NextPostion to the RookMovesArray, it Stops when Finds another Piece, so it backs out of the For
 		if (GField->TileIsEmpty(x, PiecePosition[1]))
 		{
 			RookMovesArray.Add(FVector2D(x, PiecePosition[1]));
 		}
+		// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the RookEatingMovesArray
 		else if (Color == "White" && !(GField->TileIsEmpty(x, PiecePosition[1])) && IsPieceBlack(FVector2D(x, PiecePosition[1])) && !(IsPieceWhite(FVector2D(x, PiecePosition[1]))))
 		{
 			RookEatingMovesArray.Add(FVector2D(x, PiecePosition[1]));
 			x = -1;
 		}
+		// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the RookEatingMovesArray
 		else if (Color == "Black" && !(GField->TileIsEmpty(x, PiecePosition[1])) && IsPieceWhite(FVector2D(x, PiecePosition[1])) && !(IsPieceBlack(FVector2D(x, PiecePosition[1]))))
 		{
 			RookEatingMovesArray.Add(FVector2D(x, PiecePosition[1]));
 			x = -1;
 		}
+		// If the NextPosition is Occupied by a Piece of the same Color, get out of the For
 		else
 		{
 			x = -1;
 		}
 	}
+	// checks that the Move to the Right doesn't go out of the Board
 	for (int32 y = PiecePosition[1] + 1; y <= GField->Size; y++)
 	{
+		// If the NextPosition Tile is Empty, it keeps adding the NextPostion to the RookMovesArray, it Stops when Finds another Piece, so it backs out of the For
 		if (GField->TileIsEmpty(PiecePosition[0], y))
 		{
 			RookMovesArray.Add(FVector2D(PiecePosition[0], y));
 		}
+		// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the RookEatingMovesArray
 		else if (Color == "White" && !(GField->TileIsEmpty(PiecePosition[0], y)) && IsPieceBlack(FVector2D(PiecePosition[0], y)) && !(IsPieceWhite(FVector2D(PiecePosition[0], y))))
 		{
 			RookEatingMovesArray.Add(FVector2D(PiecePosition[0], y));
 			y = GField->Size + 1;
 		}
+		// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the RookEatingMovesArray
 		else if (Color == "Black" && !(GField->TileIsEmpty(PiecePosition[0], y)) && IsPieceWhite(FVector2D(PiecePosition[0], y)) && !(IsPieceBlack(FVector2D(PiecePosition[0], y))))
 		{
 			RookEatingMovesArray.Add(FVector2D(PiecePosition[0], y));
 			y = GField->Size + 1;
 		}
+		// If the NextPosition is Occupied by a Piece of the same Color, get out of the For
 		else
 		{
 			y = GField->Size + 1;
 		}
 	}
+	// checks that the Move to the Left doesn't go out of the Board
 	for (int32 y = PiecePosition[1] - 1; y >= 0; y--)
 	{
+		// If the NextPosition Tile is Empty, it keeps adding the NextPostion to the RookMovesArray, it Stops when Finds another Piece, so it backs out of the For
 		if (GField->TileIsEmpty(PiecePosition[0], y))
 		{
 			RookMovesArray.Add(FVector2D(PiecePosition[0], y));
 		}
+		// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the RookEatingMovesArray
 		else if (Color == "White" && !(GField->TileIsEmpty(PiecePosition[0], y)) && IsPieceBlack(FVector2D(PiecePosition[0], y)) && !(IsPieceWhite(FVector2D(PiecePosition[0], y))))
 		{
 			RookEatingMovesArray.Add(FVector2D(PiecePosition[0], y));
 			y = -1;
 		}
+		// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the RookEatingMovesArray
 		else if (Color == "Black" && !(GField->TileIsEmpty(PiecePosition[0], y)) && IsPieceWhite(FVector2D(PiecePosition[0], y)) && !(IsPieceBlack(FVector2D(PiecePosition[0], y))))
 		{
 			RookEatingMovesArray.Add(FVector2D(PiecePosition[0], y));
 			y = -1;
 		}
+		// If the NextPosition is Occupied by a Piece of the same Color, get out of the For
 		else
 		{
 			y = -1;
@@ -457,28 +552,34 @@ void AChess_GameMode::GenerateRookMoves(const FVector2D& PiecePosition, FString 
 	}
 }
 
+// Called when a Bishop is Clicked, in order to generate the possible Moves and fill the respective Arrays
 void AChess_GameMode::GenerateBishopMoves(const FVector2D& PiecePosition, FString Color)
 {
+	// checks that the Move to the Top-Right doesn't go out of the Board
 	for (int32 x = PiecePosition[0] + 1; x <= GField->Size; x++)
 	{
 		for (int32 y = PiecePosition[1] + 1; y <= GField->Size; y++)
 		{
 			if ((x - y) == PiecePosition[0] - PiecePosition[1])
 			{
+				// If the NextPosition Tile is Empty, it keeps adding the NextPostion to the BishopMovesArray, it Stops when Finds another Piece, so it backs out of the For
 				if (GField->TileIsEmpty(x, y))
 				{
 					BishopMovesArray.Add(FVector2D(x, y));
 				}
+				// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the BishopEatingMovesArray
 				else if (Color == "White" && !(GField->TileIsEmpty(x, y)) && IsPieceBlack(FVector2D(x, y)) && !(IsPieceWhite(FVector2D(x, y))))
 				{
 					BishopEatingMovesArray.Add(FVector2D(x, y));
 					x = GField->Size + 1;
 				}
+				// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the BishopEatingMovesArray
 				else if (Color == "Black" && !(GField->TileIsEmpty(x, y)) && IsPieceWhite(FVector2D(x, y)) && !(IsPieceBlack(FVector2D(x, y))))
 				{
 					BishopEatingMovesArray.Add(FVector2D(x, y));
 					x = GField->Size + 1;
 				}
+				// If the NextPosition is Occupied by a Piece of the same Color, get out of the For
 				else
 				{
 					x = GField->Size + 1;
@@ -487,26 +588,31 @@ void AChess_GameMode::GenerateBishopMoves(const FVector2D& PiecePosition, FStrin
 			}
 		}
 	}
+	// checks that the Move to the Bottom-Left doesn't go out of the Board
 	for (int32 x = PiecePosition[0] - 1; x >= 0; x--)
 	{
 		for (int32 y = PiecePosition[1] - 1; y >= 0; y--)
 		{
 			if ((x - y) == PiecePosition[0] - PiecePosition[1])
 			{
+				// If the NextPosition Tile is Empty, it keeps adding the NextPostion to the BishopMovesArray, it Stops when Finds another Piece, so it backs out of the For
 				if (GField->TileIsEmpty(x, y))
 				{
 					BishopMovesArray.Add(FVector2D(x, y));
 				}
+				// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the BishopEatingMovesArray
 				else if (Color == "White" && !(GField->TileIsEmpty(x, y)) && IsPieceBlack(FVector2D(x, y)) && !(IsPieceWhite(FVector2D(x, y))))
 				{
 					BishopEatingMovesArray.Add(FVector2D(x, y));
 					x = -1;
 				}
+				// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the BishopEatingMovesArray
 				else if (Color == "Black" && !(GField->TileIsEmpty(x, y)) && IsPieceWhite(FVector2D(x, y)) && !(IsPieceBlack(FVector2D(x, y))))
 				{
 					BishopEatingMovesArray.Add(FVector2D(x, y));
 					x = -1;
 				}
+				// If the NextPosition is Occupied by a Piece of the same Color, get out of the For
 				else
 				{
 					x = -1;
@@ -515,26 +621,31 @@ void AChess_GameMode::GenerateBishopMoves(const FVector2D& PiecePosition, FStrin
 			}
 		}
 	}
+	// checks that the Move to the Top-Left doesn't go out of the Board
 	for (int32 x = PiecePosition[0] + 1; x <= GField->Size; x++)
 	{
 		for (int32 y = PiecePosition[1] - 1; y >= 0; y--)
 		{
 			if ((x + y) == PiecePosition[0] + PiecePosition[1])
 			{
+				// If the NextPosition Tile is Empty, it keeps adding the NextPostion to the BishopMovesArray, it Stops when Finds another Piece, so it backs out of the For
 				if (GField->TileIsEmpty(x, y))
 				{
 					BishopMovesArray.Add(FVector2D(x, y));
 				}
+				// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the BishopEatingMovesArray
 				else if (Color == "White" && !(GField->TileIsEmpty(x, y)) && IsPieceBlack(FVector2D(x, y)) && !(IsPieceWhite(FVector2D(x, y))))
 				{
 					BishopEatingMovesArray.Add(FVector2D(x, y));
 					x = GField->Size + 1;
 				}
+				// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the BishopEatingMovesArray
 				else if (Color == "Black" && !(GField->TileIsEmpty(x, y)) && IsPieceWhite(FVector2D(x, y)) && !(IsPieceBlack(FVector2D(x, y))))
 				{
 					BishopEatingMovesArray.Add(FVector2D(x, y));
 					x = GField->Size + 1;
 				}
+				// If the NextPosition is Occupied by a Piece of the same Color, get out of the For
 				else
 				{
 					x = GField->Size + 1;
@@ -543,27 +654,31 @@ void AChess_GameMode::GenerateBishopMoves(const FVector2D& PiecePosition, FStrin
 			}
 		}
 	}
+	// checks that the Move to the Bottom-Right doesn't go out of the Board
 	for (int32 x = PiecePosition[0] - 1; x >= 0; x--)
 	{
 		for (int32 y = PiecePosition[1] + 1; y <= GField->Size; y++)
 		{
 			if ((x + y) == PiecePosition[0] + PiecePosition[1])
 			{
+				// If the NextPosition Tile is Empty, it keeps adding the NextPostion to the BishopMovesArray, it Stops when Finds another Piece, so it backs out of the For
 				if (GField->TileIsEmpty(x, y))
 				{
 					BishopMovesArray.Add(FVector2D(x, y));
 				}
+				// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the BishopEatingMovesArray
 				else if (Color == "White" && !(GField->TileIsEmpty(x, y)) && IsPieceBlack(FVector2D(x, y)) && !(IsPieceWhite(FVector2D(x, y))))
 				{
 					BishopEatingMovesArray.Add(FVector2D(x, y));
 					x = -1;
 				}
-
+				// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the BishopEatingMovesArray
 				else if (Color == "Black" && !(GField->TileIsEmpty(x, y)) && IsPieceWhite(FVector2D(x, y)) && !(IsPieceBlack(FVector2D(x, y))))
 				{
 					BishopEatingMovesArray.Add(FVector2D(x, y));
 					x = -1;
 				}
+				// If the NextPosition is Occupied by a Piece of the same Color, get out of the For
 				else
 				{
 					x = -1;
@@ -576,6 +691,7 @@ void AChess_GameMode::GenerateBishopMoves(const FVector2D& PiecePosition, FStrin
 
 void AChess_GameMode::GenerateKnightMoves(const FVector2D& PiecePosition, FString Color)
 {
+	// Array containing all the Possible Moves for a Knight
 	TArray<FVector2D> KnightLMoves;
 	KnightLMoves.Add(FVector2D(2, 1));
 	KnightLMoves.Add(FVector2D(2, -1));
@@ -588,16 +704,19 @@ void AChess_GameMode::GenerateKnightMoves(const FVector2D& PiecePosition, FStrin
 
 	for (const FVector2D& Move : KnightLMoves)
 	{
+		// If we're within the Board and NextPosition Tile is Empty, add the Position to KnightMovesArray
 		if (PiecePosition[0] + Move[0] >= 0 && PiecePosition[0] + Move[0] <= GField->Size && PiecePosition[1] + Move[1] >= 0 && PiecePosition[1] + Move[1] <= GField->Size)
 		{
 			if (GField->TileIsEmpty(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]))
 			{
 				KnightMovesArray.Add(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]));
 			}
+			// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the KnightEatingMovesArray
 			else if (!(GField->TileIsEmpty(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1])) && IsPieceBlack(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1])) && !(IsPieceWhite(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]))) && Color == "White")
 			{
 				KnightEatingMovesArray.Add(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]));
 			}
+			// If the NextPosition is Occupied by a Piece of the opposing Color, add the Position to the KnightEatingMovesArray
 			else if (!(GField->TileIsEmpty(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1])) && IsPieceWhite(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1])) && !(IsPieceBlack(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]))) && Color == "Black")
 			{
 				KnightEatingMovesArray.Add(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]));
