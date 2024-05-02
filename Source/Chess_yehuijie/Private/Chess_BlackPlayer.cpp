@@ -1,5 +1,6 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Classe creata dopo aver riscontrato problemi con il Random Player, perche volevo almeno che il gioco fosse a turni e che si concludesse
+// in realta, non sono riuscito a spawnare correttamente questo BlackPlayer, quindi alla fine ho finito per implementare tutto nell'HumanPlayer
+// mi è rimasto questa classe perche non ho fatto in tempo a levarla in Lab
 
 #include "Chess_BlackPlayer.h"
 #include "GameField.h"
