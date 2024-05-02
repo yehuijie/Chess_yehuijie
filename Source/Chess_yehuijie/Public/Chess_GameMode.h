@@ -1,4 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// In fondo al file ci sono le funzioni che avevo iniziato a scrivere per provare a far funzionare il RandomPlayer, ma ho riscontrato
+// dei problemi perchè avevo skippato il 5. ed ero passato direttamente al punto 7.
 
 #pragma once
 
@@ -15,20 +16,23 @@ struct FPosition;
 /**
  * 
  */
+
+// Declaration of AChess_GameMode, which inherits AGameModeBase
 UCLASS()
 class CHESS_YEHUIJIE_API AChess_GameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
 public:
-	// tracks if the game is over
+	// tracks if the game is over (non utilizzato)
 	bool IsGameOver;
 	// array of player interfaces
 	TArray<IChess_PlayerInterface*> Players;
+        // tracks the player on turn 
 	int32 CurrentPlayer;
-	// tracks the number of moves in order to signal a drawn game -> registo?
+	// tracks the number of moves in order to signal a drawn game (non utilizzato)
 	int32 MoveCounter;
-
+        // random index to select a random Piece for the RandomPlayer (non utilizzato)
 	int32 RandIdx;
 
 	// TSubclassOf is a template class that provides UClass type safety.
@@ -50,12 +54,13 @@ public:
 	UPROPERTY(Transient)
 	TMap<FVector2D, ATile*> SpawnedTileMap;
 
-	// TSubclassOf template class that provides UClass type safety
+	// TSubclassOf template class that provides UClass type safety, Yellow Tiles indicate Moving Tiles, Red Tiles are Eating Tiles
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ATile> TileClassYellow;
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ATile> TileClassRed;
 
+        // TSubclassOf template class that provides UClass type safety, one for each Piece
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AActor> WPawnActor;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -81,11 +86,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AActor> BKingActor;
 
+        // Array of all Black/White Moves, of all the Pieces
 	UPROPERTY(Transient)
 	TArray<FVector2D> BlackMovesArray;
         UPROPERTY(Transient)
 	TArray<FVector2D> WhiteMovesArray;
 
+        // Array of Moves (no EatingMoves) of each Piece
 	UPROPERTY(Transient)
 	TArray<FVector2D> PawnMovesArray;
 	UPROPERTY(Transient)
@@ -99,7 +106,8 @@ public:
 	UPROPERTY(Transient)
 	TArray<FVector2D> RookMovesArray;	
 
-	UPROPERTY(Transient)
+	// Array of Eating Moves of each Piece
+        UPROPERTY(Transient)
 	TArray<FVector2D> QueenEatingMovesArray;
 	UPROPERTY(Transient)
 	TArray<FVector2D> KingEatingMovesArray;
@@ -112,12 +120,14 @@ public:
 	UPROPERTY(Transient)
 	TArray<FVector2D> PawnEatingMovesArray;
 
-	UPROPERTY(Transient)
+	// Array of (x,y) Positions that are under Check by Whites/Blacks
+        UPROPERTY(Transient)
 	TArray<FVector2D> WhiteChecksArray;
 	UPROPERTY(Transient)
 	TArray<FVector2D> BlackChecksArray;
 
-	AChess_GameMode();
+	// Sets default values for this actor's properties
+        AChess_GameMode();
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -125,41 +135,53 @@ public:
 	// called at the start of the game
 	void ChoosePlayerAndStartGame();
 
-	void GeneratePawnMoves(const FVector2D& PiecePosition, FString Color);
+	// Called when a specific Piece is Clicked, in order to generate the possible Moves and therefore spawn the SuggestionTiles
+        void GeneratePawnMoves(const FVector2D& PiecePosition, FString Color);
 	void GenerateQueenMoves(const FVector2D& PiecePosition, FString Color);
 	void GenerateKingMoves(const FVector2D& PiecePosition, FString Color);
 	void GenerateRookMoves(const FVector2D& PiecePosition, FString Color);
 	void GenerateBishopMoves(const FVector2D& PiecePosition, FString Color);
 	void GenerateKnightMoves(const FVector2D& PiecePosition, FString Color);
 
+        // Called after Moves are generated and added to their specific Array, Spawns the SuggestionTiles
         void ShowMoves(const FVector2D& PiecePosition, EPiece Piece, FString Color);
 
-	void SetPieceMovesToSpawned(const FVector2D& Position);
+	// Called after the SuggestionTiles are spawned, after its Set to Spawned, we're ready for the second Click from the player
+        void SetPieceMovesToSpawned(const FVector2D& Position);
 
-	void SpawnMovTile(const FVector2D& TilePosition, const FVector2D& PiecePosition);
+	// Called to Spawn Moving/Eating Tiles to suggest Moves
+        void SpawnMovTile(const FVector2D& TilePosition, const FVector2D& PiecePosition);
 	void SpawnEatTile(const FVector2D& TilePosition, const FVector2D& PiecePosition);
 
+        // Called after a Pieces have been moved to destory the SuggestionTiles
 	void DestroyMoveTiles();
 
-	void MoveClickedPiece( const FVector2D& NewPosition, FString Color);
+	// Called when the Second Click is a ValidMove and therefore it moves the Piece
+        void MoveClickedPiece( const FVector2D& NewPosition, FString Color);
 
+	// Called when the second Click is not a ValidMove, sets Clicked Piece to NotClicked to avoid the Piece moving by mistake
+        void SetPieceToNotClicked();
+
+        // Called to check if a Piece is Black/White
 	bool IsPieceBlack(const FVector2D& Position);
 	bool IsPieceWhite(const FVector2D& Position);
 
-	void SetPieceToNotClicked();
+	// Called After a Piece got Moved to generate all the new Tiles that are threatening for the opposing King
+        void VerifyChecksByColorAfterTurn(FString Color);
 
-	void VerifyChecksByColorAfterTurn(FString Color);
-
+        // Called Before a Piece is Moved to Reset the Checking Tiles
 	void SetTilesToNotCheckedByColorBeforeTurn(FString Color);
 
+        // Called when generating King moves, returns true if a Piece cannot be eaten by King cause its Protected by another Piece
 	bool IsPieceProtected();
 
-	// get the next player index
+	// get the next player index (non utilizzato)
 	int32 GetNextPlayer(int32 Player);
 
-	// called at the end of the game turn
+	// called at the end of the game turn (non utilizzato)
 	void TurnNextPlayer();
 
+        // funzioni per il RandomPlayer
         /*void MoveBlackPiece();
         void SetBlackToMove();
         int32 GetBlackArraySize();*/
