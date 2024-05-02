@@ -428,12 +428,14 @@ void AChess_GameMode::GenerateKingMoves(const FVector2D& PiecePosition, FString 
 				}
 			}
 			// If the NextPosition is not Empty, Occupied by the opposing Color, and the Piece is not Protected by another Piece (Meaning that if eaten, would make the King go into a Check), then add the Position to KingEatingMovesArray
+			// Non funziona correttamente perche la logica dietro a IsProtected() è errata
 			else if (Color == "White" && !(GField->TileIsEmpty(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1])) && IsPieceBlack(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1])) && !(IsPieceWhite(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]))) && !IsPieceProtected())
 			{
 				KingEatingMovesArray.Add(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]));
 				
 			}
 			// If the NextPosition is not Empty, Occupied by the opposing Color, and the Piece is not Protected by another Piece (Meaning that if eaten, would make the King go into a Check), then add the Position to KingEatingMovesArray
+			// Non funziona correttamente perche la logica dietro a IsProtected() è errata
 			else if (Color == "Black" && !(GField->TileIsEmpty(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1])) && IsPieceWhite(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1])) && !(IsPieceBlack(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]))) && !IsPieceProtected())
 			{
 				KingEatingMovesArray.Add(FVector2D(PiecePosition[0] + Move[0], PiecePosition[1] + Move[1]));
@@ -725,8 +727,10 @@ void AChess_GameMode::GenerateKnightMoves(const FVector2D& PiecePosition, FStrin
 	}
 }
 
+// Called after Moves are generated and added to their specific Array, Spawns the SuggestionTiles
 void AChess_GameMode::ShowMoves(const FVector2D& PiecePosition, EPiece Piece, FString Color)
 {
+	// If the Clicked Piece is a Pawn, verify that it's in the Piece Array, is not NULL and is onBoard
 	if (Piece == EPiece::Pawn)
 	{
 		for (ABasePiece* Pawn : GField->PiecesArray)
@@ -737,6 +741,7 @@ void AChess_GameMode::ShowMoves(const FVector2D& PiecePosition, EPiece Piece, FS
 				{
 					if (Pawn->GetBoardPosition() == PiecePosition)
 					{
+						// generate the PossibleMoves and Spawn Moving/Eating SuggestionTiles, then Empty each Array to prepare for the next Selected Pawn
 						GeneratePawnMoves(PiecePosition, Color);
 						for (int32 i = 0; i < PawnMovesArray.Num(); i++)
 						{
@@ -753,6 +758,7 @@ void AChess_GameMode::ShowMoves(const FVector2D& PiecePosition, EPiece Piece, FS
 			}
 		}
 	}
+	// If the Clicked Piece is a Rook, verify that it's in the Piece Array, is not NULL and is onBoard
 	if (Piece == EPiece::Rook)
 	{
 		for (ABasePiece* Rook : GField->PiecesArray)
@@ -763,6 +769,7 @@ void AChess_GameMode::ShowMoves(const FVector2D& PiecePosition, EPiece Piece, FS
 				{
 					if (Rook->GetBoardPosition() == PiecePosition)
 					{
+						// generate the PossibleMoves and Spawn Moving/Eating SuggestionTiles, then Empty each Array to prepare for the next Selected Rook
 						GenerateRookMoves(PiecePosition, Color);
 						for (int32 i = 0; i < RookMovesArray.Num(); i++)
 						{
@@ -779,7 +786,8 @@ void AChess_GameMode::ShowMoves(const FVector2D& PiecePosition, EPiece Piece, FS
 			}
 		}
 	}
-    if (Piece == EPiece::Bishop)
+	// If the Clicked Piece is a Bishop, verify that it's in the Piece Array, is not NULL and is onBoard
+        if (Piece == EPiece::Bishop)
 	{
 		for (ABasePiece* Bishop : GField->PiecesArray)
 		{
@@ -789,6 +797,7 @@ void AChess_GameMode::ShowMoves(const FVector2D& PiecePosition, EPiece Piece, FS
 				{
 					if (Bishop->GetBoardPosition() == PiecePosition)
 					{
+						// generate the PossibleMoves and Spawn Moving/Eating SuggestionTiles, then Empty each Array to prepare for the next Selected Bishop
 						GenerateBishopMoves(PiecePosition, Color);
 						for (int32 i = 0; i < BishopMovesArray.Num(); i++)
 						{
@@ -805,7 +814,8 @@ void AChess_GameMode::ShowMoves(const FVector2D& PiecePosition, EPiece Piece, FS
 			}
 		}
 	}
-    if (Piece == EPiece::Knight)
+	// If the Clicked Piece is a King, verify that it's in the Piece Array, is not NULL and is onBoard
+        if (Piece == EPiece::Knight)
 	{
 		for (ABasePiece* Knight : GField->PiecesArray)
 		{
@@ -815,6 +825,7 @@ void AChess_GameMode::ShowMoves(const FVector2D& PiecePosition, EPiece Piece, FS
 				{
 					if (Knight->GetBoardPosition() == PiecePosition)
 					{
+						// generate the PossibleMoves and Spawn Moving/Eating SuggestionTiles, then Empty each Array to prepare for the next Selected Knight
 						GenerateKnightMoves(PiecePosition, Color);
 						for (int32 i = 0; i < KnightMovesArray.Num(); i++)
 						{
@@ -831,6 +842,7 @@ void AChess_GameMode::ShowMoves(const FVector2D& PiecePosition, EPiece Piece, FS
 			}
 		}
 	}
+	// If the Clicked Piece is a Queen, verify that it's in the Piece Array, is not NULL and is onBoard
 	if (Piece == EPiece::Queen)
 	{
 		for (ABasePiece* Queen : GField->PiecesArray)
@@ -841,6 +853,7 @@ void AChess_GameMode::ShowMoves(const FVector2D& PiecePosition, EPiece Piece, FS
 				{
 					if (Queen->GetBoardPosition() == PiecePosition)
 					{
+						// generate the PossibleMoves and Spawn Moving/Eating SuggestionTiles, then Empty each Array to prepare for the next Selected Queen
 						GenerateQueenMoves(PiecePosition, Color);
 						for (int32 i = 0; i < QueenMovesArray.Num(); i++)
 						{
@@ -857,7 +870,7 @@ void AChess_GameMode::ShowMoves(const FVector2D& PiecePosition, EPiece Piece, FS
 			}
 		}
 	}
-
+	// If the Clicked Piece is a King, verify that it's in the Piece Array, is not NULL and is onBoard
 	if (Piece == EPiece::King)
 	{
 		for (ABasePiece* King : GField->PiecesArray)
@@ -868,6 +881,7 @@ void AChess_GameMode::ShowMoves(const FVector2D& PiecePosition, EPiece Piece, FS
 				{
 					if (King->GetBoardPosition() == PiecePosition)
 					{
+						// generate the PossibleMoves and Spawn Moving/Eating SuggestionTiles, then Empty each Array to prepare for the next Selected King
 						GenerateKingMoves(PiecePosition, Color);
 						for (int32 i = 0; i < KingMovesArray.Num(); i++)
 						{
@@ -887,6 +901,7 @@ void AChess_GameMode::ShowMoves(const FVector2D& PiecePosition, EPiece Piece, FS
 	
 }
 
+// Called after the SuggestionTiles are spawned, after its Set to Spawned, we're ready for the second Click from the player
 void AChess_GameMode::SetPieceMovesToSpawned(const FVector2D& Position)
 {
 	for (ABasePiece* Obj : GField->PiecesArray)
@@ -906,24 +921,34 @@ void AChess_GameMode::SetPieceMovesToSpawned(const FVector2D& Position)
 	
 }
 
-void AChess_GameMode::SpawnMovTile(const FVector2D& TilePosition, const FVector2D& PiecePosition/*, EPiece Piece*/)
+// Called to Spawn Moving Tiles to suggest Moves
+void AChess_GameMode::SpawnMovTile(const FVector2D& TilePosition, const FVector2D& PiecePosition)
 {
+	// Get the Positions from the PieceMoveArray and Spawn the YellowTiles Above the BoardTiles 
 	FVector Location = GField->GetRelativeLocationByXYPosition(TilePosition[0], TilePosition[1]) + FVector(0, 0, -5);
 	ATile* Obj = GetWorld()->SpawnActor<ATile>(TileClassYellow, Location, FRotator::ZeroRotator);
+	// Add the Tiles to the SpawnedTileArray and Map
 	SpawnedTileArray.Add(Obj);
 	SpawnedTileMap.Add(FVector2D(TilePosition[0], TilePosition[1]), Obj);
+	// Set the (x,y) Position of the Tiles
 	Obj->SetGridPosition(TilePosition[0], TilePosition[1]);
+	// Set the Status of the Tile to MOVE, in order to find Moving Tiles more easily
 	Obj->SetTileStatus(ETileStatus::MOVE);
 	SetPieceMovesToSpawned(PiecePosition);
 }
 
+// Called to Spawn Eating Tiles to suggest Moves
 void AChess_GameMode::SpawnEatTile(const FVector2D& TilePosition, const FVector2D& PiecePosition)
 {
+	// Get the Positions from the PieceEAtingMoveArray and Spawn the RedTiles Above the BoardTiles but Below the Pieces
 	FVector Location = GField->GetRelativeLocationByXYPosition(TilePosition[0], TilePosition[1]) + FVector(0, 0, -5);
 	ATile* Obj = GetWorld()->SpawnActor<ATile>(TileClassRed, Location, FRotator::ZeroRotator);
+	// Add the Tiles to the SpawnedTileArray and Map
 	SpawnedTileArray.Add(Obj);
 	SpawnedTileMap.Add(FVector2D(TilePosition[0], TilePosition[1]), Obj);
+	// Set the (x,y) Position of the Tiles
 	Obj->SetGridPosition(TilePosition[0], TilePosition[1]);
+	// Set the Pieces Above EatingTimes to ToBeEaten, in order to make Eating a Piece easier
 	for (ABasePiece* PieceToEat : GField->PiecesArray)
 	{ 
 		if (PieceToEat != NULL)
@@ -937,11 +962,14 @@ void AChess_GameMode::SpawnEatTile(const FVector2D& TilePosition, const FVector2
 			}
 		}
 	}
+	// Set the Clicked Piece Moves to Spawned, this way we're ready for the second Click
 	SetPieceMovesToSpawned(PiecePosition);
 }
 
+// Called after a Pieces have been moved to destory the SuggestionTiles
 void AChess_GameMode::DestroyMoveTiles()
 {
+	// Destroy all of the Spawned Tiles to Clean the Board and Empty the SpawnedTileArray
 	for (ATile* Obj : SpawnedTileArray)
 	{
 		Obj->Destroy();
@@ -949,9 +977,15 @@ void AChess_GameMode::DestroyMoveTiles()
 	SpawnedTileArray.Empty();
 }
 
+// Called when the Second Click is a ValidMove and therefore it moves the Piece
 void AChess_GameMode::MoveClickedPiece(const FVector2D& NewPosition, FString Color)
+
+// Prima distinguevo tra WhitePiecesArray e BlackPieces Array, quindi mi serviva differenziare tra White e Black nello spostare un pezzo
+// ora invece, non servirebbe, ma non modifico il codice per timore che poi non compili piu (visto che non posso verificarlo se non al Laboratorio)
 {
 	//if (CurrentPlayer == 0)
+
+	// If the Piece Clicked with the first Click is a White, verify that it's in the Piece Array, is not NULL and is onBoard
 	if (Color == "White")
 	{
 		for (ABasePiece* Obj : GField->PiecesArray)
@@ -962,11 +996,13 @@ void AChess_GameMode::MoveClickedPiece(const FVector2D& NewPosition, FString Col
 				{
 					if (Obj->GetPieceStatus() == EPieceStatus::Clicked)
 					{
+						// Get the BoardPosition of the Clicked Piece and look for the Tile Below it
 						FVector2D OldPosition = Obj->GetBoardPosition();
 						for (ATile* OldTile : GField->TileArray)
 						{
 							if (OldTile != NULL)
 							{
+								// when found, set the Tile to Empty since the Piece is Moving out
 								if (OldTile->GetGridPosition() == OldPosition)
 								{
 									OldTile->SetTileStatus(ETileStatus::EMPTY);
@@ -979,6 +1015,7 @@ void AChess_GameMode::MoveClickedPiece(const FVector2D& NewPosition, FString Col
 							{
 								if (Obj->GetIsPieceOnBoard() == EPieceOnBoard::OnBoard)
 								{
+									// If the New Position is an EatingTile, then Destroy the Pieace to be Eaten and set it NotOnBoard
 									if (PieceToEat->GetBoardPosition() == NewPosition && PieceToEat->GetPieceToEat() == EPieceToEat::ToBeEaten)
 									{
 										PieceToEat->SetIsPieceOnBoard(EPieceOnBoard::NotOnBoard);
@@ -987,14 +1024,18 @@ void AChess_GameMode::MoveClickedPiece(const FVector2D& NewPosition, FString Col
 								}
 							}
 						}
+						// reset Checked Tiles
 						SetTilesToNotCheckedByColorBeforeTurn(Color);
 
+						// Move the Clicked Piece to the NewPosition, Set the NewPosition and Set the Piece to NotClicked (only one Piece is allowed to be Set on Clicked at time)
 						Obj->SetBoardPosition(NewPosition[0], NewPosition[1]);
 						Obj->SetActorLocation(GField->GetRelativeLocationByXYPosition(NewPosition[0], NewPosition[1]) + FVector(0, 0, 10));
 						Obj->SetPieceStatus(EPieceStatus::NotClicked);
 
+						// Verify Checks after the NewPosition of the MovedPiece
 						VerifyChecksByColorAfterTurn(Color);
 
+						// Set the NewTile of the MovedPiece to Occupied
 						for (ATile* NewTile : GField->TileArray)
 						{
 							if (NewTile != NULL)
@@ -1012,9 +1053,10 @@ void AChess_GameMode::MoveClickedPiece(const FVector2D& NewPosition, FString Col
 				}
 			}
 		}
+		// Destroy the Spawned SuggestionTiles
 		DestroyMoveTiles();
 	}
-	
+	// If the Piece Clicked with the first Click is a Black, verify that it's in the Piece Array, is not NULL and is onBoard
 	else if (Color == "Black")
 	//else if (CurrentPlayer == 1)
 	{
@@ -1026,11 +1068,13 @@ void AChess_GameMode::MoveClickedPiece(const FVector2D& NewPosition, FString Col
 				{
 					if (Obj->GetPieceStatus() == EPieceStatus::Clicked)
 					{
+						// Get the BoardPosition of the Clicked Piece and look for the Tile Below it
 						FVector2D OldPosition = Obj->GetBoardPosition();
 						for (ATile* OldTile : GField->TileArray)
 						{
 							if (OldTile != NULL)
 							{
+								// when found, set the Tile to Empty since the Piece is Moving out
 								if (OldTile->GetGridPosition() == OldPosition)
 								{
 									OldTile->SetTileStatus(ETileStatus::EMPTY);
@@ -1043,6 +1087,7 @@ void AChess_GameMode::MoveClickedPiece(const FVector2D& NewPosition, FString Col
 							{
 								if (Obj->GetIsPieceOnBoard() == EPieceOnBoard::OnBoard)
 								{
+									// If the New Position is an EatingTile, then Destroy the Pieace to be Eaten and set it NotOnBoard
 									if (PieceToEat->GetBoardPosition() == NewPosition && /*SpawnedTile->GetTileType() == ETileType::Eat &&*/ PieceToEat->GetPieceToEat() == EPieceToEat::ToBeEaten)
 									{
 										PieceToEat->SetIsPieceOnBoard(EPieceOnBoard::NotOnBoard);
@@ -1051,14 +1096,18 @@ void AChess_GameMode::MoveClickedPiece(const FVector2D& NewPosition, FString Col
 								}
 							}
 						}
+						// reset Checked Tiles
 						SetTilesToNotCheckedByColorBeforeTurn(Color);
 
+						// Move the Clicked Piece to the NewPosition, Set the NewPosition and Set the Piece to NotClicked (only one Piece is allowed to be Set on Clicked at time)
 						Obj->SetBoardPosition(NewPosition[0], NewPosition[1]);
 						Obj->SetActorLocation(GField->GetRelativeLocationByXYPosition(NewPosition[0], NewPosition[1]) + FVector(0, 0, 10));
 						Obj->SetPieceStatus(EPieceStatus::NotClicked);
 
+						// Verify Checks after the NewPosition of the MovedPiece
 						VerifyChecksByColorAfterTurn(Color);
 
+						// Set the NewTile of the MovedPiece to Occupied
 						for (ATile* NewTile : GField->TileArray)
 						{
 							if (NewTile != NULL)
@@ -1076,11 +1125,13 @@ void AChess_GameMode::MoveClickedPiece(const FVector2D& NewPosition, FString Col
 				}
 			}
 		}
+		// Destroy the Spawned SuggestionTiles
 		DestroyMoveTiles();
 	}
 	//TurnNextPlayer();
 }
 
+// Called to check if a Piece is Black
 bool AChess_GameMode::IsPieceBlack(const FVector2D& Position)
 {
 	for (ABasePiece* Obj : GField->PiecesArray)
@@ -1102,6 +1153,7 @@ bool AChess_GameMode::IsPieceBlack(const FVector2D& Position)
 	return false;
 }
 
+// Called to check if a Piece is White
 bool AChess_GameMode::IsPieceWhite(const FVector2D& Position)
 {
 	for (ABasePiece* Obj : GField->PiecesArray)
@@ -1123,6 +1175,7 @@ bool AChess_GameMode::IsPieceWhite(const FVector2D& Position)
 	return false;
 }
 
+// Called when the second Click is not a ValidMove, sets Clicked Piece to NotClicked to avoid the Piece moving by mistake
 void AChess_GameMode::SetPieceToNotClicked()
 {
 	for (ABasePiece* Obj : GField->PiecesArray)
@@ -1140,10 +1193,12 @@ void AChess_GameMode::SetPieceToNotClicked()
 	}
 }
 
+// Called After a Piece got Moved to generate all the new Tiles that are threatening for the opposing King
 void AChess_GameMode::VerifyChecksByColorAfterTurn(FString Color)
 {
 	if (Color == "Black")
 	{
+		// If the last MovedPiece is Black, Empty the BlackChecksArray and Re-Do the Checks
 		BlackChecksArray.Empty();
 		for (ABasePiece* Piece : GField->PiecesArray)
 		{
@@ -1153,9 +1208,10 @@ void AChess_GameMode::VerifyChecksByColorAfterTurn(FString Color)
 				{
 					if (Piece->IsA(ABlackPiece::StaticClass()))
 					{
-
 						if (Piece->GetPiece() == EPiece::Pawn)
 						{
+							// Generate PawnMoves, since its the Pawns, we're only interested in the EatingMoves, add to BlackChecksArray
+							// Empty both the GeneratedArrays to not have Errors when Generating Moves when it's needed to Move a Piece
 							GeneratePawnMoves(Piece->GetBoardPosition(), "Black");
 							PawnMovesArray.Empty();
 							for (int32 i = 0; i < PawnEatingMovesArray.Num(); i++)
@@ -1166,6 +1222,8 @@ void AChess_GameMode::VerifyChecksByColorAfterTurn(FString Color)
 						}
 						if (Piece->GetPiece() == EPiece::Queen)
 						{
+							// Generate QueenMoves, add to BlackChecksArray
+						        // Empty both the GeneratedArrays to not have Errors when Generating Moves when it's needed to Move a Piece
 							GenerateQueenMoves(Piece->GetBoardPosition(), "Black");
 							for (int32 i = 0; i < QueenMovesArray.Num(); i++)
 							{
@@ -1180,6 +1238,8 @@ void AChess_GameMode::VerifyChecksByColorAfterTurn(FString Color)
 						}
 						if (Piece->GetPiece() == EPiece::Rook)
 						{
+							// Generate RookMoves, add to BlackChecksArray
+						        // Empty both the GeneratedArrays to not have Errors when Generating Moves when it's needed to Move a Piece
 							GenerateRookMoves(Piece->GetBoardPosition(), "Black");
 							for (int32 i = 0; i < RookMovesArray.Num(); i++)
 							{
@@ -1194,7 +1254,9 @@ void AChess_GameMode::VerifyChecksByColorAfterTurn(FString Color)
 						}
 						if (Piece->GetPiece() == EPiece::Knight)
 						{
-							GenerateKnightMoves(Piece->GetBoardPosition(), "Black");
+						        // Generate KnightMoves, add to BlackChecksArray
+						        // Empty both the GeneratedArrays to not have Errors when Generating Moves when it's needed to Move a Piece
+						 	GenerateKnightMoves(Piece->GetBoardPosition(), "Black");
 							for (int32 i = 0; i < KnightMovesArray.Num(); i++)
 							{
 								BlackChecksArray.Add(KnightMovesArray[i]);
@@ -1208,6 +1270,8 @@ void AChess_GameMode::VerifyChecksByColorAfterTurn(FString Color)
 						}
 						if (Piece->GetPiece() == EPiece::Bishop)
 						{
+							// Generate BishopMoves, add to BlackChecksArray
+							// Empty both the GeneratedArrays to not have Errors when Generating Moves when it's needed to Move a Piece
 							GenerateBishopMoves(Piece->GetBoardPosition(), "Black");
 							for (int32 i = 0; i < BishopMovesArray.Num(); i++)
 							{
@@ -1222,6 +1286,8 @@ void AChess_GameMode::VerifyChecksByColorAfterTurn(FString Color)
 						}
 						if (Piece->GetPiece() == EPiece::King)
 						{
+							// Generate KingMoves, add to BlackChecksArray
+							// Empty both the GeneratedArrays to not have Errors when Generating Moves when it's needed to Move a Piece
 							GenerateKingMoves(Piece->GetBoardPosition(), "Black");
 							for (int32 i = 0; i < KingMovesArray.Num(); i++)
 							{
@@ -1239,6 +1305,7 @@ void AChess_GameMode::VerifyChecksByColorAfterTurn(FString Color)
 				}
 			}
 		}
+		// Set all the Tiles, which (x,y) Position is contained in BlackChecksArray, to IsCheckedByBlacks
 		for (int32 i = 0; i < BlackChecksArray.Num(); i++)
 		{
 			for (ATile* Tile : GField->TileArray)
@@ -1252,6 +1319,7 @@ void AChess_GameMode::VerifyChecksByColorAfterTurn(FString Color)
 	}
 	if (Color == "White")
 	{
+		// If the last MovedPiece is White, Empty the BlackChecksArray and Re-Do the Checks
 		WhiteChecksArray.Empty();
 		for (ABasePiece* Piece : GField->PiecesArray)
 		{
@@ -1261,6 +1329,8 @@ void AChess_GameMode::VerifyChecksByColorAfterTurn(FString Color)
 				{
 					if (Piece->IsA(AWhitePiece::StaticClass()))
 					{
+						// Generate PawnMoves, since its the Pawns, we're only interested in the EatingMoves, add to WhiteChecksArray
+						// Empty both the GeneratedArrays to not have Errors when Generating Moves when it's needed to Move a Piece
 						if (Piece->GetPiece() == EPiece::Pawn)
 						{
 							GeneratePawnMoves(Piece->GetBoardPosition(), "White");
@@ -1273,6 +1343,8 @@ void AChess_GameMode::VerifyChecksByColorAfterTurn(FString Color)
 						}
 						if (Piece->GetPiece() == EPiece::Queen)
 						{
+							// Generate QueenMoves, add to WhiteChecksArray
+							// Empty both the GeneratedArrays to not have Errors when Generating Moves when it's needed to Move a Piece
 							GenerateQueenMoves(Piece->GetBoardPosition(), "White");
 							for (int32 i = 0; i < QueenMovesArray.Num(); i++)
 							{
@@ -1287,6 +1359,8 @@ void AChess_GameMode::VerifyChecksByColorAfterTurn(FString Color)
 						}
 						if (Piece->GetPiece() == EPiece::Rook)
 						{
+							// Generate RookMoves, add to WhiteChecksArray
+							// Empty both the GeneratedArrays to not have Errors when Generating Moves when it's needed to Move a Piece
 							GenerateRookMoves(Piece->GetBoardPosition(), "White");
 							for (int32 i = 0; i < RookMovesArray.Num(); i++)
 							{
@@ -1299,8 +1373,10 @@ void AChess_GameMode::VerifyChecksByColorAfterTurn(FString Color)
 							}
 							RookEatingMovesArray.Empty();
 						}
-                        if (Piece->GetPiece() == EPiece::Knight)
+                                                if (Piece->GetPiece() == EPiece::Knight)
 						{
+							// Generate KnightMoves, add to WhiteChecksArray
+							// Empty both the GeneratedArrays to not have Errors when Generating Moves when it's needed to Move a Piece
 							GenerateKnightMoves(Piece->GetBoardPosition(), "White");
 							for (int32 i = 0; i < KnightMovesArray.Num(); i++)
 							{
@@ -1315,6 +1391,8 @@ void AChess_GameMode::VerifyChecksByColorAfterTurn(FString Color)
 						}
 						if (Piece->GetPiece() == EPiece::Bishop)
 						{
+							// Generate BishopMoves, add to WhiteChecksArray
+							// Empty both the GeneratedArrays to not have Errors when Generating Moves when it's needed to Move a Piece
 							GenerateBishopMoves(Piece->GetBoardPosition(), "White");
 							for (int32 i = 0; i < BishopMovesArray.Num(); i++)
 							{
@@ -1329,6 +1407,8 @@ void AChess_GameMode::VerifyChecksByColorAfterTurn(FString Color)
 						}
 						if (Piece->GetPiece() == EPiece::King)
 						{
+							// Generate KingMoves, add to WhiteChecksArray
+							// Empty both the GeneratedArrays to not have Errors when Generating Moves when it's needed to Move a Piece
 							GenerateKingMoves(Piece->GetBoardPosition(), "White");
 							for (int32 i = 0; i < KingMovesArray.Num(); i++)
 							{
@@ -1346,6 +1426,7 @@ void AChess_GameMode::VerifyChecksByColorAfterTurn(FString Color)
 				}
 			}
 		}
+		// Set all the Tiles, which (x,y) Position is contained in WhiteChecksArray, to IsCheckedByWhites
 		for (int32 i = 0; i < WhiteChecksArray.Num(); i++)
 		{
 			for (ATile* Tile : GField->TileArray)
@@ -1362,6 +1443,7 @@ void AChess_GameMode::VerifyChecksByColorAfterTurn(FString Color)
 	
 }
 
+// Called Before a Piece is Moved to Reset the Checking Tiles
 void AChess_GameMode::SetTilesToNotCheckedByColorBeforeTurn(FString Color)
 {
 	if (Color == "White")
@@ -1380,12 +1462,16 @@ void AChess_GameMode::SetTilesToNotCheckedByColorBeforeTurn(FString Color)
 	}
 }
 
+// Called when generating King moves, returns true if a Piece cannot be eaten by King cause its Protected by another Piece
 bool AChess_GameMode::IsPieceProtected()
 {
+	// A rivedere la fuzione, penso che la logica sia errata e che quindi non verifichi se un pezzo è protetto o meno, 
+        // purtroppo era una delle ultime funzioni che ho scritto
+	// Non Modifico il codice per timore che poi non compili piu, visto che ci posso lavorare solo in Laboratorio
+	
 	for (ABasePiece* PieceToEat : GField->PiecesArray)
 	{
 		if (PieceToEat != NULL)
-
 		{
 			if (PieceToEat->GetIsPieceOnBoard() == EPieceOnBoard::OnBoard)
 			{
@@ -1415,6 +1501,7 @@ bool AChess_GameMode::IsPieceProtected()
 	return false;
 }
 
+// get the next player index (non utilizzato)
 int32 AChess_GameMode::GetNextPlayer(int32 Player)
 {
 	Player++;
@@ -1425,6 +1512,7 @@ int32 AChess_GameMode::GetNextPlayer(int32 Player)
 	return Player;
 }
 
+// called at the end of the game turn (non utilizzato)
 void AChess_GameMode::TurnNextPlayer()
 {
 	MoveCounter += 1;
