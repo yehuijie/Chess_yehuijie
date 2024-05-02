@@ -1,4 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Classe non utilizzata perchè avevo riscontrato qualche problema che mi veniva difficile debuggare date le mosse Random e difficili 
+// da replicare. Se fossi parito dal gioco a turni entrambi umani, sarebbe stato piu semplice.
 
 
 #include "Chess_RandomPlayer.h"
