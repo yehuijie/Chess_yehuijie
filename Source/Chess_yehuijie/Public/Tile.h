@@ -1,4 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -6,7 +5,7 @@
 #include "GameFramework/Actor.h"
 #include "Tile.generated.h"
 
-//probabilmente non va bene, bisogna controllare sintassi e funzionamneto --> pero potrebbe essere utile?
+// Enumerator class that states if a Tile is Empty/Occupied or is a MovementTile
 UENUM()
 enum class ETileStatus : uint8
 {
@@ -15,6 +14,7 @@ enum class ETileStatus : uint8
 	MOVE   UMETA(DisplayName = "Move"),
 };
 
+// Enumerator class that verifies if a Tile is under Check by Blacks 
 UENUM()
 enum class EIsCheckByBlacks : uint8
 {
@@ -22,6 +22,7 @@ enum class EIsCheckByBlacks : uint8
 	NotChecked,
 };
 
+// Enumerator class that verifies if a Tile is under Check by Whites
 UENUM()
 enum class EIsCheckByWhites : uint8
 {
@@ -29,6 +30,7 @@ enum class EIsCheckByWhites : uint8
 	NotChecked,
 };
 
+// Declaration of ATile class, which inherits AActor
 UCLASS()
 class CHESS_YEHUIJIE_API ATile : public AActor
 {
@@ -38,19 +40,19 @@ public:
 	// Sets default values for this actor's properties
 	ATile();
 
-	// set the player owner and the status of a tile
+	// Set/Get the status of a tile (Clicked or NotClicked)
 	void SetTileStatus(const ETileStatus TileStatus);
-	// get the tile status
 	ETileStatus GetTileStatus();
 
-	// set the (x, y) position
+	// Set/Get the (x, y) position
 	void SetGridPosition(const double InX, const double InY);
-	// get the (x, y) position
 	FVector2D GetGridPosition();
 
+        // Set/Get whether a Tile is under Check by Blacks or not
 	void SetIsCheckByBlacks(const EIsCheckByBlacks IsCheck);
 	EIsCheckByBlacks GetIsCheckbyBlacks();
-
+ 
+        // Set/Get whether a Tile is under Check by Blacks or not
 	void SetIsCheckByWhites(const EIsCheckByWhites IsCheck);
 	EIsCheckByWhites GetIsCheckbyWhites();
 
@@ -66,16 +68,19 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* StaticMeshComponent;
 
+        // is the Piece Clicked
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	ETileStatus Status;
 
-	// (x, y) position of the tile
+	// (x, y) position of the Piece
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FVector2D TileGridPosition;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+ 
+        // whether a Tile is under Check by Blacks
+        UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EIsCheckByBlacks IsCheckedB;
 
+        // whether a Tile is under Check by Blacks
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EIsCheckByWhites IsCheckedW;
 };
