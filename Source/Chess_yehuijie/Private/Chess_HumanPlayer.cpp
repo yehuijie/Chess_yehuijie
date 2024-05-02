@@ -49,13 +49,16 @@ void AChess_HumanPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 }
 
+// Called when its my Turn
 void AChess_HumanPlayer::OnTurn()
 {
+	// Set IsMyTurn to true so that the Click for HumanPlayer works
 	IsMyTurn = true;
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("White Turn"));
 	//GameInstance->SetTurnMessage(TEXT("Human Turn"));
 }
 
+// Called to check if its Win Position (non utilizzato)
 void AChess_HumanPlayer::OnWin()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("You Win!"));
@@ -63,6 +66,7 @@ void AChess_HumanPlayer::OnWin()
 	//GameInstance->IncrementScoreHumanPlayer();
 }
 
+// Called to check if its Lose Position (non utilizzato)
 void AChess_HumanPlayer::OnLose()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("You Lose!"));
@@ -75,38 +79,49 @@ void AChess_HumanPlayer::OnClick()
 	FHitResult Hit = FHitResult(ForceInit);
 	// GetHitResultUnderCursor function sends a ray from the mouse position and gives the corresponding hit results
 	GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(ECollisionChannel::ECC_Pawn, true, Hit);
+	// Casts a GameMode within the Current World, if Failed it returns nullptr
 	AChess_GameMode* GameMode = Cast<AChess_GameMode>(GetWorld()->GetAuthGameMode());
 
+	// If the Click hits something, it's my turn and it's the FirstClick
 	if (Hit.bBlockingHit && FirstClick && !SecondClick && IsMyTurn)
 	{
+		// If a Piece was clicked, save its Type and Position
 		if (ABasePiece* CurrPiece = Cast<ABasePiece>(Hit.GetActor()))
 		{
 			EPiece CurrPieceType = CurrPiece->GetPiece();
 			FVector2D PositionOnClick = CurrPiece->GetBoardPosition();
+			// If the Piece is a WhitePiece, Set it to Clicked and Show its PossibleMoves
 			if (CurrPiece->IsA(AWhitePiece::StaticClass()))
 			{
 				CurrPiece->SetPieceStatus(EPieceStatus::Clicked);
+				// OldPosition non viene usato da nessuna parte, i metodi Get e Set di OldPosition sono inutili
 				CurrPiece->SetOldPosition(PositionOnClick[0], PositionOnClick[1]);
 				GameMode->ShowMoves(PositionOnClick, CurrPieceType, "White");
 				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("clicked"));
+
+				// if the SuggestedTiles for the Moves are correcly Spawned, the SecondClick is enabled
 				if (CurrPiece->GetPieceMoves() == EPieceMoves::Spawned) 
 				{
 					FirstClick = false;
 					SecondClick = true;
 				}
+				// if the Tiles are not Spawned, Set the Piece to NotCLicked to avoid it moving by mistake
 				else
 				{
 					CurrPiece->SetPieceStatus(EPieceStatus::NotClicked);
 
 				}
+				// SetPieceMoves to NotSpawned regardless, since if Spawned theyre getting Destroyed after SecondClick
 				CurrPiece->SetPieceMoves(EPieceMoves::NotSpawned);
 			}
 		}
 	}
 	
 
+	// If the Click hits something, it's my turn and it's the SecondClick
 	if (Hit.bBlockingHit && SecondClick && !FirstClick && IsMyTurn)
 	{
+		// if a Tile was Clicked and its a Moving Tile, Save the NewPosition, Move the Piece and pass the turn to the BlackPlayer
 		if (ATile* CurrTile = Cast<ATile>(Hit.GetActor()))
 		{
 			if (CurrTile->GetTileStatus() == ETileStatus::MOVE)
@@ -118,22 +133,27 @@ void AChess_HumanPlayer::OnClick()
 				FirstClick = true;
 				IsMyTurn = false;
 			}
+                        // If the Clicked Tile is not a Moving Tile, Destroy the Spawned Tiles, Reset the Click to my Turn and Set the Piece to NotCLicked to avoid it moving by mistake
 			else if (CurrTile->GetTileStatus() != ETileStatus::MOVE)
 			{
+				GameMode->SetPieceToNotClicked();
 				GameMode->DestroyMoveTiles();
 			        SecondClick = false;
 			        FirstClick = true;
 			}
 		}
+		// if a Piece was Clicked and its a Piece that can be Eaten, Save the NewPosition, Eat, Move and pass the Turn to the BlackPLayer
 		if (ABasePiece* PieceToEat = Cast<ABasePiece>(Hit.GetActor()))
 		{
-			if (PieceToEat->GetPieceToEat() == EPieceToEat::ToBeEaten) {
+			if (PieceToEat->GetPieceToEat() == EPieceToEat::ToBeEaten) 
+			{
 				FVector2D NewPosition = PieceToEat->GetBoardPosition();
 				GameMode->MoveClickedPiece(NewPosition, "White");
 			        SecondClick = false;
 			        FirstClick = true;
 				IsMyTurn = false;
 			}
+		        // if the Piece Selected is not Clicked and is not ToBeEaten, Destroy the Spawned Tiles, Reset the Click to my Turn and Set the FirstPiece to NotCLicked to avoid it moving by mistake
 			else if (PieceToEat->GetPieceStatus() != EPieceStatus::Clicked)
 			{
 				GameMode->SetPieceToNotClicked();
@@ -143,35 +163,44 @@ void AChess_HumanPlayer::OnClick()
 			}	
 		}  
 	}
+	// If the Click hits something, it's Black's turn and it's the FirstClick
 	if (Hit.bBlockingHit && FirstClick && !SecondClick && !IsMyTurn)
 	{
+		// If a Piece was clicked, save its Type and Position
 		if (ABasePiece* CurrPiece = Cast<ABasePiece>(Hit.GetActor()))
 		{
 			EPiece CurrPieceType = CurrPiece->GetPiece();
 			FVector2D PositionOnClick = CurrPiece->GetBoardPosition();
+			// If the Piece is a BlackPiece, Set it to Clicked and Show its PossibleMoves
 			if (CurrPiece->IsA(ABlackPiece::StaticClass()))
 			{
 				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("pawn"));
 				CurrPiece->SetPieceStatus(EPieceStatus::Clicked);
+				// OldPosition non viene usato da nessuna parte, i metodi Get e Set di OldPosition sono inutili
 				CurrPiece->SetOldPosition(PositionOnClick[0], PositionOnClick[1]);
 				GameMode->ShowMoves(PositionOnClick, CurrPieceType, "Black");
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("clicked"));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("clicked"));
+				
+				// if the SuggestedTiles for the Moves are correcly Spawned, the SecondClick is enabled
 				if (CurrPiece->GetPieceMoves() == EPieceMoves::Spawned)
 				{
 					FirstClick = false;
 					SecondClick = true;
 				}
+				// if the Tiles are not Spawned, Set the Piece to NotCLicked to avoid it moving by mistake
 				else
 				{
 					CurrPiece->SetPieceStatus(EPieceStatus::NotClicked);
 				}
+				// SetPieceMoves to NotSpawned regardless, since if Spawned theyre getting Destroyed after SecondClick
 				CurrPiece->SetPieceMoves(EPieceMoves::NotSpawned);
 			}
 		}
 	}
-
+	// If the Click hits something, it's Black's and it's the SecondClick
 	if (Hit.bBlockingHit && SecondClick && !FirstClick && !IsMyTurn)
 	{
+		// if a Tile was Clicked and its a Moving Tile, Save the NewPosition, Move the Piece and pass the turn to the WhitePlayer(HumanPlayer)
 		if (ATile* CurrTile = Cast<ATile>(Hit.GetActor()))
 		{
 			if (CurrTile->GetTileStatus() == ETileStatus::MOVE)
@@ -183,13 +212,16 @@ void AChess_HumanPlayer::OnClick()
 				FirstClick = true;
 				IsMyTurn = true;
 			}
+		        // if the Piece Selected is not Clicked and is not ToBeEaten, Destroy the Spawned Tiles, Reset the Click to my Turn and Set the FirstPiece to NotCLicked to avoid it moving by mistake
 			else if (CurrTile->GetTileStatus() != ETileStatus::MOVE)
 			{
+				GameMode->SetPieceToNotClicked();
 				GameMode->DestroyMoveTiles();
 				SecondClick = false;
 				FirstClick = true;
 			}
 		}
+		// if a Piece was Clicked and its a Piece that can be Eaten, Save the NewPosition, Eat, Move and pass the Turn to the WhitePlayer(HumanPlayer)
 		if (ABasePiece* PieceToEat = Cast<ABasePiece>(Hit.GetActor()))
 		{
 			if (PieceToEat->GetPieceToEat() == EPieceToEat::ToBeEaten) {
@@ -200,6 +232,7 @@ void AChess_HumanPlayer::OnClick()
 				IsMyTurn = true;
 
 			}
+			// if the Piece Selected is not Clicked and is not ToBeEaten, Destroy the Spawned Tiles, Reset the Click to my Turn and Set the FirstPiece to NotCLicked to avoid it moving by mistake
 			else if (PieceToEat->GetPieceStatus() != EPieceStatus::Clicked)
 			{
 				GameMode->SetPieceToNotClicked();
