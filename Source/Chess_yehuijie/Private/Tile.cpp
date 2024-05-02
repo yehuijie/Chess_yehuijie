@@ -18,51 +18,49 @@ ATile::ATile()
 	SetRootComponent(Scene);
 	StaticMeshComponent->SetupAttachment(Scene);
 
+	// initialisation
 	Status = ETileStatus::EMPTY;
-	// 0 is white, 1 is black
-	//PlayerColor = -1;
 	TileGridPosition = FVector2D(0, 0);
 	IsCheckedB = EIsCheckByBlacks::NotChecked;
 	IsCheckedW = EIsCheckByWhites::NotChecked;
 }
 
+// Set/Get the status of a tile (Clicked or NotClicked)
 void ATile::SetTileStatus( const ETileStatus TileStatus)
 {
 	
 	Status = TileStatus;
 }
-
 ETileStatus ATile::GetTileStatus()
 {
 	return Status;
 }
 
-
+// Set/Get the (x, y) position
 void ATile::SetGridPosition(const double InX, const double InY)
 {
 	TileGridPosition.Set(InX, InY);
 }
-
 FVector2D ATile::GetGridPosition()
 {
 	return TileGridPosition;
 }
 
+// Set/Get whether a Tile is under Check by Blacks or not
 void ATile::SetIsCheckByBlacks(const EIsCheckByBlacks IsCheck)
 {
 	IsCheckedB = IsCheck;
 }
-
 EIsCheckByBlacks ATile::GetIsCheckbyBlacks()
 {
 	return IsCheckedB;
 }
 
+// Set/Get whether a Tile is under Check by Blacks or not
 void ATile::SetIsCheckByWhites(const EIsCheckByWhites IsCheck)
 {
 	IsCheckedW = IsCheck;
 }
-
 EIsCheckByWhites ATile::GetIsCheckbyWhites()
 {
 	return IsCheckedW;
@@ -79,10 +77,4 @@ void ATile::BeginPlay()
 
 }
 
-// Called every frame
-//void ATile::Tick(float DeltaTime)
-//{
-//	Super::Tick(DeltaTime);
-//
-//}
 
