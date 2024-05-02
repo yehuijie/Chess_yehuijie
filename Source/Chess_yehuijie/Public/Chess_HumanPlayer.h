@@ -1,4 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -11,7 +10,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Chess_HumanPlayer.generated.h"
 
-
+// Declaration of AChess_HumanPlayer, which inherits APawn and IChess_PlayerInterface
 UCLASS()
 class CHESS_YEHUIJIE_API AChess_HumanPlayer : public APawn, public IChess_PlayerInterface
 {
@@ -32,8 +31,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+        // Keeps Track of Clicks
 	bool FirstClick = true;
-
 	bool SecondClick = false;
 
 	// keeps track of turn
