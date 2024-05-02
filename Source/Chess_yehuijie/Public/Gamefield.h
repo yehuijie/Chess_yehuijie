@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 #pragma once
 
@@ -10,9 +10,7 @@
 #include "GameFramework/Actor.h"
 #include "GameField.generated.h"
 
-// macro declaration for a dynamic multicast delegate --> da capire
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnReset);
-
+// Declaration of AGameField Class, which inherits AActor
 UCLASS()
 class CHESS_YEHUIJIE_API AGameField : public AActor
 {
@@ -30,6 +28,7 @@ public:
 	UPROPERTY(Transient)
 	TMap<FVector2D, ATile*> TileMap;
 
+        // Normalizes the Cell Padding
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float NormalizedCellPadding;
 
@@ -39,23 +38,23 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 Size;
 
-	// size of winning line
+	// size of winning line -> copiato da TTT
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 WinSize;
 
 	// TSubclassOf template class that provides UClass type safety
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ATile> TileClassWhite;
-
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ATile> TileClassBlack;
 
-	// keeps track of pawns
+	// Keeps track of Pieces
 	UPROPERTY(Transient)
 	TArray<ABasePiece*> PiecesArray;
 	UPROPERTY(Transient)
 	TMap<FVector2D, ABasePiece*> PiecesMap;
 
+        // TSubclassOf template class that provides UClass type safety, for White/Black Pieces
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AWhitePiece> WPawnActor;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -99,6 +98,7 @@ public:
 	// return (x,y) position given a relative position
 	FVector2D GetXYPositionByRelativeLocation(const FVector& Location) const;
 
+        // retuns true if the Tile at (x,y) position is empty
 	bool TileIsEmpty(const double InX, const double InY);
 
 	
@@ -109,9 +109,11 @@ protected:
 	// generate an empty game field
 	void GenerateField();
 
+        // Generate all the Pices
 	void GeneratePieces();
 
-	void GenerateWPawns();
+	// Generate specific White/Black Pieces
+        void GenerateWPawns();
 	void GenerateWKing();
 	void GenerateWQueen();
 	void GenerateWBishops();
