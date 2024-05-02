@@ -1,4 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -14,24 +13,28 @@
 /**
  * 
  */
+
+// Declaration of AChess_PlayerController Class, which inherits APlayerController
 UCLASS()
 class CHESS_YEHUIJIE_API AChess_PlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
 public:
+        // Sets default values for this actor's properties
 	AChess_PlayerController();
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputMappingContext* ChessContext;
 
-
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* ClickAction;
 
-	void ClickOnGrid();
+	// Called when there's a Click 
+        void ClickOnGrid();
 
 protected:
+       
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 	
