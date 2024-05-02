@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 #pragma once
 
@@ -6,6 +6,7 @@
 #include "UObject/Interface.h"
 #include "Chess_PlayerInterface.generated.h"
 
+// probabilmente non utilizzato, copia di EPiece in BasePiece.h
 UENUM()
 enum class EPiece1 : uint8
 {
