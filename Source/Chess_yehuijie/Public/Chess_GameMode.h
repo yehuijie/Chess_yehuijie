@@ -135,7 +135,7 @@ public:
 	// called at the start of the game
 	void ChoosePlayerAndStartGame();
 
-	// Called when a specific Piece is Clicked, in order to generate the possible Moves and therefore spawn the SuggestionTiles
+	// Called when a specific Piece is Clicked, in order to generate the possible Moves and fill the respective Arrays
         void GeneratePawnMoves(const FVector2D& PiecePosition, FString Color);
 	void GenerateQueenMoves(const FVector2D& PiecePosition, FString Color);
 	void GenerateKingMoves(const FVector2D& PiecePosition, FString Color);
