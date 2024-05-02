@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Sets up Inputs and Allows to Click
 
 #include "Chess_PlayerController.h"
 #include "Components/InputComponent.h"
@@ -31,6 +30,7 @@ void AChess_PlayerController::SetupInputComponent()
 	}
 }
 
+// ho provato a implementare i due players, ma con scarso successo
 void AChess_PlayerController::ClickOnGrid()
 {
 	/*const auto HumanPlayer = Cast<AChess_HumanPlayer>(GetPawn());
