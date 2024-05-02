@@ -72,6 +72,7 @@ public:
 	void SetPieceStatus(const EPieceStatus Status);
 	EPieceStatus GetPieceStatus();
 
+        // Non viene mai utilizzato, non elimino per timore che il codice non comipli piu visto che posso lavorare al codice solo in Lab
 	// Set and Get Current (x,y) Position of a Piece that is moving (current Position will be the Old Position after moving)
         void SetOldPosition(const double InX, const double InY);
 	FVector2D GetOldPosition();
